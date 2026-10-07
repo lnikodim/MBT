@@ -41,3 +41,12 @@ Real ticks 2022-01 to 2026-10, 100k, 1% risk. Mode 0 reproduced the morning's v1
 - Open caveats: 2022-26 is a trend regime (stacking pyramids into trends; untested on the 2019-21 chop), and
   prop_mc counts closed trades only while firms measure daily loss on equity with up to 7 positions open.
 - Test build archived in reports/macd_mpx/ (git-ignored). The canonical EA and the VPS stay v1.42.
+
+## Follow-up pre-registration (2026-10-07, before these runs): chop check and position cap
+User approved a one-off 2019-2021 check and a cap on open positions (InpMaxPositions, 0 = none) for stacking (mode 1).
+- Runs (real ticks): 2019-01-01 to 2022-01-01: v1.42, stack, stack cap 3, stack cap 4. 2022-01-01 to 2026-10-01:
+  stack cap 3, stack cap 4 (v1.42 and uncapped stack from the runs above).
+- Chop check: stacking (in the chosen cap form) is cleared for a v1.43 only if its 2019-21 net R is at least v1.42's
+  2019-21 net R and its 2019-21 max drawdown in R is no more than 1.25 x v1.42's.
+- Cap choice: the smallest of cap 3, cap 4, none whose 2022-26 prop_mc pass probability at 0.3% and 0.5% risk is
+  within 2 points of the uncapped stack's and which passes the chop check.
