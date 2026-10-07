@@ -40,7 +40,8 @@
 //|  - OnTester custom criterion for optimization ("Custom max")     |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.43"
+#define EA_VERSION "1.43"
+#property version   EA_VERSION
 #property strict
 #property description "MACD crossover EA with trend/strength filters, % SL/TP, trailing and risk-based lots"
 
@@ -231,7 +232,7 @@ int OnInit()
    if(GlobalVariableCheck(g_gvLastBar))
       g_lastBarTime = (datetime)GlobalVariableGet(g_gvLastBar);
 
-   PrintFormat("MACD_Cross_EA v1.42 started on %s %s, magic %I64u, own positions: %d",
+   PrintFormat("MACD_Cross_EA v%s started on %s %s, magic %I64u, own positions: %d", EA_VERSION,
                _Symbol, EnumToString(InpTimeframe), InpMagic, CountOwnPositions());
 //--- echo effective inputs so every tester run / restart is verifiable in the Journal
    PrintFormat("Inputs: MACD %d/%d/%d zeroFilter=%s | trend=%s %s EMA%d gapATR=%.2f hours=%s(%d-%d)",
