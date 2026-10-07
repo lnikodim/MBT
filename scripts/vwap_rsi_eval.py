@@ -45,14 +45,22 @@ def mt5_running():
 
 
 def free_agent_ports():
-    """MT5 pins its local tester agents to 127.0.0.1:3000-3011 and the ports cannot be changed. If anything else
-    listens there the run would fail ('tester agent authorization error'), so refuse to start and name it.
-    Never kills: those ports belong to the user's own dev servers (asked 2026-10-07)."""
-    out = subprocess.run(["lsof", "-nP", "-Fpc", "-iTCP:3000-3011", "-sTCP:LISTEN"], capture_output=True, text=True).stdout
-    procs = [(p, c) for p, c in re.findall(r"^p(\d+)\nc(.*)$", out, flags=re.M) if c != "wineserver"]   # wineserver = MT5's own
-    if procs:
-        sys.exit("MT5 tester agent ports 3000-3011 are in use by " + ", ".join(f"{p}:{c}" for p, c in procs) +
-                 ". Stop or move that server (e.g. PORT=3100), then rerun; nothing was killed.")
+    """MT5 pins its local tester agents to 127.0.0.1:3000-3011 and the ports cannot be changed. A server on IPv4 or
+    dual-stack (Node's default) there breaks the run, so refuse to start and name it; a server bound to the IPv6
+    loopback [::1] coexists (tested 2026-10-07) and wineserver sockets are MT5's own. Never kills anything."""
+    out = subprocess.run(["lsof", "-nP", "-Fpcn", "-iTCP:3000-3011", "-sTCP:LISTEN"], capture_output=True, text=True).stdout
+    clash, pid, cmd = [], "", ""
+    for line in out.splitlines():
+        tag, val = line[:1], line[1:]
+        if tag == "p":
+            pid = val
+        elif tag == "c":
+            cmd = val
+        elif tag == "n" and cmd != "wineserver" and not val.startswith("[::1]:") and f"{pid}:{cmd}" not in clash:
+            clash.append(f"{pid}:{cmd}")
+    if clash:
+        sys.exit("MT5 tester agent ports 3000-3011 are in use by " + ", ".join(clash) + " (IPv4 or dual-stack). "
+                 "Bind that server to the IPv6 loopback (host ::1) or stop it, then rerun; nothing was killed.")
 
 
 def run(name, sets, period="H1", mode="single", ranges=None, frm=SC_WIN[0], to=SC_WIN[1], timeout=900,

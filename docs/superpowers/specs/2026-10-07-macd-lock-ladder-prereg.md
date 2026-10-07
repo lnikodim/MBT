@@ -22,3 +22,11 @@ trailing stays at the v1.42 rule (from +1.0%, 4 x ATR(14, H1)).
 - Adopt only if: prop_mc (FTMO 2-step) pass probability is at least the baseline's at 0.3% and 0.5% risk on both
   2019-26 and 2022-26 trades, and its 2025-26 net R (not used in the screen) is not below the baseline's.
 - If nothing qualifies, the live exits stay unchanged.
+
+## Outcome (2026-10-07): live exits unchanged
+- Screen (1-minute OHLC): the live first step (0.5% / 0.1%) beat every later or larger first step in both periods.
+  One setting qualified on a plateau: live step 1 plus step 2 at +2.0% locking +1.0% (PF 0.988 / 1.254 vs
+  0.983 / 1.251).
+- Confirmation (real ticks 2019-2026, same day as the baseline): PF 1.36 vs 1.38, +159.1 R vs +163.3 R, 2025-26
+  +124.9 R vs +129.2 R, prop_mc pass both phases 27.7 / 52.9 / 57.7 / 77.0% vs 28.9 / 53.6 / 57.7 / 78.3%
+  (2019-26 and 2022-26 at 0.3% and 0.5%). Fails the adoption rule; the VPS keeps v1.42's exits.
