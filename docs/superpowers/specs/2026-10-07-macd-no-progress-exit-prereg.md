@@ -35,3 +35,7 @@ N = 2, 3, 4, 6, 8, 12 bars x X = 0.0, 0.1, 0.2, 0.3% x mode 0 / 1 = 48 settings;
   to PF 1.115 (+28,931 vs -4,388) but cuts 2022-24 to PF 1.156 (36,575 vs 75,426). In the trending years the slow
   starters that the exit closes are the trades that later run to 3.75%.
 - No confirmation run (finalist only). Test build and screen script archived in reports/macd_npx/ (git-ignored).
+- Post-hoc (user question, not part of the rule): the three best 2022-24 settings on real ticks. 2022-26 net R
+  +153.0 / +157.1 / +163.1 vs v1.42 +178.6, prop pass @0.5% 72.7-73.5% vs 78.4%. 2026 alone from a fresh 100k:
+  v1.42 +106,505 (PF 2.00, 17 TPs) vs +86,173 / +88,803 / +92,185 (PF 1.89-1.92); the exit fired 2-6 times and cost
+  1-2 of the 3.75% winners.
