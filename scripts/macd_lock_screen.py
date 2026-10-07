@@ -2,6 +2,7 @@
 """MACD_Cross_EA profit-lock ladder screen (docs/superpowers/specs/2026-10-07-macd-lock-ladder-prereg.md).
 System python; optimizer runs on 1-minute OHLC through vwap_rsi_eval.run. Quit the MT5 GUI first.
 
+  (needs MACD_Cross_EA v1.43 break-even steps, reverted after the screen; restore v1.43 to rerun)
   python3 scripts/macd_lock_screen.py run 2019-21     # then: run 2022-24
   python3 scripts/macd_lock_screen.py score
 """
