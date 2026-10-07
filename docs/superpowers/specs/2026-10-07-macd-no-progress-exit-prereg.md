@@ -26,3 +26,12 @@ N = 2, 3, 4, 6, 8, 12 bars x X = 0.0, 0.1, 0.2, 0.3% x mode 0 / 1 = 48 settings;
 - Adopt only if: prop_mc (FTMO 2-step) pass probability is at least the baseline's at 0.3% and 0.5% risk on both
   2019-26 and 2022-26 trades, and its 2025-26 net R (not used in the screen) is not below the baseline's.
 - If nothing qualifies, the live exits stay unchanged.
+
+## Outcome (2026-10-07): no finalist, live exits unchanged
+- Screen (1-minute OHLC): baseline PF 0.983 / 1.251 (2019-21 / 2022-24). Two settings qualified, mode "best so far"
+  with X = 0.0% at N = 3 and N = 2 (PF 0.993 / 1.258 and 0.993 / 1.256, only 3-5 more trades per period), but
+  neither is on a plateau: the neighbours with X = 0.1% or N = 4 average well below the baseline in 2022-24.
+- Every X >= 0.1% setting trades the two periods against each other: e.g. best-so-far N = 3, X = 0.1% lifts 2019-21
+  to PF 1.115 (+28,931 vs -4,388) but cuts 2022-24 to PF 1.156 (36,575 vs 75,426). In the trending years the slow
+  starters that the exit closes are the trades that later run to 3.75%.
+- No confirmation run (finalist only). Test build and screen script archived in reports/macd_npx/ (git-ignored).
