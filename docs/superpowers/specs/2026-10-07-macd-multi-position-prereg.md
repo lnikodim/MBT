@@ -24,3 +24,20 @@ positions raise the risk per signal, which prop_mc's daily and max-loss limits p
 The user asked to run backtests on recent markets only. Runs: real ticks 2022-01-01 to 2026-10-01. The rule becomes:
 prop_mc pass probability at least v1.42's at 0.3% and 0.5% risk on 2022-26 trades, and 2025-26 net R not below
 v1.42's. Mode 0 is v1.42 by construction (the change only affects modes 1 and 2).
+
+## Outcome (2026-10-07): both variants pass the rule on 2022-26; not deployed (user decision pending)
+Real ticks 2022-01 to 2026-10, 100k, 1% risk. Mode 0 reproduced the morning's v1.42 2022-26 run to the cent
+(+414,417.70, 754 trades).
+
+| | trades | PF (R) | net R | max DD R | most open | 2025-26 R | pass 2022-26 @0.3 / 0.5 | breach @0.5 | tester net / equity DD |
+|---|---|---|---|---|---|---|---|---|---|
+| v1.42 | 753 | 1.47 | +178.3 | 18.6 | 1 | +129.9 | 58.9 / 78.1% | 3.9% | +414,418 / 18.1% |
+| stack | 1,040 | 1.53 | +271.2 | 24.7 | 7 | +184.6 | 77.2 / 82.4% | 6.9% | +998,174 / 24.9% |
+| independent | 1,057 | 1.52 | +271.5 | 25.8 | 7 | +185.8 | 76.8 / 81.5% | 7.4% | +1,000,571 / 25.8% |
+
+- Not just more risk: at an equal MC p95 drawdown (~10%) stacking at 0.3% passes 77.1% vs v1.42 at 0.3% 58.5%;
+  at equal breach (~1-1.6%/phase) stack 0.3% 77.1% vs v1.42 0.4% 72.8%. Phase 1 median 152 vs 203 days at 0.3%.
+- Hedging adds nothing over stacking (17 more trades, same R).
+- Open caveats: 2022-26 is a trend regime (stacking pyramids into trends; untested on the 2019-21 chop), and
+  prop_mc counts closed trades only while firms measure daily loss on equity with up to 7 positions open.
+- Test build archived in reports/macd_mpx/ (git-ignored). The canonical EA and the VPS stay v1.42.
