@@ -50,3 +50,18 @@ User approved a one-off 2019-2021 check and a cap on open positions (InpMaxPosit
   2019-21 net R and its 2019-21 max drawdown in R is no more than 1.25 x v1.42's.
 - Cap choice: the smallest of cap 3, cap 4, none whose 2022-26 prop_mc pass probability at 0.3% and 0.5% risk is
   within 2 points of the uncapped stack's and which passes the chop check.
+
+## Follow-up outcome (2026-10-07): stacking with a 3-position cap is cleared for a v1.43
+| | 2019-21 net R | 2019-21 max DD R | 2019-21 most open | 2022-26 net R | 2022-26 pass @0.3 / 0.5 | 2022-26 breach @0.5 |
+|---|---|---|---|---|---|---|
+| v1.42 | -15.4 | 34.5 | 1 | +178.3 | 58.9 / 78.1% | 3.9% |
+| stack | +59.6 | 36.4 | 12 | +271.2 | 77.2 / 82.4% | 6.9% |
+| stack cap 4 | +23.4 | 36.4 | 4 | +275.3 | 78.1 / 82.6% | 7.0% |
+| stack cap 3 | +15.0 | 35.6 | 3 | +261.8 | 76.6 / 82.8% | 6.4% |
+- Chop check (net R >= -15.4, max DD <= 43.1 R): all three stacking variants pass.
+- Cap choice: cap 3 is within 2 points of the uncapped stack at 0.3% (76.6 vs 77.2) and 0.5% (82.8 vs 82.4) -> cap 3.
+- Noted, not part of the rule: in 2019-21 the cap costs 45 R against uncapped stacking (+15.0 vs +59.6), but uncapped
+  stacking reached 12 open positions there (6% open risk at 0.5%/trade, beyond a 5% equity daily limit that prop_mc
+  cannot see); the cap bounds that.
+- Tester (real ticks, 100k, 1%): 2019-21 +6,306 / 32.6% DD (v1.42 -17,284 / 32.8%); 2022-26 +921,320 / 24.9% DD
+  (v1.42 +414,418 / 18.1%).
