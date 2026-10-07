@@ -18,7 +18,7 @@ _CORE_DEFAULTS = {
 }
 
 PROFILES = {
-    # MACD_Cross_EA v1.42 compiled defaults
+    # MACD_Cross_EA v1.43 compiled defaults
     "MACD_Cross_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "240817", "InpComment": "MACD_X",
         "InpFastEMA": "16", "InpSlowEMA": "26", "InpSignalSMA": "9", "InpAppliedPrice": "1",
@@ -26,7 +26,7 @@ PROFILES = {
         "InpUseTrendFilter": "true", "InpTrendTF": "16388", "InpTrendPeriod": "200",
         "InpMinGapATR": "0.0", "InpATRPeriod": "14",
         "InpUseTimeFilter": "false", "InpStartHour": "7", "InpEndHour": "20",
-        "InpStopLossPct": "0.5", "InpTakeProfitPct": "3.75", "InpCloseOnOpposite": "false",
+        "InpStopLossPct": "0.5", "InpTakeProfitPct": "3.75", "InpCloseOnOpposite": "false", "InpMaxPositions": "3",
         "InpBreakEvenPct": "0.5", "InpBreakEvenLockPct": "0.1",
         "InpTrailStartPct": "1.0", "InpTrailDistPct": "1.0", "InpTrailATRMult": "4.0",
     }),

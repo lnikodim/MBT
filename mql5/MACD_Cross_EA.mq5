@@ -3,6 +3,13 @@
 //|  MACD line / signal line crossover Expert Advisor                |
 //|  Designed for XAUUSD, works on any symbol.                       |
 //|                                                                  |
+//|  v1.43                                                           |
+//|  Changelog 1.43: stack same-direction signals, up to            |
+//|  InpMaxPositions (3) open at once (1 = v1.42 one-at-a-time).    |
+//|  Opposite signals still ignored while a position is open.       |
+//|  2022-26 real ticks: +261.8R vs +178.3R, prop pass @0.3% 77%    |
+//|  vs 59%; 2019-21 +15.0R vs -15.4R (prereg 2026-10-07).          |
+//|                                                                  |
 //|  v1.42                                                           |
 //|  Changelog 1.42 (safety only, signal/exit logic unchanged):      |
 //|  - spread guard 150 pts, blocked signal retried within its bar   |
@@ -33,7 +40,7 @@
 //|  - OnTester custom criterion for optimization ("Custom max")     |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.42"
+#property version   "1.43"
 #property strict
 #property description "MACD crossover EA with trend/strength filters, % SL/TP, trailing and risk-based lots"
 
@@ -76,6 +83,7 @@ input group "=== Trade management ==="
 input double              InpStopLossPct     = 0.5;         // Stop loss  (% of open price)
 input double              InpTakeProfitPct   = 3.75;        // Take profit (% of open price)
 input bool                InpCloseOnOpposite = false;       // Close open position on opposite signal
+input int                 InpMaxPositions    = 3;           // Same-direction positions open at once (1 = one at a time)
 input double              InpBreakEvenPct    = 0.5;         // Move SL to BE after profit of % (0 = off)
 input double              InpBreakEvenLockPct= 0.1;         // BE lock-in (% of open price)
 input double              InpTrailStartPct   = 1.0;         // Start trailing after profit of % (0 = off)
@@ -162,6 +170,12 @@ int OnInit()
       return(INIT_PARAMETERS_INCORRECT);
      }
 
+   if(InpMaxPositions < 1)
+     {
+      Print("Max positions must be >= 1");
+      return(INIT_PARAMETERS_INCORRECT);
+     }
+
    if(InpSpreadWaitMin < 0 || InpDailyLossPct < 0.0 || InpDailyLossPct >= 100.0 ||
       InpMonthlyLossPct < 0.0 || InpMonthlyLossPct >= 100.0)
      {
@@ -224,8 +238,8 @@ int OnInit()
                InpFastEMA, InpSlowEMA, InpSignalSMA, InpZeroLineFilter ? "on" : "off",
                InpUseTrendFilter ? "on" : "off", EnumToString(InpTrendTF), InpTrendPeriod,
                InpMinGapATR, InpUseTimeFilter ? "on" : "off", InpStartHour, InpEndHour);
-   PrintFormat("Inputs: SL=%.2f%% TP=%.2f%% closeOpp=%s BE=%.2f%%(+%.2f%%) trail start=%.2f%% dist=%s | risk %s %.2f",
-               InpStopLossPct, InpTakeProfitPct, InpCloseOnOpposite ? "on" : "off",
+   PrintFormat("Inputs: max positions %d | SL=%.2f%% TP=%.2f%% closeOpp=%s BE=%.2f%%(+%.2f%%) trail start=%.2f%% dist=%s | risk %s %.2f",
+               InpMaxPositions, InpStopLossPct, InpTakeProfitPct, InpCloseOnOpposite ? "on" : "off",
                InpBreakEvenPct, InpBreakEvenLockPct, InpTrailStartPct,
                InpTrailATRMult > 0.0 ? StringFormat("%.1fxATR(%d)", InpTrailATRMult, InpATRPeriod)
                                      : StringFormat("%.2f%%", InpTrailDistPct),
@@ -409,7 +423,7 @@ void HandleSignal(const ENUM_POSITION_TYPE wanted)
 
       ENUM_POSITION_TYPE type = (ENUM_POSITION_TYPE)PositionGetInteger(POSITION_TYPE);
       if(type == wanted)
-         blocked = true;                     // already in this direction
+         continue;                           // same direction: stacking, capped below
       else if(InpCloseOnOpposite)
         {
          if(!g_trade.PositionClose(ticket))
@@ -419,6 +433,8 @@ void HandleSignal(const ENUM_POSITION_TYPE wanted)
          blocked = true;                     // keep opposite position, do not hedge
      }
 
+   if(!blocked && CountOwnPositions() >= InpMaxPositions)
+      blocked = true;                        // position cap reached
    if(!blocked)
       OpenPosition(wanted);
   }
