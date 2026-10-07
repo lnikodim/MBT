@@ -3,6 +3,11 @@
 //|  MACD line / signal line crossover Expert Advisor                |
 //|  Designed for XAUUSD, works on any symbol.                       |
 //|                                                                  |
+//|  v1.44                                                           |
+//|  Changelog 1.44: daily/monthly start balances are recomputed    |
+//|  after an account switch (they kept the previous account's and  |
+//|  could fire a false DAILY STOP). Trading logic unchanged.       |
+//|                                                                  |
 //|  v1.43                                                           |
 //|  Changelog 1.43: stack same-direction signals, up to            |
 //|  InpMaxPositions (3) open at once (1 = v1.42 one-at-a-time).    |
@@ -40,7 +45,7 @@
 //|  - OnTester custom criterion for optimization ("Custom max")     |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#define EA_VERSION "1.43"
+#define EA_VERSION "1.44"
 #property version   EA_VERSION
 #property strict
 #property description "MACD crossover EA with trend/strength filters, % SL/TP, trailing and risk-based lots"
@@ -121,6 +126,7 @@ double        g_dayBalance   = 0.0;
 datetime      g_monthStart   = 0;
 double        g_monthBalance = 0.0;
 bool          g_dayStopHit   = false;  // daily stop reported for g_dayStart
+long          g_guardLogin   = 0;      // account the cached start balances belong to
 //--- trade log
 string        g_logFile      = "";
 int           g_logFlags     = 0;
@@ -712,6 +718,17 @@ double BalanceAt(const datetime t)
 
 void UpdatePeriodBalances()
   {
+   const long login = AccountInfoInteger(ACCOUNT_LOGIN);
+   if(login != g_guardLogin)
+     {
+      g_guardLogin   = login;          // account switched: the cached balances belong to the old account
+      g_dayStart     = 0;
+      g_dayBalance   = 0.0;
+      g_monthStart   = 0;
+      g_monthBalance = 0.0;
+     }
+   if(!MQLInfoInteger(MQL_TESTER) && !TerminalInfoInteger(TERMINAL_CONNECTED))
+      return;                          // balance and history may still be the previous account's
    const datetime now = TimeCurrent();
    const datetime day = now - now % 86400;
    if(day != g_dayStart)
