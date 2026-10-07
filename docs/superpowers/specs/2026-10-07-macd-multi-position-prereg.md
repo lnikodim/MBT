@@ -19,3 +19,8 @@ Real ticks, XAUUSD H1, 2019-01-01 to 2026-10-01, 100k, 1:20, same day. Mode 0 mu
 A variant is adopted only if its prop_mc pass probability is at least v1.42's at 0.3% and 0.5% risk on both
 2019-26 and 2022-26 trades, and its 2025-26 net R is not below v1.42's. Higher net R alone is not enough: stacked
 positions raise the risk per signal, which prop_mc's daily and max-loss limits price in.
+
+## Amendment (2026-10-07, before any result): window 2022-2026
+The user asked to run backtests on recent markets only. Runs: real ticks 2022-01-01 to 2026-10-01. The rule becomes:
+prop_mc pass probability at least v1.42's at 0.3% and 0.5% risk on 2022-26 trades, and 2025-26 net R not below
+v1.42's. Mode 0 is v1.42 by construction (the change only affects modes 1 and 2).
