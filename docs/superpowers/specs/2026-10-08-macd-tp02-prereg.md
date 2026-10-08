@@ -25,3 +25,17 @@ The user's design: keep the live v1.44 H1 EA and run a second, conservative copy
 - Adopt an H2 +0.2% instance only if (a) alone it has net R > 0 and PF > 1.0 on 2022-26, and (b) combined with H1 its
   prop_mc pass probability is at least v1.44 alone's (76.6 / 82.8% at 0.3 / 0.5% risk) and its 2025-26 net R is at
   least v1.44 alone's. Breach probabilities are reported alongside.
+
+## Outcome (2026-10-08): rejected — the H2 +0.2% instance adds almost nothing
+| 2022-26, real ticks | trades | win % | PF (R) | net R | max DD R | 2025-26 R | pass @0.3 / 0.5 | breach @0.3 / 0.5 |
+|---|---|---|---|---|---|---|---|---|
+| H1 v1.44 alone (live) | 1,013 | 50.9 | 1.52 | +261.8 | 24.7 | +182.3 | 76.6 / 82.8% | 0.9 / 6.4% |
+| H2 +0.2%, one position, alone | 532 | 73.3 | 1.07 | +10.2 | 8.3 | +5.5 | 0.0 / 0.1% | 0.0 / 0.1% |
+| H1 + H2 +0.2% one position | 1,545 | 58.6 | 1.42 | +271.9 | 29.5 | +187.8 | 78.3 / 82.0% | 1.2 / 7.8% |
+| H1 + H2 +0.2% up to 3 | 1,552 | 58.7 | 1.42 | +272.1 | 29.5 | +188.6 | 78.5 / 81.6% | 1.3 / 7.9% |
+| H2 v1.44 defaults alone (context) | 534 | 52.2 | 1.13 | +34.2 | 23.8 | +34.0 | 7.4 / 24.1% | 1.4 / 13.8% |
+| H1 + H2 v1.44 defaults (context) | 1,547 | 51.4 | 1.39 | +296.0 | 43.4 | +216.3 | 75.4 / 68.4% | 5.8 / 17.7% |
+- (a) passes: the H2 +0.2% instance is barely profitable alone (+10 R in 4.75 years, PF 1.07, 73% wins vs 71.4% needed).
+- (b) fails at 0.5% risk: combined pass 82.0 / 81.6% < 82.8%; at 0.3% +1.7 to +1.9 points; breach rises at both risks
+  and the combined max drawdown grows from 24.7 to 29.5 R. +0.02 R per trade is too thin to survive live costs.
+- Tester (100k, 1%): H2 +0.2% +9,445 / 8.8% DD (one position), +9,582 / 9.0% (up to 3); H2 defaults +32,738 / 27.2%.
