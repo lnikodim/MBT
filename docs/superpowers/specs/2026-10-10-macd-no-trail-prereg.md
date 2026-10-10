@@ -39,3 +39,14 @@ User question. Runs (same window, same day): trail_off_be02_lock01 (InpTrailStar
 InpBreakEvenLockPct 0.1) and trail_off_be02_lock0 (lock 0.0). Compared with today's base and trail_off runs.
 Adoption rule unchanged (pass @0.3 and @0.5 >= base, 2025-26 net R >= base). Expectation: the +0.2% break-even stops
 out runs that dip back after a small gain (as every earlier break-even before +0.5% did), so lower net R than trail_off.
+
+## Follow-up outcome (2026-10-10): trailing off + break-even 0.2% rejected
+| | trades | win % | PF (R) | net R | max DD R | TPs | 2025-26 R | pass @0.3 / 0.5 | breach @0.5 | tester net / eq DD |
+|---|---|---|---|---|---|---|---|---|---|---|
+| base | 1,013 | 51.3 | 1.52 | +262.1 | 24.7 | 42 | +182.6 | 76.6 / 82.9% | 6.3% | +925,001 / 24.9% |
+| trail off | 955 | 47.0 | 1.69 | +332.6 | 28.5 | 103 | +222.8 | 83.7 / 82.6% | 8.6% | +1,584,391 / 29.5% |
+| trail off + BE 0.2% / +0.1% | 1,048 | 69.4 | 1.23 | +70.8 | 26.3 | 35 | +55.3 | 18.9 / 39.9% | 13.3% | +73,280 / 27.8% |
+| trail off + BE 0.2% / 0.0% | 1,022 | 16.7 | 1.54 | +181.1 | 43.9 | 70 | +164.1 | 57.3 / 70.1% | 10.0% | +362,414 / 38.4% |
+Both fail every condition. The +0.2% break-even stops out the runs that dip back after a small gain: TPs 103 -> 35 / 70,
+2022 turns negative, and the drawdown does not improve (26.3 / 43.9 R vs 28.5). Exact-entry stops count as tiny
+losses (17% win rate).
