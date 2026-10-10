@@ -33,3 +33,9 @@ Real ticks 2022-01 to 2026-10, 100k, 1% risk, v1.44, same-day baseline.
   every year but 2022 (+19 vs +23) and 2026 (+89 vs +92), at the price of a deeper drawdown (28.5 vs 24.7 R). By the
   letter of the rule it is not adopted; the user decides. Break-even is clearly useful (context row: breach 19.8%).
 - Not yet run: the 2019-21 chop check and a VPS/real-tick replay of the live rule with trailing off at 0.3% risk.
+
+## Follow-up pre-registration (2026-10-10, before the runs): trailing off + break-even at +0.2%
+User question. Runs (same window, same day): trail_off_be02_lock01 (InpTrailStartPct 0, InpBreakEvenPct 0.2,
+InpBreakEvenLockPct 0.1) and trail_off_be02_lock0 (lock 0.0). Compared with today's base and trail_off runs.
+Adoption rule unchanged (pass @0.3 and @0.5 >= base, 2025-26 net R >= base). Expectation: the +0.2% break-even stops
+out runs that dip back after a small gain (as every earlier break-even before +0.5% did), so lower net R than trail_off.
