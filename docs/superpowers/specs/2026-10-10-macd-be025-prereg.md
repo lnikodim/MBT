@@ -17,3 +17,10 @@ and 0.5% risk, and its 2025-26 net R is not below the base's.
 ## Expectation (before running)
 The 0.3/0.4/0.5% ladder (2026-10-07) and the lock screen showed that break-evens before +0.5% stop out trades that
 later run to the 3.75% target. Expect fewer TPs, a higher win rate and a lower net R.
+
+## Amendment (2026-10-10, before any run): 1500 pips instead of 100
+The user replaced 100 pips with 1500. Read as MT5 points (0.01 USD on Darwinex XAUUSD, the unit the Position Sizer
+calls points): 1500 = 15 USD = 0.37% at today's price (~4,100); 15 USD was 0.83% at 1,800 in 2022, later than the
+live +0.5%. Read as 0.10-USD pips it would be 150 USD = 3.66%, where the 4xATR trail from +1% already holds the stop
+far above entry +0.1%, so that reading changes nothing against v1.44 and is not run. The 0.25% runs are dropped.
+Runs: base, be037_lock01 (0.37% / +0.1%), be037_lock0 (0.37% / 0.0%). Adoption rule unchanged.
