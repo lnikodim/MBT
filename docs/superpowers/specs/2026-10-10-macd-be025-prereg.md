@@ -24,3 +24,17 @@ calls points): 1500 = 15 USD = 0.37% at today's price (~4,100); 15 USD was 0.83%
 live +0.5%. Read as 0.10-USD pips it would be 150 USD = 3.66%, where the 4xATR trail from +1% already holds the stop
 far above entry +0.1%, so that reading changes nothing against v1.44 and is not run. The 0.25% runs are dropped.
 Runs: base, be037_lock01 (0.37% / +0.1%), be037_lock0 (0.37% / 0.0%). Adoption rule unchanged.
+
+## Outcome (2026-10-10): rejected, live break-even (+0.5% / +0.1%) unchanged
+Real ticks 2022-01 to 2026-10, 100k, 1% risk, v1.44, same-day baseline (+925,001.21, 1,014 trades).
+
+| | trades | win % | PF (R) | net R | max DD R | TPs | 2025-26 R | pass @0.3 / 0.5 | breach @0.5 | tester net / eq DD |
+|---|---|---|---|---|---|---|---|---|---|---|
+| base (BE +0.5% / +0.1%) | 1,013 | 51.3 | 1.52 | +262.1 | 24.7 | 42 | +182.6 | 76.6 / 82.9% | 6.3% | +925,001 / 24.9% |
+| BE +0.37% / +0.1% | 1,033 | 59.4 | 1.49 | +210.0 | 19.5 | 33 | +155.4 | 65.5 / 80.0% | 5.5% | +558,388 / 22.0% |
+| BE +0.37% / 0.0% | 1,023 | 29.4 | 1.54 | +238.4 | 19.4 | 39 | +185.6 | 72.2 / 81.2% | 6.2% | +738,914 / 22.1% |
+
+- Both fail the pass-probability condition at 0.3% and 0.5%. The exact-entry variant passes the 2025-26 condition
+  (+185.6 vs +182.6) and has a slightly higher PF but a lower net R; its 29% win rate is stops at entry counted as
+  small losses (spread and commission).
+- The earlier break-even costs 3-9 of the 42 runs to the 3.75% target; the drawdown improves only from 24.7 to 19.4 R.
