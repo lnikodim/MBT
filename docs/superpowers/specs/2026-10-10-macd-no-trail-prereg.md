@@ -50,3 +50,9 @@ out runs that dip back after a small gain (as every earlier break-even before +0
 Both fail every condition. The +0.2% break-even stops out the runs that dip back after a small gain: TPs 103 -> 35 / 70,
 2022 turns negative, and the drawdown does not improve (26.3 / 43.9 R vs 28.5). Exact-entry stops count as tiny
 losses (17% win rate).
+
+## Chop-check pre-registration (2026-10-11, before the runs): trailing off on 2019-2021
+Runs (real ticks 2019-01-01 to 2022-01-01, 100k, 1% risk): chop_base (v1.44 defaults) and chop_trail_off
+(InpTrailStartPct 0), same day. Rule (as for the 2026-10-07 stacking check): trailing off is cleared for a v1.45
+only if its 2019-21 net R is at least chop_base's and its 2019-21 max drawdown in R is no more than 1.25 x
+chop_base's. prop_mc on 2019-21 is reported for context (the regime is a known loser for this EA).
