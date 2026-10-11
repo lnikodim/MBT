@@ -56,3 +56,13 @@ Runs (real ticks 2019-01-01 to 2022-01-01, 100k, 1% risk): chop_base (v1.44 defa
 (InpTrailStartPct 0), same day. Rule (as for the 2026-10-07 stacking check): trailing off is cleared for a v1.45
 only if its 2019-21 net R is at least chop_base's and its 2019-21 max drawdown in R is no more than 1.25 x
 chop_base's. prop_mc on 2019-21 is reported for context (the regime is a known loser for this EA).
+
+## Chop-check outcome (2026-10-11): trailing off FAILS on 2019-2021; the trailing stop stays on
+| 2019-21, real ticks, 1% | trades | win % | PF (R) | net R | max DD R | TPs | pass @0.3 / 0.5 | breach @0.5 | by year | tester net / eq DD |
+|---|---|---|---|---|---|---|---|---|---|---|
+| chop_base (v1.44) | 636 | 46.1 | 1.05 | +15.6 | 35.6 | 17 | 17.7 / 30.1% | 40.3% | -3 / +24 / -6 | +6,534 / 32.6% |
+| chop_trail_off | 598 | 41.5 | 0.95 | -15.4 | 52.4 | 39 | 11.8 / 22.0% | 52.3% | -37 / +46 / -25 | -24,185 / 48.0% |
+- Rule: net R -15.4 < +15.6 (fail); max DD 52.4 > 1.25 x 35.6 = 44.5 R (fail). Not cleared.
+- The trail earns its keep in sideways years: 2019 -37 vs -3 R and 2021 -25 vs -6 R without it, while in the 2020
+  trend it costs (+46 vs +24). Over 2019-26 combined: trail on +277.7 R vs trail off +317.2 R, but with a 52 R
+  drawdown in the chop and a 48% tester drawdown. Live exits (BE +0.5% / +0.1%, trail from +1% at 4 x ATR) unchanged.
