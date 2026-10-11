@@ -18,7 +18,7 @@ _CORE_DEFAULTS = {
 }
 
 PROFILES = {
-    # MACD_Cross_EA v1.43 compiled defaults
+    # MACD_Cross_EA v1.45 compiled defaults (trailing off)
     "MACD_Cross_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "240817", "InpComment": "MACD_X",
         "InpFastEMA": "16", "InpSlowEMA": "26", "InpSignalSMA": "9", "InpAppliedPrice": "1",
@@ -28,7 +28,7 @@ PROFILES = {
         "InpUseTimeFilter": "false", "InpStartHour": "7", "InpEndHour": "20",
         "InpStopLossPct": "0.5", "InpTakeProfitPct": "3.75", "InpCloseOnOpposite": "false", "InpMaxPositions": "3",
         "InpBreakEvenPct": "0.5", "InpBreakEvenLockPct": "0.1",
-        "InpTrailStartPct": "1.0", "InpTrailDistPct": "1.0", "InpTrailATRMult": "4.0",
+        "InpTrailStartPct": "0.0", "InpTrailDistPct": "1.0", "InpTrailATRMult": "4.0",
     }),
     # MeanRev_EA v1.00 compiled defaults (pre-tuning; Task 8 replaces the strategy values with the winner's)
     "MeanRev_EA": dict(_CORE_DEFAULTS, **{

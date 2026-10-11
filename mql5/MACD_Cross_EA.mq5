@@ -3,6 +3,12 @@
 //|  MACD line / signal line crossover Expert Advisor                |
 //|  Designed for XAUUSD, works on any symbol.                       |
 //|                                                                  |
+//|  v1.45                                                           |
+//|  Changelog 1.45: trailing stop off by default (InpTrailStartPct |
+//|  0; set 1.0 for the v1.44 exits). 2022-26 real ticks: +332.6 R  |
+//|  vs +262.1 R, 103 vs 42 target hits, max DD 28.5 vs 24.7 R;     |
+//|  2019-21 chop: -15.4 R / 52 R DD vs +15.6 R / 36 R (user accepts)|
+//|                                                                  |
 //|  v1.44                                                           |
 //|  Changelog 1.44: daily/monthly start balances are recomputed    |
 //|  after an account switch (they kept the previous account's and  |
@@ -45,7 +51,7 @@
 //|  - OnTester custom criterion for optimization ("Custom max")     |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#define EA_VERSION "1.44"
+#define EA_VERSION "1.45"
 #property version   EA_VERSION
 #property strict
 #property description "MACD crossover EA with trend/strength filters, % SL/TP, trailing and risk-based lots"
@@ -92,7 +98,7 @@ input bool                InpCloseOnOpposite = false;       // Close open positi
 input int                 InpMaxPositions    = 3;           // Same-direction positions open at once (1 = one at a time)
 input double              InpBreakEvenPct    = 0.5;         // Move SL to BE after profit of % (0 = off)
 input double              InpBreakEvenLockPct= 0.1;         // BE lock-in (% of open price)
-input double              InpTrailStartPct   = 1.0;         // Start trailing after profit of % (0 = off)
+input double              InpTrailStartPct   = 0.0;         // Start trailing after profit of % (0 = off; 1.0 = v1.44)
 input double              InpTrailDistPct    = 1.0;         // Trailing distance (% of price) if ATR mult = 0
 input double              InpTrailATRMult    = 4.0;         // Trailing distance in ATR multiples (0 = use %)
 
