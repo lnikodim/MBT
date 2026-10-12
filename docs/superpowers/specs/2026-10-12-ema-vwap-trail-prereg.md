@@ -32,3 +32,24 @@ EA and this negative result; no filters without a new pre-registration.
 
 ## Outcome
 (filled in after the runs)
+
+## Outcome (2026-10-12, XAUUSD M15, 1-min OHLC, 2022-01-01..2026-10-01, 100k, 1% risk)
+
+| | A trail from entry | B trail after +k x ATR | C reference: fixed 0.5% stop, cross exit |
+|---|---|---|---|
+| Trades | 4580 | 4365 | 5021 |
+| Tester PF / net | 0.85 / -80,853 | 0.87 / -80,386 | 1.04 / +54,772 |
+| Win rate | 33.9% | 38.4% | 29.8% |
+| Net R 2022-24 / 2025-26 | -155.6 / +21.0 | -135.3 / +7.0 | -12.9 / +79.7 |
+| Stop exits in profit (self-check window) | 34 of 105 | 40 of 86 | n/a |
+| prop_mc pass 0.3% / 0.5% | 6.9% / 13.2% | 8.4% / 15.1% | 28.0% / 46.4% |
+
+A, B: FAIL (PF < 1, 2022-24 negative). C: FAIL on gate 3 (2022-24 net R -12.9, 2023 -38.7) although PF 1.04.
+The ATR trailing stop is the script's only addition to the cross entry and it costs about 200 R over the period:
+it exits the cross-to-cross winners early (same lesson as MACD_Cross_EA's trailing stop). Pine's
+trail-after-profit activation changes little (B vs A).
+Model note: the same reference ran PF 0.99 on real ticks (2026-10-12 VWAP_EMA amendment 1) vs 1.04 on 1-min
+OHLC: this model flatters an M15 stop system by about 0.05 PF.
+Self-check with the loss guards off: 148 entries in all three runs, identical times and sides (port verified).
+
+Verdict: CLOSED. EA kept in the repo as a tool; no filters without a new pre-registration.
