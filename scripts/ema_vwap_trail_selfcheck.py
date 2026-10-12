@@ -50,4 +50,13 @@ sl_r = [float(r["r_multiple"]) for r in notrail if r["exit_reason"] == "sl"]
 assert sl_r and max(sl_r) <= 0.0 and min(sl_r) >= -1.2, ("trail-off run still moved its stop", max(sl_r), min(sl_r))
 assert {r["open_time"] for r in notrail} == base, "trail-off run entered at different crosses"
 print(f"trail off: {len(notrail)} entries identical, {len(sl_r)} stop exits all at the initial stop (max R {max(sl_r):.2f})")
+# v1.03 stacking: hold through filtered crosses + cap 3 must actually stack (2-3 concurrent) and never exceed the cap
+stack = run("emavwap_sc_stack", "EMA_VWAP_Trail_EA", {"InpTrailATR": "false", "InpHTFBias": "1", "InpHoldThroughFiltered": "true", "InpMaxPositions": "3"})
+P = lambda t: dt.datetime.strptime(t, "%Y.%m.%d %H:%M:%S")
+events = sorted([(P(r["open_time"]), 1) for r in stack] + [(P(r["close_time"]), -1) for r in stack])
+cur = peak = 0
+for _, d in events:
+    cur += d; peak = max(peak, cur)
+assert 2 <= peak <= 3, ("stacking did not happen or exceeded the cap", peak)
+print(f"stacking: {len(stack)} trades, peak concurrent positions {peak}")
 print("SELFCHECK OK")

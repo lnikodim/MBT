@@ -12,6 +12,9 @@
 //|  (trailing only after +k x ATR). Execution, guards and trade log |
 //|  from EACore.mqh (MACD_Cross_EA v1.42 core).                      |
 //|                                                                  |
+//|  v1.03 MACD-style stacking: InpHoldThroughFiltered keeps the position |
+//|        through a filtered counter-trend cross, InpMaxPositions lets  |
+//|        trend-direction crosses add positions up to the cap.       |
 //|  v1.02 InpTrailATR=false keeps the initial k x ATR stop but never    |
 //|        ratchets it: exits are the stop or the opposite cross.     |
 //|  v1.01 optional entry filters: EMA trend on the signal TF, H1/H4 |
@@ -20,12 +23,12 @@
 //|  v1.00                                                           |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.02"
+#property version   "1.03"
 #property strict
 #property description "EMA(9)/VWAP cross reversal with k x ATR trailing stop (Pine port); MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME      "EMA_VWAP_Trail_EA"
-#define EA_VERSION   "1.02"
+#define EA_VERSION   "1.03"
 #define EA_MAGIC     261013
 #define EA_COMMENT   "EMA_VWAP"
 #define EA_TIMEFRAME PERIOD_M15
@@ -60,6 +63,10 @@ input int                 InpHTFEMA           = 200;          // EMA period for 
 input int                 InpSessionStart     = 0;            // Entries from this server hour (inclusive)
 input int                 InpSessionEnd       = 24;           // ... until this server hour (exclusive); 0-24 = off
 
+input group "=== Stacking (MACD_Cross_EA style) ==="
+input bool                InpHoldThroughFiltered = false;     // true: a cross whose new side is filtered does not close the position
+input int                 InpMaxPositions     = 1;            // Same-direction positions open at once (1 = one at a time)
+
 int  g_ema = INVALID_HANDLE;
 int  g_atr = INVALID_HANDLE;
 int  g_trend = INVALID_HANDLE;
@@ -77,6 +84,11 @@ int OnInit()
    if(InpTrendEMA < 0 || InpHTFEMA <= 1 || InpSessionStart < 0 || InpSessionEnd > 24 || InpSessionStart >= InpSessionEnd)
      {
       Print("Invalid filter inputs: trend EMA >= 0, HTF EMA > 1, 0 <= session start < end <= 24");
+      return(INIT_PARAMETERS_INCORRECT);
+     }
+   if(InpMaxPositions < 1)
+     {
+      Print("Invalid max positions (>= 1)");
       return(INIT_PARAMETERS_INCORRECT);
      }
    if(!Core_Init())
@@ -99,6 +111,7 @@ int OnInit()
                EnumToString(InpAnchor), InpEMAPeriod, InpATRMult, InpATRPeriod,
                !InpTrailATR ? "off" : InpTrailAfterProfit ? "after +k x ATR profit" : "from entry",
                InpRiskMode == RISK_PERCENT ? "percent" : "money", InpRiskValue);
+   PrintFormat("Stacking: hold through filtered cross %s | max positions %d", InpHoldThroughFiltered ? "on" : "off", InpMaxPositions);
    PrintFormat("Filters: trend EMA %s | HTF bias %s | session %s",
                InpTrendEMA > 0 ? IntegerToString(InpTrendEMA) : "off",
                InpHTFBias == HTF_NONE ? "off" : StringFormat("%s EMA%d", EnumToString(HTFPeriod()), InpHTFEMA),
@@ -199,6 +212,29 @@ bool EntryAllowed(const bool buy, const double close, const datetime barTime, st
    return(true);
   }
 
+//--- all own positions (they are always on one side)
+bool CloseOwnPositions(const string reason)
+  {
+   bool ok = true;
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+     {
+      const ulong t = PositionGetTicket(i);
+      if(t != 0 && IsOwnPosition() && !Core_ClosePosition(t, reason))
+         ok = false;
+     }
+   return(ok);
+  }
+
+void TrailAll(const double close, const double dist)
+  {
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+     {
+      const ulong t = PositionGetTicket(i);
+      if(t != 0 && IsOwnPosition())
+         TrailStop(t, close, dist);
+     }
+  }
+
 //--- +1 when the EMA is above the VWAP (long side), -1 below, 0 equal
 int Sign(const double d) { return(d > 0.0 ? 1 : (d < 0.0 ? -1 : 0)); }
 
@@ -263,35 +299,44 @@ void OnTick()
    ulong ticket = 0;
    const bool held = Core_SelectOwnPosition(ticket);
    if(held && InpTrailATR)
-      TrailStop(ticket, r[0].close, dist);      // exit order first, as process_orders_on_close does
+      TrailAll(r[0].close, dist);               // exit orders first, as process_orders_on_close does
    if(s1 == 0 || s2 == 0 || s1 == s2)
      {
       Core_LogBar(bar, ctx + (held ? " | holding" : " | no cross"));
       return;                                   // entries only on a cross: after a stop-out wait for the next one
      }
+   const bool buy = (s1 > 0);
+   string why;
+   const bool allowed = EntryAllowed(buy, r[0].close, bar, why);
    if(held && PositionSelectByTicket(ticket))
      {
       const int side = (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY) ? 1 : -1;
-      if(side == s1)
+      if(side != s1)                            // cross against the held side
         {
-         Core_LogBar(bar, ctx + " | already on the new side");
-         return;
+         if(!allowed && InpHoldThroughFiltered)
+           {
+            Core_LogBar(bar, ctx + StringFormat(" | counter-trend cross filtered (%s), holding", why));
+            return;
+           }
+         if(!CloseOwnPositions("cross"))       // reverse: close everything, then open the other side below
+           {
+            Core_LogBar(bar, ctx + " | close failed, retry on the next cross");
+            return;
+           }
         }
-      if(!Core_ClosePosition(ticket, "cross"))  // reverse: close, then open the other side below
+      else if(CountOwnPositions() >= InpMaxPositions)   // cross in the held direction: stacking, capped
         {
-         Core_LogBar(bar, ctx + " | close failed, retry on the next cross");
+         Core_LogBar(bar, ctx + " | position cap reached");
          return;
         }
      }
-   if(!g_symbol.RefreshRates())
-      return;
-   const bool   buy = (s1 > 0);
-   string why;
-   if(!EntryAllowed(buy, r[0].close, bar, why))
+   if(!allowed)
      {
       Core_LogBar(bar, ctx + StringFormat(" | %s filtered: %s", buy ? "BUY" : "SELL", why));
       return;
      }
+   if(!g_symbol.RefreshRates())
+      return;
    Core_LogBar(bar, ctx + StringFormat(" | %s stop dist %.2f", buy ? "BUY" : "SELL", dist));
    Core_Open(buy ? POSITION_TYPE_BUY : POSITION_TYPE_SELL, dist, 0.0);
   }

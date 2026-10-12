@@ -136,3 +136,15 @@ not adopted as a challenge EA. Win rate 27-28% in every cell.
 Verdict: positive system, below the bar. v1.02 defaults stay as the Pine port (trail on, filters off); the
 passing configuration is `InpTrailATR=false InpHTFBias=H1` (or `InpTrendEMA=200 InpHTFBias=H4`). Nothing further
 without a new pre-registration.
+
+## Amendment 4 (2026-10-12, before the runs): MACD-style stacking (v1.03)
+User: "what about adding the stacking cap like MACD". Crosses alternate, so stacking needs MACD's other half too:
+`InpHoldThroughFiltered=true` (a cross whose new side the filter rejects does not close the position; exits are the
+2 x ATR stop or the next allowed opposite cross, which closes everything and reverses) and `InpMaxPositions`
+(trend-direction crosses add positions up to the cap, 1% risk each). Defaults off; v1.02 behaviour unchanged.
+Runs on the confirmed best cell (InpTrailATR=false, InpHTFBias=H1), XAUUSD M15, real ticks, 2022-01-01..2026-10-01:
+`emavwap_st_hold1` (hold on, cap 1), `emavwap_st_cap2`, `emavwap_st_cap3`.
+Gate: Gate A, and prop_mc at 0.3% / 0.5% above the confirmed H1 cell (57.7% / 53.9%) to count as an improvement;
+the MACD v1.45 bar (80.4% / 81.2%) remains the measure of usefulness.
+Expectation: worse. The counter-trend cross exit is part of the trail-off edge; holding through it converts some
+of those exits into full 1R stop losses, and stacking multiplies the same bet.

@@ -28,6 +28,8 @@ def test_profiles_have_core_inputs():
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMagic"] == "261013"
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTimeframe"] == "15"     # compiled default M15
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTrailATR"] == "true"      # v1.02: trailing can be switched off
+    assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMaxPositions"] == "1"     # v1.03 stacking off
+    assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpHoldThroughFiltered"] == "false"
     for k, v in (("InpTrendEMA", "0"), ("InpHTFBias", "0"), ("InpSessionStart", "0"), ("InpSessionEnd", "24")):
         assert P.PROFILES["EMA_VWAP_Trail_EA"][k] == v, k                 # v1.01 filters default off
 
