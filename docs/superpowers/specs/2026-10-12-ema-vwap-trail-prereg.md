@@ -148,3 +148,24 @@ Gate: Gate A, and prop_mc at 0.3% / 0.5% above the confirmed H1 cell (57.7% / 53
 the MACD v1.45 bar (80.4% / 81.2%) remains the measure of usefulness.
 Expectation: worse. The counter-trend cross exit is part of the trail-off edge; holding through it converts some
 of those exits into full 1R stop losses, and stacking multiplies the same bet.
+
+### Amendment 4 outcome (2026-10-12, real ticks, trail off, H1 bias)
+
+```
+run    trades    PF  win%    netR  R22-24  R25-26   p0.3   p0.5  gate
+hold1     563  1.05  10.3   +94.8   +42.7   +52.0  29.7%  25.0%  PASS
+cap2      797  1.27  10.2  +163.8   +68.6   +95.1  30.5%  21.0%  PASS
+cap3      959  1.22  10.3   +81.9   -17.9   +99.8  23.4%  16.1%  fail
+```
+| | confirmed H1 cell | hold1 | cap2 | cap3 |
+|---|---|---|---|---|
+| Tester PF / net | 1.17 / +285,960 | 1.05 / +25,179 | 1.27 / +382,665 | 1.22 / +345,983 |
+| Win rate | 28.0% | 10.3% | 10.2% | 10.3% |
+| Hist DD at 1% risk | 48.9% | 58.5% | 69.2% | 74.6% |
+| MC p95 DD at 0.5% | 35% | 53.5% | 54.5% | 61.3% |
+| prop_mc pass 0.3% / 0.5% | 57.7% / 53.9% | 29.7% / 25.0% | 30.5% / 21.0% | 23.4% / 16.1% |
+
+Rejected. Holding through filtered crosses (hold1) replaces the cross exit with 1R stop-outs: win rate 28% -> 10%,
+pass probability halves. Stacking on top (cap2) recovers the in-sample PF (1.27) by pyramiding the few long
+trends but with correlated risk: p95 drawdown 54% and pass 21% at 0.5%. cap3 fails Gate A (2022-24 negative).
+The confirmed H1 cell (one position, cross exit) stays the best configuration of this EA. CLOSED.
