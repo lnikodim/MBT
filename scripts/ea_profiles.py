@@ -40,6 +40,12 @@ PROFILES = {
     }),
     # VWAP_RSI_EA v1.00 compiled defaults. Always pass InpTimeframe with --period (5 / 15 / 16385 / 16388).
     # InpSpreadWaitMin=0: the stop is a bar level; Core_RetryPending would re-apply the stored distance to a later price.
+    # Camvcvoo_EA v1.00 compiled defaults (camvcvooV5.mq4 port, GBPUSD H1, spread cap 20 pts, no pending retry)
+    "Camvcvoo_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261014", "InpComment": "CAMV", "InpTimeframe": "16385", "InpMaxSpreadPoints": "20", "InpSpreadWaitMin": "0",
+        "InpTradeHour": "1", "InpFastSMA": "10", "InpSlowSMA": "197", "InpFractalShift": "3",
+        "InpStopPips": "140", "InpTP1Pips": "22", "InpTP2Pips": "50", "InpTP3Pips": "80", "InpTrailPips": "22", "InpLockPips": "12",
+    }),
     # EMA_VWAP_Trail_EA v1.03 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)
     "EMA_VWAP_Trail_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261013", "InpComment": "EMA_VWAP", "InpTimeframe": "15",

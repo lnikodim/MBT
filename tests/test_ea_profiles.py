@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -28,6 +28,9 @@ def test_profiles_have_core_inputs():
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMagic"] == "261013"
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTimeframe"] == "15"     # compiled default M15
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTrailATR"] == "true"      # v1.02: trailing can be switched off
+    assert P.PROFILES["Camvcvoo_EA"]["InpMagic"] == "261014"
+    assert P.PROFILES["Camvcvoo_EA"]["InpTimeframe"] == "16385"          # H1
+    assert P.PROFILES["Camvcvoo_EA"]["InpSpreadWaitMin"] == "0"           # three-position set: no single pending retry
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMaxPositions"] == "1"     # v1.03 stacking off
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpHoldThroughFiltered"] == "false"
     for k, v in (("InpTrendEMA", "0"), ("InpHTFBias", "0"), ("InpSessionStart", "0"), ("InpSessionEnd", "24")):
