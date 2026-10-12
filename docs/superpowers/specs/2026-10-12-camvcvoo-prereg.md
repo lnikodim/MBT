@@ -31,3 +31,19 @@ settings rarely survive 2022-26. If it fails, the deliverable is the port and th
 
 ## Outcome
 (filled in after the run)
+
+## Outcome (2026-10-12, GBPUSD H1, 1-min OHLC, 2022-01-01..2026-10-01, 1% risk per position)
+
+| | camv_a |
+|---|---|
+| Positions (sets) | 1158 (386) |
+| Tester PF / net | 0.79 / -41.9 R |
+| Win rate | 82.7% |
+| Net R 2022-24 / 2025-26 | -28.6 / -13.4 |
+| By year PF | 2022 1.06, 2023 0.66, 2024 0.65, 2025 0.87, 2026 0.72 |
+| prop_mc pass 0.3% / 0.5% | 0.0% / 0.2% |
+
+FAIL on PF and on both regimes. The 82.7% win rate is the 22/50/80-pip targets against a 140-pip stop: the
+stop-outs cost 3R per set and arrive often enough to erase 30+ small wins. Only 2022 was marginally positive.
+Self-check (Jan-Jun 2025): 42 complete sets, all entries at 01:00 server, roles 22/50/80, position 1 never
+moved, 19 trailed and 30 locked exits. No real-tick confirmation needed. CLOSED.
