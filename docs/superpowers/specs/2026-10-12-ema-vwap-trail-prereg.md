@@ -117,3 +117,22 @@ pattern (trend filter + cross exit) is the finding, not any single cell.
 Runs `emavwap_rt_{H1,EH,E,H}`: same inputs (InpTrailATR=false + filter), XAUUSD M15, real ticks, 2022-01-01..2026-10-01.
 Gate: Gate A again on real ticks; a cell is confirmed if it passes and its prop_mc pass at 0.5% is within 10
 points of the OHLC value. Expectation: PF about 0.05 lower, H1 and EH still pass, E and H borderline.
+
+### Amendment 3 outcome (2026-10-12, real ticks, trail off)
+
+```
+run    trades    PF  win%    netR  R22-24  R25-26   p0.3   p0.5  gate
+H1       2299  1.17  28.0  +185.0   +61.8  +123.2  57.7%  53.9%  PASS
+EH       1708  1.17  28.0  +156.4   +68.4   +88.0  51.4%  56.5%  PASS
+E        2325  1.07  26.6  +113.1   +33.6   +79.5  43.0%  43.1%  PASS
+H        2272  1.06  27.6   +95.2    +3.8   +91.4  40.8%  43.8%  PASS
+```
+All four pass Gate A on real ticks (PF 1.06-1.17, both regimes positive, 1708-2325 trades). The pre-registered
+confirmation rule (pass at 0.5% within 10 points of the OHLC value) is missed by 11-12 points for H1, EH and H
+and met exactly for E: 1-min OHLC overstated this system by about 0.10 PF and 10-12 points of pass probability,
+so only the real-tick numbers count from here. Best real-tick cell: H1 bias, PF 1.17, +185 R, prop_mc 57.7% /
+53.9% at 0.3% / 0.5%, hist DD 49% at 1% risk. That is 23-27 points below the MACD v1.45 bar (80.4% / 81.2%), so
+not adopted as a challenge EA. Win rate 27-28% in every cell.
+Verdict: positive system, below the bar. v1.02 defaults stay as the Pine port (trail on, filters off); the
+passing configuration is `InpTrailATR=false InpHTFBias=H1` (or `InpTrendEMA=200 InpHTFBias=H4`). Nothing further
+without a new pre-registration.
