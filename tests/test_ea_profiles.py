@@ -27,6 +27,7 @@ def test_profiles_have_core_inputs():
     assert P.PROFILES["VWAP_EMA_Cross_EA"]["InpTimeframe"] == "5"      # compiled default M5
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMagic"] == "261013"
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTimeframe"] == "15"     # compiled default M15
+    assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTrailATR"] == "true"      # v1.02: trailing can be switched off
     for k, v in (("InpTrendEMA", "0"), ("InpHTFBias", "0"), ("InpSessionStart", "0"), ("InpSessionEnd", "24")):
         assert P.PROFILES["EMA_VWAP_Trail_EA"][k] == v, k                 # v1.01 filters default off
 

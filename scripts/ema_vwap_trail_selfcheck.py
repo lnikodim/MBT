@@ -44,4 +44,10 @@ flt = run("emavwap_sc_trend", "EMA_VWAP_Trail_EA", {"InpTrendEMA": "200", "InpHT
 assert 0 < len(flt) < len(results["entry"]), ("trend + H4 filters removed nothing or everything", len(flt), len(results["entry"]))
 assert {r["open_time"] for r in flt} <= base, "filtered run entered at a time the unfiltered run did not"
 print(f"filters: session {len(sess)} entries all in 10-23h, trend+H4 {len(flt)} of {len(results['entry'])} entries kept")
+# v1.02 trail off: every stop exit is the initial stop (about -1R), entries unchanged
+notrail = run("emavwap_sc_notrail", "EMA_VWAP_Trail_EA", {"InpTrailATR": "false"})
+sl_r = [float(r["r_multiple"]) for r in notrail if r["exit_reason"] == "sl"]
+assert sl_r and max(sl_r) <= 0.0 and min(sl_r) >= -1.2, ("trail-off run still moved its stop", max(sl_r), min(sl_r))
+assert {r["open_time"] for r in notrail} == base, "trail-off run entered at different crosses"
+print(f"trail off: {len(notrail)} entries identical, {len(sl_r)} stop exits all at the initial stop (max R {max(sl_r):.2f})")
 print("SELFCHECK OK")

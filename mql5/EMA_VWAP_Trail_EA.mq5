@@ -12,18 +12,20 @@
 //|  (trailing only after +k x ATR). Execution, guards and trade log |
 //|  from EACore.mqh (MACD_Cross_EA v1.42 core).                      |
 //|                                                                  |
+//|  v1.02 InpTrailATR=false keeps the initial k x ATR stop but never    |
+//|        ratchets it: exits are the stop or the opposite cross.     |
 //|  v1.01 optional entry filters: EMA trend on the signal TF, H1/H4 |
 //|        EMA bias, server-hour session. Exits unchanged: a cross    |
 //|        still closes the opposite position, filters gate entries. |
 //|  v1.00                                                           |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 #property description "EMA(9)/VWAP cross reversal with k x ATR trailing stop (Pine port); MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME      "EMA_VWAP_Trail_EA"
-#define EA_VERSION   "1.01"
+#define EA_VERSION   "1.02"
 #define EA_MAGIC     261013
 #define EA_COMMENT   "EMA_VWAP"
 #define EA_TIMEFRAME PERIOD_M15
@@ -41,6 +43,7 @@ input ENUM_ANCHOR         InpAnchor           = ANCHOR_DAY;   // VWAP anchor
 input int                 InpEMAPeriod        = 9;            // EMA period (close)
 input int                 InpATRPeriod        = 14;           // ATR period
 input double              InpATRMult          = 2.0;          // Initial stop and trailing distance, x ATR
+input bool                InpTrailATR         = true;         // false: initial k x ATR stop only, no trailing (exit = stop or opposite cross)
 input bool                InpTrailAfterProfit = false;        // false: trail from entry (plotted lines); true: only after +k x ATR (Pine trail_points)
 
 enum ENUM_HTF_BIAS
@@ -94,7 +97,7 @@ int OnInit()
                EA_NAME, EA_VERSION, _Symbol, EnumToString(InpTimeframe), InpMagic, CountOwnPositions());
    PrintFormat("Inputs: anchor %s | EMA %d | stop and trail %.2f x ATR(%d) | trail %s | risk %s %.2f",
                EnumToString(InpAnchor), InpEMAPeriod, InpATRMult, InpATRPeriod,
-               InpTrailAfterProfit ? "after +k x ATR profit" : "from entry",
+               !InpTrailATR ? "off" : InpTrailAfterProfit ? "after +k x ATR profit" : "from entry",
                InpRiskMode == RISK_PERCENT ? "percent" : "money", InpRiskValue);
    PrintFormat("Filters: trend EMA %s | HTF bias %s | session %s",
                InpTrendEMA > 0 ? IntegerToString(InpTrendEMA) : "off",
@@ -259,7 +262,7 @@ void OnTick()
 
    ulong ticket = 0;
    const bool held = Core_SelectOwnPosition(ticket);
-   if(held)
+   if(held && InpTrailATR)
       TrailStop(ticket, r[0].close, dist);      // exit order first, as process_orders_on_close does
    if(s1 == 0 || s2 == 0 || s1 == s2)
      {

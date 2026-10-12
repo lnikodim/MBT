@@ -85,3 +85,9 @@ No combination passes. The trend filters (E, H, EH, H1) lift net R from -135 to 
 trades, but 2022-24 stays negative in every run except HS, which then loses 2025-26. The session filter hurts
 everywhere. The win rate barely moves (32-35% in all nine runs): with a 2 x ATR trailing exit the win rate is a
 property of the exit, not of the entry, so entry filters cannot raise it. CLOSED; nothing further without a new spec.
+
+## Amendment 2 (2026-10-12, before the runs): trailing stop off (v1.02)
+User: "what about removing the ATR trailing stop". `InpTrailATR=false`: the initial 2 x ATR stop stays (sizing and
+protection) but is never ratcheted; exits are that stop or the opposite cross. Same nine runs as amendment 1
+(`emavwap_nt_*`), same window, model and gate. Expectation: the unfiltered run lands near the fixed-stop reference
+(PF about 1.0, 2022-24 negative); EH / H1 may reach PF 1.05-1.10 but 2023 is expected to stay negative.
