@@ -47,3 +47,8 @@ Gate A: both runs FAIL on PF >= 1.00 and on positive net R in both regimes (A ha
 The self-check window (Jan-Feb 2026) had shown PF 1.19 for A: two months of an M5 system are noise.
 
 Verdict: CLOSED. The EA stays in the repo as a tool; no filters without a new pre-registration.
+
+## Amendment 1 (2026-10-12, before the runs): M15
+User: "what about running it on M15 instead of M5". Same EA, `InpTimeframe=15`, everything else unchanged,
+same two directions (`vwapema15_asis`, `vwapema15_inv`), same window and Gate A. Expectation: roughly a third
+of the trades, so a smaller cost share; the sign of the edge is not expected to change.
