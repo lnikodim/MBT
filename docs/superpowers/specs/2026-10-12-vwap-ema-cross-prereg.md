@@ -28,3 +28,22 @@ filters are added without a new pre-registration.
 
 ## Outcome
 (filled in after the runs)
+
+## Outcome (2026-10-12, real ticks 2022-01-01..2026-10-01, XAUUSD M5, 100k, 1% risk)
+
+| | A as specified (VWAP above EMA = BUY) | B inverted |
+|---|---|---|
+| Trades | 8048 | 7899 |
+| Tester PF / net | 0.72 / -97,695 | 0.93 / -62,865 |
+| Win rate | 67.6% | 23.0% |
+| Net R, by prop_mc | -367.9 (every year negative) | -73.0 (2026 +29.4, other years negative) |
+| Gross P&L before commission and swap | -77,782 (gross PF 0.77) | -11,382 (gross PF 0.99) |
+| Commission + swap paid | -19,913 | -51,483 |
+| Median holding time | 70 min | 85 min |
+| Stop-outs | 1493 | 256 |
+| prop_mc pass 0.3% / 0.5% | 0.0% / 0.0% | 5.5% / 16.3% |
+
+Gate A: both runs FAIL on PF >= 1.00 and on positive net R in both regimes (A has no positive year; B only 2026).
+The self-check window (Jan-Feb 2026) had shown PF 1.19 for A: two months of an M5 system are noise.
+
+Verdict: CLOSED. The EA stays in the repo as a tool; no filters without a new pre-registration.
