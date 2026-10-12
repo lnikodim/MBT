@@ -53,3 +53,15 @@ OHLC: this model flatters an M15 stop system by about 0.05 PF.
 Self-check with the loss guards off: 148 entries in all three runs, identical times and sides (port verified).
 
 Verdict: CLOSED. EA kept in the repo as a tool; no filters without a new pre-registration.
+
+## Amendment 1 (2026-10-12, before the runs): optional entry filters (v1.01)
+User: backtest the video's optional filters to improve the win rate: 200 EMA trend filter, higher-timeframe bias,
+session filter. Definitions approved in chat: `InpTrendEMA=200` (signal-bar close vs EMA200 on M15, longs above,
+shorts below); `InpHTFBias=H4` with `InpHTFEMA=200` (last closed H4 bar vs its EMA200; H1 as a variant);
+`InpSessionStart=10, InpSessionEnd=23` server hours (London open to about an hour before the NY close).
+Exits unchanged: a cross still closes the opposite position; filters only gate the new entry.
+Runs (`emavwap_f_*`): all 8 on/off combinations of E (trend), H (H4 bias), S (session) on the trail-from-entry
+variant, plus `H1` (H1 bias alone); XAUUSD M15, 1-min OHLC, 2022-01-01..2026-10-01, 1% risk.
+Gate: unchanged (trades >= 150, PF >= 1.00, net R > 0 in 2022-24 and 2025-26); win rate reported, not a gate.
+Expectation: trend filters raise the win rate a few points and cut trades by a third or more; the session filter
+least likely to matter. Whether PF reaches 1.0 is the open question.

@@ -12,15 +12,18 @@
 //|  (trailing only after +k x ATR). Execution, guards and trade log |
 //|  from EACore.mqh (MACD_Cross_EA v1.42 core).                      |
 //|                                                                  |
+//|  v1.01 optional entry filters: EMA trend on the signal TF, H1/H4 |
+//|        EMA bias, server-hour session. Exits unchanged: a cross    |
+//|        still closes the opposite position, filters gate entries. |
 //|  v1.00                                                           |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #property description "EMA(9)/VWAP cross reversal with k x ATR trailing stop (Pine port); MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME      "EMA_VWAP_Trail_EA"
-#define EA_VERSION   "1.00"
+#define EA_VERSION   "1.01"
 #define EA_MAGIC     261013
 #define EA_COMMENT   "EMA_VWAP"
 #define EA_TIMEFRAME PERIOD_M15
@@ -40,8 +43,24 @@ input int                 InpATRPeriod        = 14;           // ATR period
 input double              InpATRMult          = 2.0;          // Initial stop and trailing distance, x ATR
 input bool                InpTrailAfterProfit = false;        // false: trail from entry (plotted lines); true: only after +k x ATR (Pine trail_points)
 
+enum ENUM_HTF_BIAS
+  {
+   HTF_NONE = 0,  // Off
+   HTF_H1   = 1,  // H1 close vs its EMA
+   HTF_H4   = 2   // H4 close vs its EMA
+  };
+
+input group "=== Optional entry filters (0 / Off / 0-24 = off) ==="
+input int                 InpTrendEMA         = 0;            // EMA period on the signal timeframe: longs above, shorts below (0 = off)
+input ENUM_HTF_BIAS       InpHTFBias          = HTF_NONE;     // Higher-timeframe bias: last closed H1/H4 bar vs its EMA
+input int                 InpHTFEMA           = 200;          // EMA period for the higher-timeframe bias
+input int                 InpSessionStart     = 0;            // Entries from this server hour (inclusive)
+input int                 InpSessionEnd       = 24;           // ... until this server hour (exclusive); 0-24 = off
+
 int  g_ema = INVALID_HANDLE;
 int  g_atr = INVALID_HANDLE;
+int  g_trend = INVALID_HANDLE;
+int  g_htf = INVALID_HANDLE;
 bool g_warnedShortHistory = false;
 
 //+------------------------------------------------------------------+
@@ -52,11 +71,21 @@ int OnInit()
       Print("Invalid EMA period / ATR period / ATR multiplier");
       return(INIT_PARAMETERS_INCORRECT);
      }
+   if(InpTrendEMA < 0 || InpHTFEMA <= 1 || InpSessionStart < 0 || InpSessionEnd > 24 || InpSessionStart >= InpSessionEnd)
+     {
+      Print("Invalid filter inputs: trend EMA >= 0, HTF EMA > 1, 0 <= session start < end <= 24");
+      return(INIT_PARAMETERS_INCORRECT);
+     }
    if(!Core_Init())
       return(INIT_PARAMETERS_INCORRECT);
    g_ema = iMA(_Symbol, InpTimeframe, InpEMAPeriod, 0, MODE_EMA, PRICE_CLOSE);
    g_atr = iATR(_Symbol, InpTimeframe, InpATRPeriod);
-   if(g_ema == INVALID_HANDLE || g_atr == INVALID_HANDLE)
+   if(InpTrendEMA > 0)
+      g_trend = iMA(_Symbol, InpTimeframe, InpTrendEMA, 0, MODE_EMA, PRICE_CLOSE);
+   if(InpHTFBias != HTF_NONE)
+      g_htf = iMA(_Symbol, HTFPeriod(), InpHTFEMA, 0, MODE_EMA, PRICE_CLOSE);
+   if(g_ema == INVALID_HANDLE || g_atr == INVALID_HANDLE ||
+      (InpTrendEMA > 0 && g_trend == INVALID_HANDLE) || (InpHTFBias != HTF_NONE && g_htf == INVALID_HANDLE))
      {
       Print("Failed to create indicators, error ", GetLastError());
       return(INIT_FAILED);
@@ -67,6 +96,10 @@ int OnInit()
                EnumToString(InpAnchor), InpEMAPeriod, InpATRMult, InpATRPeriod,
                InpTrailAfterProfit ? "after +k x ATR profit" : "from entry",
                InpRiskMode == RISK_PERCENT ? "percent" : "money", InpRiskValue);
+   PrintFormat("Filters: trend EMA %s | HTF bias %s | session %s",
+               InpTrendEMA > 0 ? IntegerToString(InpTrendEMA) : "off",
+               InpHTFBias == HTF_NONE ? "off" : StringFormat("%s EMA%d", EnumToString(HTFPeriod()), InpHTFEMA),
+               (InpSessionStart > 0 || InpSessionEnd < 24) ? StringFormat("%02d-%02d server", InpSessionStart, InpSessionEnd) : "off");
    Core_PrintReady();
    return(INIT_SUCCEEDED);
   }
@@ -77,6 +110,10 @@ void OnDeinit(const int reason)
       IndicatorRelease(g_ema);
    if(g_atr != INVALID_HANDLE)
       IndicatorRelease(g_atr);
+   if(g_trend != INVALID_HANDLE)
+      IndicatorRelease(g_trend);
+   if(g_htf != INVALID_HANDLE)
+      IndicatorRelease(g_htf);
    Core_Deinit(reason);
   }
 
@@ -111,6 +148,52 @@ double VwapAt(const MqlRates &r[], const int i)
    if(k == n || v <= 0.0)
       return(0.0);                              // copied window ended before the anchor, or no volume
    return(pv / v);
+  }
+
+ENUM_TIMEFRAMES HTFPeriod() { return(InpHTFBias == HTF_H1 ? PERIOD_H1 : PERIOD_H4); }
+
+//--- optional entry filters; exits are never filtered
+bool EntryAllowed(const bool buy, const double close, const datetime barTime, string &why)
+  {
+   double e[1];
+   if(InpTrendEMA > 0)
+     {
+      if(CopyBuffer(g_trend, 0, 1, 1, e) < 1 || e[0] == EMPTY_VALUE)
+        {
+         why = "trend EMA not ready";
+         return(false);
+        }
+      if(buy ? close <= e[0] : close >= e[0])
+        {
+         why = StringFormat("close %.2f %s EMA%d %.2f", close, buy ? "below" : "above", InpTrendEMA, e[0]);
+         return(false);
+        }
+     }
+   if(InpHTFBias != HTF_NONE)
+     {
+      const double c = iClose(_Symbol, HTFPeriod(), 1);          // last closed higher-timeframe bar
+      if(CopyBuffer(g_htf, 0, 1, 1, e) < 1 || e[0] == EMPTY_VALUE || c <= 0.0)
+        {
+         why = "HTF EMA not ready";
+         return(false);
+        }
+      if(buy ? c <= e[0] : c >= e[0])
+        {
+         why = StringFormat("%s close %.2f %s EMA%d %.2f", EnumToString(HTFPeriod()), c, buy ? "below" : "above", InpHTFEMA, e[0]);
+         return(false);
+        }
+     }
+   if(InpSessionStart > 0 || InpSessionEnd < 24)
+     {
+      MqlDateTime dt;
+      TimeToStruct(barTime, dt);
+      if(dt.hour < InpSessionStart || dt.hour >= InpSessionEnd)
+        {
+         why = StringFormat("hour %02d outside %02d-%02d", dt.hour, InpSessionStart, InpSessionEnd);
+         return(false);
+        }
+     }
+   return(true);
   }
 
 //--- +1 when the EMA is above the VWAP (long side), -1 below, 0 equal
@@ -200,6 +283,12 @@ void OnTick()
    if(!g_symbol.RefreshRates())
       return;
    const bool   buy = (s1 > 0);
+   string why;
+   if(!EntryAllowed(buy, r[0].close, bar, why))
+     {
+      Core_LogBar(bar, ctx + StringFormat(" | %s filtered: %s", buy ? "BUY" : "SELL", why));
+      return;
+     }
    Core_LogBar(bar, ctx + StringFormat(" | %s stop dist %.2f", buy ? "BUY" : "SELL", dist));
    Core_Open(buy ? POSITION_TYPE_BUY : POSITION_TYPE_SELL, dist, 0.0);
   }

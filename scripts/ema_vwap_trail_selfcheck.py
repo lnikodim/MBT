@@ -12,9 +12,11 @@ def run(name, expert, sets):
     print(f"{name}: trades {int(m['trades'])} PF {m['profit_factor']} net {m['net_profit']:,.0f} reasons {sorted({r['exit_reason'] for r in rows})}", flush=True)
     assert len(rows) == int(m["trades"]), ("csv rows != report trades", len(rows), m["trades"])
     return rows
+results = {}
 ref = run("emavwap_sc_ref", "VWAP_EMA_Cross_EA", {"InpInvert": "true", "InpTimeframe": "15"})
 for variant, after in (("entry", "false"), ("profit", "true")):
     rows = run(f"emavwap_sc_{variant}", "EMA_VWAP_Trail_EA", {"InpTrailAfterProfit": after})
+    results[variant] = rows
     unknown = {r["exit_reason"] for r in rows} - {"cross", "sl", "end_of_test"}
     assert not unknown, ("unexpected exit reasons", unknown)
     assert all(float(r["tp"]) == 0.0 for r in rows), "unexpected take profit"
@@ -31,4 +33,15 @@ for variant, after in (("entry", "false"), ("profit", "true")):
     print(f"  entries {len(rows)}, shared with the reference cross EA {len(common)} (same side {side_ok})", flush=True)
     assert len(common) >= 0.98 * max(len(rows), len(ref)), ("enters at different crosses than the reference", len(rows), len(ref), len(common))
     assert side_ok == len(common), "direction differs from the reference (EMA above VWAP = long)"
+# v1.01 filters: with the guards off a filtered run enters at a subset of the unfiltered crosses
+import datetime as dt
+base = {r["open_time"] for r in results["entry"]}
+sess = run("emavwap_sc_session", "EMA_VWAP_Trail_EA", {"InpSessionStart": "10", "InpSessionEnd": "23"})
+hours = [dt.datetime.strptime(r["open_time"], "%Y.%m.%d %H:%M:%S").hour for r in sess]
+assert all(10 <= h < 23 for h in hours), ("entry outside the session", sorted(set(hours)))
+assert {r["open_time"] for r in sess} <= base, "session run entered at a time the unfiltered run did not"
+flt = run("emavwap_sc_trend", "EMA_VWAP_Trail_EA", {"InpTrendEMA": "200", "InpHTFBias": "2"})
+assert 0 < len(flt) < len(results["entry"]), ("trend + H4 filters removed nothing or everything", len(flt), len(results["entry"]))
+assert {r["open_time"] for r in flt} <= base, "filtered run entered at a time the unfiltered run did not"
+print(f"filters: session {len(sess)} entries all in 10-23h, trend+H4 {len(flt)} of {len(results['entry'])} entries kept")
 print("SELFCHECK OK")
