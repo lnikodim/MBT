@@ -91,3 +91,29 @@ User: "what about removing the ATR trailing stop". `InpTrailATR=false`: the init
 protection) but is never ratcheted; exits are that stop or the opposite cross. Same nine runs as amendment 1
 (`emavwap_nt_*`), same window, model and gate. Expectation: the unfiltered run lands near the fixed-stop reference
 (PF about 1.0, 2022-24 negative); EH / H1 may reach PF 1.05-1.10 but 2023 is expected to stay negative.
+
+### Amendment 2 outcome (2026-10-12, trail off)
+
+```
+run    trades    PF  win%    netR  R22-24  R25-26   p0.3   p0.5  gate
+none     4057  1.04  27.3  +123.5   -35.4  +159.0  47.0%  43.0%  fail
+E        2442  1.16  27.4  +187.8   +84.0  +103.8  57.2%  53.1%  PASS
+H        2309  1.17  28.3  +180.8   +56.5  +124.3  57.5%  56.2%  PASS
+S        1749  0.98  29.9   +10.9   -39.5   +50.4  18.8%  30.8%  fail
+EH       1721  1.26  28.7  +211.2  +102.2  +109.0  64.4%  68.2%  PASS
+ES       1140  0.96  31.1    -7.7   -23.5   +15.9   8.9%  22.7%  fail
+HS        878  1.20  33.0  +103.9   +59.9   +44.1  31.9%  54.6%  PASS
+EHS       685  1.17  33.0   +69.5   +32.9   +36.5  17.9%  40.3%  PASS
+H1       2336  1.27  28.8  +262.2  +114.9  +147.3  71.0%  65.1%  PASS
+```
+Six of nine pass Gate A. Without the trail the cross-to-cross exit keeps the winners (net R +124 unfiltered vs
+-135 with the trail) and every trend-filtered run is positive in both regimes. Best: H1 bias (PF 1.27, +262 R,
+prop_mc 71.0% / 65.1%) and EMA200 + H4 bias (PF 1.26, +211 R, 64.4% / 68.2%). Both are below the MACD v1.45 bar
+(80.4% / 81.2%). Session filter still hurts. Win rate 27-33%: the exit sets it, as before.
+Caveats: 1-min OHLC flattered this system by ~0.05 PF earlier; 18 exit x filter combinations were run, so the
+pattern (trend filter + cross exit) is the finding, not any single cell.
+
+## Amendment 3 (2026-10-12, before the runs): real-tick confirmation of the passing cells
+Runs `emavwap_rt_{H1,EH,E,H}`: same inputs (InpTrailATR=false + filter), XAUUSD M15, real ticks, 2022-01-01..2026-10-01.
+Gate: Gate A again on real ticks; a cell is confirmed if it passes and its prop_mc pass at 0.5% is within 10
+points of the OHLC value. Expectation: PF about 0.05 lower, H1 and EH still pass, E and H borderline.
