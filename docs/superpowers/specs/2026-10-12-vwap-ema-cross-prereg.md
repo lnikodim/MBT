@@ -52,3 +52,16 @@ Verdict: CLOSED. The EA stays in the repo as a tool; no filters without a new pr
 User: "what about running it on M15 instead of M5". Same EA, `InpTimeframe=15`, everything else unchanged,
 same two directions (`vwapema15_asis`, `vwapema15_inv`), same window and Gate A. Expectation: roughly a third
 of the trades, so a smaller cost share; the sign of the edge is not expected to change.
+
+### Amendment 1 outcome (M15, same window)
+| | A as specified | B inverted |
+|---|---|---|
+| Trades | 5188 | 5000 |
+| Tester PF / net | 0.80 / -94,474 | 0.99 / -7,683 |
+| Win rate | 60.2% | 29.1% |
+| Net R 2022-24 / 2025-26 | -161.3 / -118.1 | -47.6 / +62.5 |
+| prop_mc pass 0.3% / 0.5% | 0% / 0% | 15.6% / 31.4% |
+
+A: FAIL (PF 0.80, every year negative). B: FAIL (tester PF 0.99 < 1.00; 2022-24 net R negative, 2023 -47.8).
+M5 -> M15 moved the inverted direction from PF 0.93 to 0.99 with 37% fewer trades: the timeframe only cuts the
+cost share, it does not create an edge. Still CLOSED.
