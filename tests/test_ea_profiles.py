@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -25,6 +25,8 @@ def test_profiles_have_core_inputs():
     assert P.PROFILES["VWAP_RSI_EA"]["InpMagic"] == "261006"
     assert P.PROFILES["VWAP_EMA_Cross_EA"]["InpMagic"] == "261012"
     assert P.PROFILES["VWAP_EMA_Cross_EA"]["InpTimeframe"] == "5"      # compiled default M5
+    assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMagic"] == "261013"
+    assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpTimeframe"] == "15"     # compiled default M15
 
 
 def test_icarus_profile_pins_the_grid_defaults():

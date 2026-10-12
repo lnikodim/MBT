@@ -40,6 +40,11 @@ PROFILES = {
     }),
     # VWAP_RSI_EA v1.00 compiled defaults. Always pass InpTimeframe with --period (5 / 15 / 16385 / 16388).
     # InpSpreadWaitMin=0: the stop is a bar level; Core_RetryPending would re-apply the stored distance to a later price.
+    # EMA_VWAP_Trail_EA v1.00 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)
+    "EMA_VWAP_Trail_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261013", "InpComment": "EMA_VWAP", "InpTimeframe": "15",
+        "InpAnchor": "0", "InpEMAPeriod": "9", "InpATRPeriod": "14", "InpATRMult": "2.0", "InpTrailAfterProfit": "false",
+    }),
     # VWAP_EMA_Cross_EA v1.00 compiled defaults (M5, daily VWAP, EMA 9, 0.5% protective stop, as-specified direction)
     "VWAP_EMA_Cross_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261012", "InpComment": "VWAP_EMA", "InpTimeframe": "5",
