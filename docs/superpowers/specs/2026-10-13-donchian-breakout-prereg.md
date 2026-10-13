@@ -58,3 +58,31 @@ entered outside 02:00-10:00 NY +28.4 R (PF 1.26), inside -8.0 R (PF 0.89); sells
 about 14 R of losses and still leave 2022-24 negative, so it is not a candidate. Self-check (Jan-Feb 2026): 18
 trades, 20 signals (2 dropped by the 150-point spread guard), all invariants held. Stage B not unlocked.
 CLOSED unless an amendment is pre-registered below.
+
+## Amendment 1 (2026-10-13, before the runs): the published H4 configuration as-is
+
+The v1.00 defaults were my H1 adaptation. The externally documented configuration (MQL5 code base 77691, XAUUSD
+H4 2020-26 every-tick, no commission: PF 1.77, 47% win, 198 trades, 6 of 7 years positive, 2022 +4.6%, 2023 +4.8%,
+2024 +24.0%) is tested as published, not tuned: H4, 20-bar channel, stop 2 x ATR(20), target 2R, long-only,
+H4 EMA200 filter, no break-even. A second cell adds the EA's one deviation, the v1.00 break-even (+1R lock 0.2R),
+because every MACD test on this data showed a break-even at about +1R to be essential. Both cells are reported.
+
+### Runs
+- `donch_a1_pub`: XAUUSD H4, real ticks, 2022-01-01..2026-10-01, 100k, 1:20, 1% risk; InpTimeframe H4,
+  InpChannelBars 20, InpATRPeriod 20, InpStopATR 2.0, InpTargetR 2.0, InpAllowShort false, InpTrendTF H4,
+  InpTrendEMA 200, InpBreakEvenR 0.
+- `donch_a1_be`: the same with InpBreakEvenR 1.0, InpBELockR 0.2.
+
+### Gate A (unchanged)
+trades >= 150; tester PF >= 1.00; net R > 0 in both 2022-24 and 2025-26; then prop_mc at 0.3% / 0.5% against the
+MACD v1.45 bar (80.4% / 81.2%). The published rate (about 30 trades a year) gives roughly 140 trades in 4.75
+years: a cell under 150 trades is "insufficient sample", not a pass, even if the other criteria hold.
+
+### Expectation written before the runs
+Darwinex real ticks with commission versus MetaQuotes generated ticks without: PF 1.2-1.5, 120-160 trades,
+2022-24 slightly positive (the published years were +5, +5, +27 R-equivalents), 2025-26 positive, prop_mc pass
+15-40% (too few trades a month to reach +10% within a year). The break-even cell: fewer full stops, lower PF
+on targets, net R about the same.
+
+### Amendment 1 outcome
+(filled in after the runs)
