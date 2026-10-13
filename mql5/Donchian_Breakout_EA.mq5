@@ -6,28 +6,32 @@
 //|  mirrored). Stop k x ATR, target R x stop, one break-even step,  |
 //|  no trailing, one position at a time, opposite signals ignored.  |
 //|  Execution, guards and trade log from EACore.mqh.                |
+//|  v1.01 defaults: H4, N 20, 2 x ATR(20), 2R, long-only, BE off    |
+//|        (amendment 1 of the 2026-10-13 spec, passes Gate A).      |
+//|  v1.00 H1, N 48, 3R, both sides, BE +1R (failed Gate A).          |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #property description "Donchian channel breakout + HTF EMA trend filter; k x ATR stop, R x stop target, one break-even; MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "Donchian_Breakout_EA"
-#define EA_VERSION "1.00"
+#define EA_VERSION "1.01"
 #define EA_MAGIC   261015
 #define EA_COMMENT "DONCH"
+#define EA_TIMEFRAME PERIOD_H4   // v1.01 defaults = the published, Gate-A-passing cell (spec 2026-10-13 amendment 1)
 #define EA_SPREAD_WAIT_MIN 0   // the target is R x stop from the signal price: a retried entry would break that ratio
 #include "EACore.mqh"
 
 input group "=== Strategy ==="
-input int             InpChannelBars = 48;         // Channel length N (highest high / lowest low of bars 2..N+1)
+input int             InpChannelBars = 20;         // Channel length N (highest high / lowest low of bars 2..N+1)
 input ENUM_TIMEFRAMES InpTrendTF     = PERIOD_H4;  // Trend filter timeframe
 input int             InpTrendEMA    = 200;        // Trend EMA period on that timeframe (0 = off)
-input bool            InpAllowShort  = true;       // Allow sells
-input int             InpATRPeriod   = 14;         // ATR period (signal timeframe)
+input bool            InpAllowShort  = false;       // Allow sells
+input int             InpATRPeriod   = 20;         // ATR period (signal timeframe)
 input double          InpStopATR     = 2.0;        // Stop distance, x ATR
-input double          InpTargetR     = 3.0;        // Target, x stop distance (0 = none)
-input double          InpBreakEvenR  = 1.0;        // Break-even trigger, x stop distance (0 = off)
+input double          InpTargetR     = 2.0;        // Target, x stop distance (0 = none)
+input double          InpBreakEvenR  = 0.0;        // Break-even trigger, x stop distance (0 = off)
 input double          InpBELockR     = 0.2;        // Break-even lock, x stop distance
 
 int g_atr = INVALID_HANDLE, g_trend = INVALID_HANDLE;

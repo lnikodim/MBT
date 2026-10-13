@@ -4,7 +4,9 @@ Run from the repo root with the MT5 GUI closed:  python3 scripts/donchian_selfch
 import re, sys
 sys.path.insert(0, "scripts"); import vwap_rsi_eval as E, holo_eval as H
 WIN = ("2026-01-01", "2026-03-01")
-SETS = {"InpDailyLossPct": "0", "InpMonthlyLossPct": "0", "InpLogEveryBar": "true"}
+# the v1.00 H1 cell: enough trades in two months and a break-even to check (v1.01 defaults are H4, 2R, BE off)
+SETS = {"InpDailyLossPct": "0", "InpMonthlyLossPct": "0", "InpLogEveryBar": "true", "InpTimeframe": "16385",
+        "InpChannelBars": "48", "InpATRPeriod": "14", "InpTargetR": "3.0", "InpAllowShort": "true", "InpBreakEvenR": "1.0"}
 K_ATR, R, LOCK = 2.0, 3.0, 0.2
 SIG = re.compile(r"\t(\d{4}\.\d\d\.\d\d \d\d):\d\d:\d\d   DONCH SIGNAL (BUY|SELL) (.*)")
 FLT = re.compile(r"\| (BUY|SELL) filtered: \w+ close ([\d.]+) vs EMA\d+ ([\d.]+)")

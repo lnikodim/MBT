@@ -33,6 +33,9 @@ def test_profiles_have_core_inputs():
     assert P.PROFILES["Camvcvoo_EA"]["InpSpreadWaitMin"] == "0"           # three-position set: no single pending retry
     assert P.PROFILES["Donchian_Breakout_EA"]["InpMagic"] == "261015"
     assert P.PROFILES["Donchian_Breakout_EA"]["InpSpreadWaitMin"] == "0"  # target = R x stop from the signal price: no retry
+    assert P.PROFILES["Donchian_Breakout_EA"]["InpTimeframe"] == "16388"   # v1.01: H4, long-only, 2R (amendment 1)
+    assert P.PROFILES["Donchian_Breakout_EA"]["InpAllowShort"] == "false"
+    assert P.PROFILES["Donchian_Breakout_EA"]["InpBreakEvenR"] == "0.0"
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpMaxPositions"] == "1"     # v1.03 stacking off
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpHoldThroughFiltered"] == "false"
     for k, v in (("InpTrendEMA", "0"), ("InpHTFBias", "0"), ("InpSessionStart", "0"), ("InpSessionEnd", "24")):

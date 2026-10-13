@@ -107,3 +107,5 @@ correlation 0.46 (`combine_eas.py`, reports `donch_a1_pub_20261013_*`, `donch_a1
 trades is just over the minimum, 2022 is negative (-4.3 R), and the published settings come from the same
 gold-bull years, so the family is in-sample. Stage B (plateau) is unlocked but not run. v1.01 makes the
 as-published cell the compiled default (H4, N 20, ATR 20, 2R, long-only, break-even off).
+v1.01 verified 2026-10-13: compiled defaults on H4 real ticks 2022-26 = +68,119.85 / 157 trades, identical to
+`donch_a1_pub`; the self-check with the v1.00 H1 cell passed explicitly still reproduces +5,989.94 / 18.
