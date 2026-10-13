@@ -136,5 +136,24 @@ expect neighbour-mean PF 1.1-1.4, with target 1.5R and N 10 the weakest edges (m
 half the cells profitable in 2022-24 (2024 carried the base cell). The pick is likely a neighbour of the base cell
 and will not clear the +0.10 bar; v1.01 defaults stay.
 
-### Amendment 2 outcome
-(filled in after the runs)
+### Amendment 2 outcome (2026-10-13, `donch_b`, XAUUSD H4, 1-min OHLC, 2022-01-01..2025-01-01)
+
+64 cells, 60 profitable (PF 0.89..1.52). Base cell N 20 / 2.0 ATR / 2R: 91 trades, PF 1.37, +20,403, DD 10.1%;
+its six neighbours average PF 1.21 (N10 1.16, N30 1.39, stop 1.5 1.12, stop 2.5 1.41, target 1.5 1.16, target 2.5
+1.00). Rule 1 PASS: the cell is on a plateau, not a spike. Plateau pick (rule 2): N 30 / 2.5 ATR / 1.5R, 82
+trades, PF 1.40, +17,120, DD 6.7%, neighbour mean 1.28, i.e. +0.07 over the base: below the +0.10 bar of rule 3,
+so the v1.01 defaults stay and `donch_b_hold` was not run (the holdout 2025-01..2026-10 stays untouched for this
+cell). Shape: PF degrades smoothly with the stop (3 x ATR row 1.07-1.14) and is weakest at target 2.5R for N 10-30;
+longer channels (N 30-40) are at least as good as N 20 everywhere. The expectation held.
+
+PF, stop 2.0 ATR (rows N, columns target R):
+
+| N | 1.5R | 2R | 2.5R | 3R |
+|---|---|---|---|---|
+| 10 | 1.01 | 1.16 | 1.01 | 1.05 |
+| 20 | 1.16 | 1.37 | 1.00 | 1.16 |
+| 30 | 1.14 | 1.39 | 1.05 | 1.31 |
+| 40 | 1.18 | 1.38 | 1.19 | 1.33 |
+
+Status: Donchian_Breakout_EA v1.01 passes Gate A and the plateau check; too slow alone for the MACD prop bar; a
+validated diversifier next to MACD v1.45 (combined pass 86.8% / 83.4%).
