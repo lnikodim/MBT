@@ -109,3 +109,32 @@ gold-bull years, so the family is in-sample. Stage B (plateau) is unlocked but n
 as-published cell the compiled default (H4, N 20, ATR 20, 2R, long-only, break-even off).
 v1.01 verified 2026-10-13: compiled defaults on H4 real ticks 2022-26 = +68,119.85 / 157 trades, identical to
 `donch_a1_pub`; the self-check with the v1.00 H1 cell passed explicitly still reproduces +5,989.94 / 18.
+
+## Amendment 2 (2026-10-13, before the runs): Stage B plateau check of the v1.01 cell
+
+Question: is the published cell (N 20, stop 2 x ATR(20), target 2R, long-only, H4 EMA200) on a plateau or a lone
+spike? MT5 ranges are linear, so the grid is N 10/20/30/40 x stop 1.5/2.0/2.5/3.0 ATR x target 1.5/2.0/2.5/3.0 R
+(64 cells), everything else at the v1.01 defaults.
+
+### Runs
+- `donch_b`: XAUUSD H4, 1-min OHLC, 2022-01-01..2025-01-01 (screen only; 2025-01..2026-10 is the holdout), 100k,
+  1:20, 1% risk, complete grid.
+- `donch_b_hold`: one real-tick run 2025-01-01..2026-10-01 of the plateau pick, only if the pick differs from the
+  v1.01 cell.
+
+### Rules (decided before the run)
+1. Base-cell plateau: the v1.01 cell's grid neighbours (one step along each axis, 6 cells) average PF >= 1.10 on
+   2022-24, and at least half of the 64 cells have PF > 1.00. PASS = the cell is on a plateau.
+2. Plateau pick: `selection.pick_plateau(passes, grid, min_trades=60, max_dd=20, min_neighbour_pf=1.10)` on the
+   2022-24 passes (60 trades because the screen is 3 years of an H4 system). Reported for information.
+3. The defaults change only if the pick's neighbour-mean PF beats the base cell's by >= 0.10 on 2022-24 AND the
+   pick confirms on the holdout (real ticks 2025-01..2026-10, PF >= 1.15, net R > 0). Otherwise v1.01 stays.
+
+### Expectation written before the runs
+The base cell sits on a plateau: breakout systems on a trending instrument degrade smoothly with N and stop size;
+expect neighbour-mean PF 1.1-1.4, with target 1.5R and N 10 the weakest edges (more trades, more whipsaw). More than
+half the cells profitable in 2022-24 (2024 carried the base cell). The pick is likely a neighbour of the base cell
+and will not clear the +0.10 bar; v1.01 defaults stay.
+
+### Amendment 2 outcome
+(filled in after the runs)
