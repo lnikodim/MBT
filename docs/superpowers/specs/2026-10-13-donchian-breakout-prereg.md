@@ -84,5 +84,26 @@ Darwinex real ticks with commission versus MetaQuotes generated ticks without: P
 15-40% (too few trades a month to reach +10% within a year). The break-even cell: fewer full stops, lower PF
 on targets, net R about the same.
 
-### Amendment 1 outcome
-(filled in after the runs)
+### Amendment 1 outcome (2026-10-13, XAUUSD H4, real ticks, 2022-01-01..2026-10-01, 1% risk)
+
+| | donch_a1_pub (as published) | donch_a1_be (+ break-even) |
+|---|---|---|
+| Trades | 157 (all buys) | 173 |
+| Tester PF / net | 1.66 / +68,120 (+53.7 R) | 1.44 / +34,997 (+31.3 R) |
+| Win rate | 48.4% (76 targets, 81 stops, no scratches) | 56.1% (53 targets, 73 full stops, 47 break-even scratches) |
+| Equity DD | 10.2% | 13.0% |
+| Net R 2022-24 / 2025-26 | +19.3 / +34.4 | +9.1 / +22.2 |
+| By year PF | 2022 0.77, 2023 1.15, 2024 2.30, 2025 2.25, 2026 1.74 | 0.59, 0.92, 2.13, 1.90, 1.72 |
+| prop_mc pass 0.3% / 0.5%, alone | 0.2% / 13.8% (breach 0%, p95 DD 7% at 0.5%) | 0.0% / 1.9% |
+| prop_mc pass merged with MACD v1.45 | 86.8% / 83.4% (MACD alone, same seed: 80.6% / 80.9%) | 83.8% / 81.9% |
+
+Both cells PASS Gate A (>= 150 trades, PF > 1, both regimes positive). As published is the better cell on every
+count: the break-even turns 47 stops into +0.2 R scratches but costs 23 targets, because a 2R target is too close
+for an early lock (the same lesson as MACD's early break-even and partial-TP tests). Stand-alone the H4 EA is far
+below the MACD bar: at 2.8 trades a month 80% of phase-1 simulations time out (0% breach). Combined with MACD v1.45
+at equal risk per trade it raises the pass probability by 6.2 / 2.5 points, lowers the breach rate at 0.5% from
+9.2% to 8.6%, shortens the calibration median from 95 to 78 days and lifts return/DD from 60 to 96; monthly
+correlation 0.46 (`combine_eas.py`, reports `donch_a1_pub_20261013_*`, `donch_a1_be_20261013_*`). Caveats: 157
+trades is just over the minimum, 2022 is negative (-4.3 R), and the published settings come from the same
+gold-bull years, so the family is in-sample. Stage B (plateau) is unlocked but not run. v1.01 makes the
+as-published cell the compiled default (H4, N 20, ATR 20, 2R, long-only, break-even off).
