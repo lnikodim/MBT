@@ -46,6 +46,12 @@ PROFILES = {
         "InpTradeHour": "1", "InpFastSMA": "10", "InpSlowSMA": "197", "InpFractalShift": "3",
         "InpStopPips": "140", "InpTP1Pips": "22", "InpTP2Pips": "50", "InpTP3Pips": "80", "InpTrailPips": "22", "InpLockPips": "12",
     }),
+    # Donchian_Breakout_EA v1.00 compiled defaults (XAUUSD H1 48-bar channel, H4 EMA200 trend, 2 x ATR(14) stop, 3R target, BE +1R lock 0.2R, no spread retry)
+    "Donchian_Breakout_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261015", "InpComment": "DONCH", "InpTimeframe": "16385", "InpSpreadWaitMin": "0",
+        "InpChannelBars": "48", "InpTrendTF": "16388", "InpTrendEMA": "200", "InpAllowShort": "true",
+        "InpATRPeriod": "14", "InpStopATR": "2.0", "InpTargetR": "3.0", "InpBreakEvenR": "1.0", "InpBELockR": "0.2",
+    }),
     # EMA_VWAP_Trail_EA v1.03 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)
     "EMA_VWAP_Trail_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261013", "InpComment": "EMA_VWAP", "InpTimeframe": "15",
