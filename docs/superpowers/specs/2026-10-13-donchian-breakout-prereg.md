@@ -38,5 +38,23 @@ PF 1.3-1.6, 200-350 trades, win rate 40-50%, profit concentrated in 2024-26 with
 than buys, prop_mc pass 40-65% (an H1 channel trades less often than MACD's stacked crosses). Caveat: 2022-26 is a
 gold bull regime and the defaults were chosen from published tests, so the run is in-sample for the family.
 
-## Outcome
-(filled in after the run)
+## Outcome (2026-10-13, XAUUSD H1, real ticks, 2022-01-01..2026-10-01, 1% risk, `reports/donch_a_20261013_094324`)
+
+| | donch_a |
+|---|---|
+| Trades | 503 (332 buys, 171 sells), 8.9 per month |
+| Tester PF / net | 1.07 / +18,020 (+21.6 R) |
+| Win rate | 46.9%: 87 targets (+257 R), 153 break-even scratches (+26.7 R, about +0.17 R each), 262 full stops (-263 R) |
+| Equity DD | 30.5% at 1% risk |
+| Net R 2022-24 / 2025-26 | -21.2 / +42.9 |
+| By year PF | 2022 0.82, 2023 0.94, 2024 0.86, 2025 1.59, 2026 1.30 |
+| prop_mc pass 0.3% / 0.5% | 1.3% / 12.2% (MC p95 DD 11.9% / 19.1%) |
+
+FAIL on criterion 3 (2022-24 negative). Buys +20.4 R (2022-24 -20.4, 2025-26 +40.8), sells +2.0 R (-0.9 / +2.9).
+The profit is the 2025-26 gold trend; in 2022-24 a 48-bar H1 channel breakout has no edge on either side. The
+expectation (PF 1.3-1.6, 2022-23 near flat) was wrong on both counts. Entry-hour diagnostic (not a rule): buys
+entered outside 02:00-10:00 NY +28.4 R (PF 1.26), inside -8.0 R (PF 0.89); sells inside 02:00-10:00 NY -6.3 R
+(PF 0.84), the opposite of the thesis's "short during London hours". A thesis-based session filter would remove
+about 14 R of losses and still leave 2022-24 negative, so it is not a candidate. Self-check (Jan-Feb 2026): 18
+trades, 20 signals (2 dropped by the 150-point spread guard), all invariants held. Stage B not unlocked.
+CLOSED unless an amendment is pre-registered below.
