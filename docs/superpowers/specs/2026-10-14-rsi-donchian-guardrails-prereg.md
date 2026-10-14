@@ -72,3 +72,36 @@ the same inputs and method as the 2026-10-13 portfolio spec (baseline all three:
 
 ## Outcome
 (filled in after the runs)
+
+## Outcome (2026-10-14)
+
+Parity: `rsi_par` 364 trades, net +150,867, PF 1.58 vs `rsi_v110` 364 / +151,910 / 1.58 (0.7% apart, lot rounding):
+the EACore port reproduces v1.10. All six runs XAUUSD real ticks 2022-01-01..2026-10-01, 1% risk.
+
+| Run | trades | PF | net R | R 2022-24 / 2025-26 | tester DD | win | stand-alone pass 0.3 / 0.5 | joint pass 0.3 / 0.5 | joint breach ph1 at 0.5 | joint p95 DD 0.5 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| v1.10 report (baseline) | 364 | 1.58 | +98.4 | | 13.7% | 52.5% | 20.0 / 53.9 | 90.8 / 83.0 | 9.4% | 16.7% |
+| `rsi_par` (v1.10 exits, guards off) | 364 | 1.58 | +95.3 | +44.7 / +54.2 | 13.9% | 52.5% | 18.2 / 50.2 | 90.7 / 82.8 | 9.5% | 16.8% |
+| `rsi_ctl` (v1.10 exits, guards on) | 358 | 1.56 | +93.1 | +46.4 / +50.3 | 13.3% | 52.0% | 17.6 / 50.2 | **91.4 / 82.9** | 9.5% | 16.9% |
+| `rsi_nt` (trail off) | 358 | 1.68 | +187.3 | +111.1 / +105.1 | 35.5% | 28.2% | 59.5 / 76.1 | 89.4 / 76.1 | 13.2% | 17.8% |
+| `rsi_nt_be10` (trail off, BE 1%/0.1%) | 358 | 1.71 | +127.7 | +67.6 / +71.4 | 23.4% | 41.1% | 36.2 / 64.1 | 90.7 / 79.8 | 10.9% | 17.5% |
+| `rsi_nt_be05` (trail off, BE 0.5%/0.1%) | 358 | 1.67 | +83.5 | +46.7 / +40.9 | 16.2% | 59.2% | 13.6 / 41.5 | 90.5 / 82.2 | 9.8% | 17.5% |
+| `rsi_tr_be05` (trail on + BE 0.5%/0.1%) | 358 | 1.52 | +60.8 | +36.1 / +26.4 | 9.3% | 66.8% | 3.0 / 23.3 | 89.6 / 84.0 | 8.4% | 17.2% |
+| `donch_a1_be` with `rsi_ctl` | | | | | | | | 89.7 / 82.2 | 9.8% | 17.4% |
+
+Guards (rule 1): `rsi_ctl` loses 0.02 PF and 2.2 R against `rsi_par` (well inside the 0.10 PF / 10% bounds), so they are
+adopted. What they did: the 150-point spread cap dropped 12 signals on the 01:00-server reopen bar (entry spreads up to
+1,109 points in `rsi_par`; the capped run's worst is 146), ten of which re-fired on the 06:00 or later bar; the daily
+-4% stop forced 8 closes (`exit_reason daily_stop`) in 4.75 years.
+
+Exit variants (rule 2): none is >= `rsi_ctl` at both risks. Trail off doubles the stand-alone net R and stand-alone
+pass probability but its drawdowns (36% tester, 36-trade losing streak, 2026 -4.2 R) coincide with MACD's, so the joint
+pass falls and the phase-1 max-loss breach rises to 13.2%. The +1R break-even recovers part of that but stays below the
+control; the 0.5R break-even is worse than the control alone (as on MACD); trail + BE 0.5% is the best at 0.5% (84.0,
+breach 8.4%) but -1.8 points at the recommended 0.3%. v1.20 compiled defaults therefore = v1.10 exits (trailing on,
+break-even off) + guards. Break-even check: on the two no-trail BE runs every profit-side stop sat at +0.10% except 4
+per run, all stop fills 1-2.7 USD through the lock on news / reopen gaps (the lock itself was at +0.100%).
+
+Donchian (rule 3): +1R/0.2R break-even lowers the joint pass at both risks (89.7 / 82.2 vs 91.4 / 82.9) -> v1.01 stays,
+no code change. Caveats: 2022-24 is in-sample for RSI's tuning; the 2019-21 chop regime (where v1.10's trailing was
+what kept it positive) is not part of the user's 2022-26 rule; joint numbers ignore floating P&L and the shared guards.
