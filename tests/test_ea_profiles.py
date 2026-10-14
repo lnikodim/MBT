@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -40,6 +40,19 @@ def test_profiles_have_core_inputs():
     assert P.PROFILES["EMA_VWAP_Trail_EA"]["InpHoldThroughFiltered"] == "false"
     for k, v in (("InpTrendEMA", "0"), ("InpHTFBias", "0"), ("InpSessionStart", "0"), ("InpSessionEnd", "24")):
         assert P.PROFILES["EMA_VWAP_Trail_EA"][k] == v, k                 # v1.01 filters default off
+
+
+def test_rsi_reversal_v120_profile_is_on_eacore():
+    p = P.PROFILES["RSI_Reversal_EA"]
+    assert p["InpMagic"] == "261004" and p["InpTimeframe"] == "16390"       # H6 RSI timeframe (v1.10 InpRsiTimeframe)
+    assert p["InpRiskMode"] == "1" and p["InpRiskValue"] == "1.0"           # EACore enum: PERCENT is 1 (v1.10 had 0)
+    assert (p["InpRsiPeriod"], p["InpRsiBuyLevel"], p["InpRsiSellLevel"]) == ("4", "40.0", "55.0")
+    assert (p["InpMaTimeframe"], p["InpMaPeriod"]) == ("16396", "250")
+    assert (p["InpStopLossPct"], p["InpTakeProfitPct"]) == ("1.0", "5.0")
+    assert (p["InpBreakEvenPct"], p["InpBreakEvenLockPct"]) == ("0.0", "0.1")   # v1.20 break-even, off until the prereg decides
+    assert (p["InpTrailTriggerPct"], p["InpTrailDistancePct"], p["InpTrailStepPct"]) == ("1.0", "1.0", "0.05")
+    for gone in ("InpRsiTimeframe", "InpSlippage", "InpLotsWithoutSL"):
+        assert gone not in p, gone
 
 
 def test_icarus_profile_pins_the_grid_defaults():

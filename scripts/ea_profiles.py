@@ -95,15 +95,17 @@ PROFILES = {
         "InpMinLots": "0.01", "InpEquityWarning": "0.20", "InpAccountRisk": "1.00", "InpLotProgression": "3",
         "InpMaxPositions": "6", "InpUnbalanceControl": "false",
     }),
-    # RSI_Reversal_EA v1.10 compiled defaults (standalone, no EACore: no trade-log CSV)
-    "RSI_Reversal_EA": {
-        "InpMagic": "261004", "InpComment": "RSI_REV", "InpSlippage": "30",
-        "InpRsiTimeframe": "16390", "InpRsiPeriod": "4", "InpRsiBuyLevel": "40.0", "InpRsiSellLevel": "55.0",
+    # RSI_Reversal_EA v1.20 compiled defaults: v1.10 signals/exits on EACore (spread guard, daily/monthly stops, CSV log).
+    # InpTimeframe = RSI timeframe (H6). EACore's InpRiskMode is MONEY 0 / PERCENT 1 (v1.10 had PERCENT 0).
+    # Break-even off and trailing on until docs/superpowers/specs/2026-10-14-rsi-donchian-guardrails-prereg.md decides.
+    "RSI_Reversal_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261004", "InpComment": "RSI_REV", "InpTimeframe": "16390",
+        "InpRsiPeriod": "4", "InpRsiBuyLevel": "40.0", "InpRsiSellLevel": "55.0",
         "InpUseMaFilter": "true", "InpMaTimeframe": "16396", "InpMaPeriod": "250", "InpMaMethod": "0",
         "InpStopLossPct": "1.0", "InpTakeProfitPct": "5.0",
+        "InpBreakEvenPct": "0.0", "InpBreakEvenLockPct": "0.1",
         "InpTrailTriggerPct": "1.0", "InpTrailDistancePct": "1.0", "InpTrailStepPct": "0.05",
-        "InpRiskMode": "0", "InpRiskValue": "1.0", "InpLotsWithoutSL": "0.01",
-    },
+    }),
     # Blessing_3 v3.9.6.23 (third-party MQL5 port of the MT4 Blessing 3 grid EA, compile fixes 2026-10-06; standalone, no
     # EACore, no trade CSV: trades come from the report's Deals table). All 190 compiled defaults, generated from
     # mql5/Blessing_3.mq5 with walkforward.parse_inputs; PortionChange "increase" = 1 and the four display colours
