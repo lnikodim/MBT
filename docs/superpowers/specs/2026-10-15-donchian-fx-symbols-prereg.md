@@ -71,3 +71,18 @@ Joint prop_mc, MACD v1.45 + Donchian XAUUSD + RSI v1.20 control (10k sims; pass 
   with both regimes positive; a lower bar for them would be a new pre-registered amendment, not a relaxation here.
   USDCHF and GBPJPY lose in 2025-26 on top of the count. The expectation above was wrong on XAGUSD (it is
   profitable in 2022-24) and right on USDCHF and GBPJPY.
+
+### Correction (same day, found after the verdict above was written): wrong broker data
+The tester agent log shows every run of this batch as `SYMBOL,H4 (ICMarketsEU-Demo)`. The Mac terminal's current
+login (`config/common.ini`: 53093587, ICMarketsEU-Demo) is what the headless tester uses; every earlier EA run in
+this repo (agent logs of 2026-10-13/14) was `Darwinex-Demo`, the broker of the VPS account. Consequences:
+1. Prices, spreads, commission and swaps in all `dfx_*` runs are IC Markets', not Darwinex's.
+2. The IC Markets tick base holds real ticks from 2026-01 only ("history ticks synchronized from 2026.01.02"), so
+   `dfx_USDJPY_rt` is real ticks for 9 of 57 months (the 15% history quality) and M1-generated ticks elsewhere,
+   which is why it matches the OHLC run to 0.1 R. It is not the real-tick confirmation the spec asked for.
+3. The joint prop_mc mixes an IC Markets USDJPY log with three Darwinex logs.
+
+The verdict is therefore **provisional**. Scripts never switch accounts (user rule), so the batch is rerun unchanged
+once the Mac terminal is logged back into the Darwinex demo (3000108525); that rerun is the one the rule applies to.
+Expectation for the rerun: the four failures stand (they fail on trade count and on the 2025-26 sign, not on cost);
+USDJPY's +1.7 R margin in 2025-26 is thin enough to flip either way.
