@@ -60,6 +60,16 @@ PROFILES = {
         "InpTargetR": "2.0", "InpAllowShort": "false", "InpATRPeriod": "20", "InpStopATR": "2.0",
         "InpTrendTF": "16388", "InpTrendEMA": "0",
     }),
+    # TEB_MTF_EA v1.00 compiled defaults (TEB63 2010: M5 entries / M30 trend, EMA 5/12, RSI 20 at 50, cross entry, 10-pip
+    # stop and lot-1 target + spread, lot 2 swing-trailed, sessions on; spread cap 20 pts; spec 2026-10-16-teb-mtf)
+    "TEB_MTF_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261017", "InpComment": "TEB_MTF", "InpTimeframe": "5", "InpMaxSpreadPoints": "20", "InpSpreadWaitMin": "0",
+        "InpFastEMA": "5", "InpSlowEMA": "12", "InpRsiPeriod": "20", "InpTrendTF": "30",
+        "InpTrendRsiBuy": "50.0", "InpTrendRsiSell": "50.0", "InpEntryRsiLevel": "50.0", "InpEntryMode": "0",
+        "InpStopPips": "10.0", "InpTargetPips": "10.0", "InpSecondLot": "true", "InpSwingBars": "2", "InpSwingBufferPips": "1.0",
+        "InpUseSessions": "true", "InpS1Start": "10", "InpS1End": "12", "InpS2Start": "14", "InpS2End": "19",
+        "InpS3Start": "3", "InpS3End": "5",
+    }),
     # EMA_VWAP_Trail_EA v1.03 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)
     "EMA_VWAP_Trail_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261013", "InpComment": "EMA_VWAP", "InpTimeframe": "15",

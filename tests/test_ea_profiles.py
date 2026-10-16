@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA", "TEB_MTF_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -159,3 +159,13 @@ def test_ma_channel_v101_profile_pins_the_stage_a_winner():
     assert (p["InpFastMA"], p["InpSlowMA"], p["InpChannelMA"]) == ("5", "10", "20")
     assert p["InpEntryMode"] == "1" and p["InpExitMode"] == "0"            # v1.01: pullback entry, channel exit
     assert p["InpAllowShort"] == "false" and p["InpTrendEMA"] == "0"       # long-only, no trend filter
+
+
+def test_teb_mtf_profile_pins_the_forum_post():
+    p = P.PROFILES["TEB_MTF_EA"]
+    assert p["InpMagic"] == "261017" and p["InpComment"] == "TEB_MTF"
+    assert p["InpTimeframe"] == "5" and p["InpTrendTF"] == "30"              # M5 entries, M30 trend
+    assert p["InpMaxSpreadPoints"] == "20" and p["InpSpreadWaitMin"] == "0"  # 2-pip cap, no retry on a pip-geometry scalp
+    assert (p["InpFastEMA"], p["InpSlowEMA"], p["InpRsiPeriod"]) == ("5", "12", "20")
+    assert p["InpStopPips"] == "10.0" and p["InpTargetPips"] == "10.0" and p["InpSecondLot"] == "true"
+    assert p["InpUseSessions"] == "true" and (p["InpS1Start"], p["InpS2Start"], p["InpS3Start"]) == ("10", "14", "3")

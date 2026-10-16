@@ -1,0 +1,50 @@
+# TEB_MTF_EA: TEB63's "5ema & 12ema and 21 RSI (MTF)" (pre-registration)
+
+Date: 2026-10-16. User: "Let's try to test another EA, described in the 1st post of this thread:
+forexfactory.com/thread/229238-teb-5ema-12ema-and-21-rsi-mtf. Ask questions if you are not sure how to proceed."
+Source: first post by TEB63, 2 Apr 2010 (archived copy and the user's screenshot; the thread title says 21 RSI, the
+post says 20 RSI). The post, literally:
+- 30-min and 5-min charts; 5 EMA and 12 EMA ("5 & 8 or 5 & 10 doesn't really matter"); 20 RSI with the 50 line
+  ("for a better win rate put 45 and 55 on the higher chart RSI"). Post 8: trend from the 30-min, buy/sell signs
+  from the 5-min; to trade the 30-min use a 3- or 4-hour chart for trend; trend down = only sell, up = only buy.
+  Post 10: wait for the close on the trading chart.
+- Two lots: lot 1 target 10 pips + spread, stop 10 pips; lot 2 to break-even when lot 1 is taken out, then "keep
+  moving up the stop loss with every swing until I am taken out". Away from the screen: next round number or S/R.
+- "Better % on pull backs and break outs than on the crosses" (no definition given).
+- Trade 3-5am, 7am-12 and maybe 8-10pm EST, no holidays, careful at 8:30 and 10:00 EST news.
+- Pairs: EURUSD mostly, then USDJPY and EURGBP; USDCAD, AUDUSD, EURJPY if no trend on those.
+
+User decisions (AskUserQuestion, 2026-10-16): symbols EURUSD, USDJPY, EURGBP; entry = the cross plus a pre-registered
+pullback variant; lot 2 trailed by swings only (no time or round-number exit).
+
+## Hypothesis
+A 10-pip scalp on M5 pays about 0.7 pip per side on Darwinex EURUSD (spread + commission), so lot 1 alone needs a
+54% hit rate to break even and an EMA cross on M5 does not have it. The system's only durable component is lot 2:
+free after +10 pips, trailed under swing lows, it turns a minority of signals into 30-100 pip runners. Whether that
+covers the losers is the test; the M30-entry / H4-trend version has fewer, costlier-per-pip but larger trades.
+Expected: cross cells PF 0.85-1.05, pullback cells slightly better, sessions help, most cells fail Gate A; a pass is
+more likely on the M30/H4 pair than on M5/M30. This is a 2010 forum system; the prior is low.
+
+## EA (`mql5/TEB_MTF_EA.mq5` v1.00, EACore, magic 261017, comment TEB_MTF, spread cap 20 points, retry 0)
+Entry chart = `InpTimeframe` (M5), trend chart = `InpTrendTF` (M30); EMA 5/12 and RSI(20) on both, closed bars.
+Trend up = trend-chart 5 EMA > 12 EMA and RSI > `InpTrendRsiBuy` (50; variant 55), down mirrored with
+`InpTrendRsiSell` (50; variant 45). CROSS entry: entry-chart 5 EMA crosses the 12 EMA on the closed bar with RSI on
+the trend side of 50. PULLBACK entry: with 5 EMA above 12 EMA, bar 2 touched the 12 EMA (low <= slow EMA) and closed
+at or below the 5 EMA, bar 1 closed back above the 5 EMA, RSI > 50; mirrored for sells. One signal at a time. Lot 1:
+stop 10 pips, target 10 pips + current spread. Lot 2 (`InpSecondLot`): same stop, no target; when lot 1 is gone its
+stop moves to the entry price, then on every new entry-chart bar to the latest confirmed swing (low with
+`InpSwingBars` = 2 higher lows on each side) minus a 1-pip buffer, tightening only. Sessions in Darwinex server time
+(= EST + 7 h except the two DST-mismatch weeks): 10-12, 14-19, 03-05, `InpUseSessions` on/off. Pip = 10 points on
+3/5-digit symbols. Self-check `scripts/teb_selfcheck.py`: a 2-month EURUSD M5 run, every `TEB SIGNAL` line must
+satisfy the trend / cross / pullback / session arithmetic, each signal opens two positions (lot 1 target = 10 pips +
+spread, lot 2 no target, both stops 10 pips), lot-2 exits after a lot-1 target are at or above break-even.
+
+## Stage A (`reports/teb/stage_a.py`, 1-min OHLC, 2022-01-01..2026-10-01, 1% risk per position)
+48 cells: symbol {EURUSD, USDJPY, EURGBP} x charts {M5 entry / M30 trend, M30 entry / H4 trend} x entry {CROSS,
+PULLBACK} x trend RSI {50/50, 55/45} x sessions {on, off}. Stops and targets stay 10 pips in every cell (the post gives
+no other number). Gate A per cell: trades >= 150, tester PF >= 1.00, net R > 0 in both 2022-24 and 2025-26 (R is per
+position). Plateau for passers: EMA pairs 5/8 and 5/10 (the author's alternatives) and stops 8 and 12 pips, 4 runs,
+mean PF >= 1.00 and >= 3 of 4 profitable. Then prop_mc and the joint rule against the account's Darwinex control
+(MACD + Donchian + RSI_Reversal, plus MA_Channel v1.01 if its Darwinex rerun passes): joint pass >= control at both
+0.3% and 0.5%, p95 DD at 0.5% not more than 1 pt worse. Caveat accepted by the user's rule: 1-min OHLC modelling with
+10-pip stops resolves same-minute stop-and-target hits by the model's synthetic 4-tick path.
