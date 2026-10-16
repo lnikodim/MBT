@@ -8,15 +8,17 @@
 //|  cross, or fast/slow SMA cross against the position, or R x stop |
 //|  target. Protective stop k x ATR in every mode. One position at a|
 //|  time. Execution, guards and trade log from EACore.mqh.          |
-//|  v1.00: spec 2026-10-16-ma-channel-prereg.md                     |
+//|  v1.01 defaults: H1, PULLBACK entry, CHANNEL exit, long-only     |
+//|        (Stage A winner, spec 2026-10-16 outcome: PF 1.61, +99 R).|
+//|  v1.00: the PDF's breakout system (BREAKOUT, CHANNEL, both sides)|
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #property description "MA price channel (SMA of highs/lows + fast SMA of closes): breakout or pullback entry, channel / MA-cross / target exit; MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "MA_Channel_EA"
-#define EA_VERSION "1.00"
+#define EA_VERSION "1.01"
 #define EA_MAGIC   261016
 #define EA_COMMENT "MA_CH"
 #define EA_TIMEFRAME PERIOD_H1
@@ -33,10 +35,10 @@ input group "=== Strategy ==="
 input int             InpFastMA     = 5;              // Fast SMA of closes (signal line)
 input int             InpSlowMA     = 10;             // Slow SMA of closes (EXIT_CROSS)
 input int             InpChannelMA  = 20;             // Channel: SMA of highs / SMA of lows
-input ENUM_ENTRY_MODE InpEntryMode  = ENTRY_BREAKOUT; // Entry
+input ENUM_ENTRY_MODE InpEntryMode  = ENTRY_PULLBACK; // Entry
 input ENUM_EXIT_MODE  InpExitMode   = EXIT_CHANNEL;   // Exit
 input double          InpTargetR    = 2.0;            // Target, x stop distance (EXIT_TARGET)
-input bool            InpAllowShort = true;           // Allow sells
+input bool            InpAllowShort = false;          // Allow sells
 input int             InpATRPeriod  = 20;             // ATR period (signal timeframe)
 input double          InpStopATR    = 2.0;            // Protective stop, x ATR
 input ENUM_TIMEFRAMES InpTrendTF    = PERIOD_H4;      // Trend filter timeframe

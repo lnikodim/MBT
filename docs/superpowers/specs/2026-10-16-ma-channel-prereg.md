@@ -120,3 +120,9 @@ Donchian: 93.5 / 85.1 (it could replace Donchian, not pre-registered as a decisi
   is logged back in; if Gate A holds there (trades within 10%, PF >= 1.4, both regimes > 0) and the joint rule holds
   with the Darwinex log, v1.01 makes H1 / PULLBACK / CHANNEL / long-only the compiled defaults and the EA joins the
   account at 0.3% per position.
+
+### Release (2026-10-16, user: "ok, release 1.01 with pullback entry")
+v1.01 compiled defaults = H1, `InpEntryMode PULLBACK`, `InpExitMode CHANNEL`, `InpAllowShort false` (everything
+else unchanged). Parity run `mach_v101_default` with no overrides: 292 trades, PF 1.61, net 150,761, DD 12.25%,
+identical to `mach_H1_pb_ch_l`. Released on the user's decision before the Darwinex confirmation; that rerun stays
+on the list and its gate above still applies.

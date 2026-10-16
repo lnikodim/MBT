@@ -52,12 +52,12 @@ PROFILES = {
         "InpChannelBars": "20", "InpTrendTF": "16388", "InpTrendEMA": "200", "InpAllowShort": "false",
         "InpATRPeriod": "20", "InpStopATR": "2.0", "InpTargetR": "2.0", "InpBreakEvenR": "0.0", "InpBELockR": "0.2",
     }),
-    # MA_Channel_EA v1.00 compiled defaults (Kennedy MA price channel: H1, SMA 5/10, SMA20 of highs/lows, breakout entry,
-    # channel exit, 2 x ATR(20) stop, both sides, trend filter off; spec 2026-10-16)
+    # MA_Channel_EA v1.01 compiled defaults (Kennedy MA price channel: H1, SMA 5/10, SMA20 of highs/lows, PULLBACK entry,
+    # channel exit, 2 x ATR(20) stop, long-only, trend filter off = the Stage A winner, spec 2026-10-16 outcome)
     "MA_Channel_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261016", "InpComment": "MA_CH", "InpTimeframe": "16385", "InpSpreadWaitMin": "0",
-        "InpFastMA": "5", "InpSlowMA": "10", "InpChannelMA": "20", "InpEntryMode": "0", "InpExitMode": "0",
-        "InpTargetR": "2.0", "InpAllowShort": "true", "InpATRPeriod": "20", "InpStopATR": "2.0",
+        "InpFastMA": "5", "InpSlowMA": "10", "InpChannelMA": "20", "InpEntryMode": "1", "InpExitMode": "0",
+        "InpTargetR": "2.0", "InpAllowShort": "false", "InpATRPeriod": "20", "InpStopATR": "2.0",
         "InpTrendTF": "16388", "InpTrendEMA": "0",
     }),
     # EMA_VWAP_Trail_EA v1.03 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)

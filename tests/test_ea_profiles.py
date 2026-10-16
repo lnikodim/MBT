@@ -152,10 +152,10 @@ def test_blessing_profile_is_complete_and_strings_are_bare():
     assert "GridSetArray=25,50,100" in lines and "MaxTrades=15||15||1||15||N" in lines
 
 
-def test_ma_channel_profile_pins_the_pdf_defaults():
+def test_ma_channel_v101_profile_pins_the_stage_a_winner():
     p = P.PROFILES["MA_Channel_EA"]
     assert p["InpMagic"] == "261016" and p["InpComment"] == "MA_CH"
     assert p["InpTimeframe"] == "16385" and p["InpSpreadWaitMin"] == "0"   # H1; target = R x stop: no spread retry
     assert (p["InpFastMA"], p["InpSlowMA"], p["InpChannelMA"]) == ("5", "10", "20")
-    assert p["InpEntryMode"] == "0" and p["InpExitMode"] == "0"            # breakout entry, channel exit = the PDF's system
-    assert p["InpAllowShort"] == "true" and p["InpTrendEMA"] == "0"
+    assert p["InpEntryMode"] == "1" and p["InpExitMode"] == "0"            # v1.01: pullback entry, channel exit
+    assert p["InpAllowShort"] == "false" and p["InpTrendEMA"] == "0"       # long-only, no trend filter
