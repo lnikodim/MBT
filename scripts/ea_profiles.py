@@ -70,6 +70,13 @@ PROFILES = {
         "InpUseSessions": "true", "InpS1Start": "10", "InpS1End": "12", "InpS2Start": "14", "InpS2End": "19",
         "InpS3Start": "3", "InpS3End": "5",
     }),
+    # EMA_RSI_CCI_EA v1.00 compiled defaults (ahmedabbas 2016: H1, EMA 5/12 cross, RSI 21 > 50, CCI 80 > 0, 35-pip stop,
+    # no target, indicator exit, both sides; spread cap 30 pts; spec 2026-10-16-ema-rsi-cci)
+    "EMA_RSI_CCI_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261018", "InpComment": "EMARC", "InpTimeframe": "16385", "InpMaxSpreadPoints": "30",
+        "InpFastEMA": "5", "InpSlowEMA": "12", "InpRsiPeriod": "21", "InpRsiLevel": "50.0",
+        "InpCciPeriod": "80", "InpCciLevel": "0.0", "InpStopPips": "35.0", "InpTargetPips": "0.0", "InpAllowShort": "true",
+    }),
     # EMA_VWAP_Trail_EA v1.03 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)
     "EMA_VWAP_Trail_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261013", "InpComment": "EMA_VWAP", "InpTimeframe": "15",
