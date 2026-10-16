@@ -126,3 +126,11 @@ v1.01 compiled defaults = H1, `InpEntryMode PULLBACK`, `InpExitMode CHANNEL`, `I
 else unchanged). Parity run `mach_v101_default` with no overrides: 292 trades, PF 1.61, net 150,761, DD 12.25%,
 identical to `mach_H1_pb_ch_l`. Released on the user's decision before the Darwinex confirmation; that rerun stays
 on the list and its gate above still applies.
+
+### Darwinex confirmation (2026-10-16, run `dxc_mach_v101` and `dxc_mach_h4_pbx`, 1-min OHLC)
+v1.01 defaults on Darwinex-Demo: 299 trades (+2.4% vs 292), PF 1.55, +95.7 R, DD 12.2%; 2022 +2.5, 2023 +24.7,
+2024 +29.8, 2025 +31.4, 2026 +7.3 R. Gate: trades within 10% yes, PF >= 1.4 yes, both regimes > 0 yes. Joint with the
+3-EA control: 94.5 / 85.1, 94.6 / 85.3, 94.0 / 85.2 vs 91.4 / 82.9, 91.1 / 83.4, 90.7 / 83.4; breach 9.5 -> 8.1;
+p95 DD +0.5. **CONFIRMED**: v1.01 stays the released default and joins the account at 0.3% per position.
+H4 pullback / cross / both sides on Darwinex: 203 trades, PF 1.27, +20.9 / +4.0 R; joint 92.1 / 83.8 alone and it
+lowers the pair when added to v1.01 (94.0 / 84.3): not used.

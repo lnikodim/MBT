@@ -86,3 +86,10 @@ The verdict is therefore **provisional**. Scripts never switch accounts (user ru
 once the Mac terminal is logged back into the Darwinex demo (3000108525); that rerun is the one the rule applies to.
 Expectation for the rerun: the four failures stand (they fail on trade count and on the 2025-26 sign, not on cost);
 USDJPY's +1.7 R margin in 2025-26 is thin enough to flip either way.
+
+### Darwinex rerun (2026-10-16, `reports/portfolio/darwinex_confirm.py`, run `dxc_usdjpy`, 1-min OHLC per the user's rule)
+USDJPY on Darwinex-Demo: 166 trades, PF 1.37, +33.9 R, DD 7.6%; 2022 +27.4, 2023 +1.8, 2024 +5.7, 2025 +4.8,
+2026 -5.9 R -> 2022-24 +39.5, **2025-26 -2.0 R: FAILS Gate A** (the expectation flagged the +1.7 R margin as able to flip).
+Joint with the 3-EA control: 93.6 / 85.2, 93.1 / 85.4, 93.4 / 85.9 on seeds 1-3 vs 91.4 / 82.9, 91.1 / 83.4, 90.7 / 83.4.
+Verdict under the rule: USDJPY comes off the VPS like the other four (Gate A must hold on Darwinex). The joint lift
+is real and comes almost entirely from 2022; it is recorded, not acted on.
