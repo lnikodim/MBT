@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -150,3 +150,12 @@ def test_blessing_profile_is_complete_and_strings_are_bare():
     assert {"GridSetArray", "TradeComment", "Holidays", "HedgeSymbol"} <= P.STRING_INPUTS
     lines = P.tester_input_lines(p, {})
     assert "GridSetArray=25,50,100" in lines and "MaxTrades=15||15||1||15||N" in lines
+
+
+def test_ma_channel_profile_pins_the_pdf_defaults():
+    p = P.PROFILES["MA_Channel_EA"]
+    assert p["InpMagic"] == "261016" and p["InpComment"] == "MA_CH"
+    assert p["InpTimeframe"] == "16385" and p["InpSpreadWaitMin"] == "0"   # H1; target = R x stop: no spread retry
+    assert (p["InpFastMA"], p["InpSlowMA"], p["InpChannelMA"]) == ("5", "10", "20")
+    assert p["InpEntryMode"] == "0" and p["InpExitMode"] == "0"            # breakout entry, channel exit = the PDF's system
+    assert p["InpAllowShort"] == "true" and p["InpTrendEMA"] == "0"
