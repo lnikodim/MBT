@@ -48,3 +48,42 @@ mean PF >= 1.00 and >= 3 of 4 profitable. Then prop_mc and the joint rule agains
 (MACD + Donchian + RSI_Reversal, plus MA_Channel v1.01 if its Darwinex rerun passes): joint pass >= control at both
 0.3% and 0.5%, p95 DD at 0.5% not more than 1 pt worse. Caveat accepted by the user's rule: 1-min OHLC modelling with
 10-pip stops resolves same-minute stop-and-target hits by the model's synthetic 4-tick path.
+
+## Outcome (2026-10-16, Darwinex-Demo 1-min OHLC, log `reports/teb/stage_a.log`, runs `reports/teb_*`)
+Self-check: both entry modes pass (70 and 95 signals in Jan-Feb 2026 EURUSD M5; two positions per signal; lot 2 at
+break-even after all 85 lot-1 targets). One fix on the way: the signal line printed EMAs at 5 decimals, which made
+sub-0.1-pip crosses look equal; now 8 decimals (commit 238be79).
+
+Stage A, 48 cells (1% risk per position; PF range over the 8 cells of each symbol and chart pair):
+
+| symbol, charts | PF range | trades | tester DD | profitable cells | best cell (PF, R 2022-24 / 2025-26) |
+|---|---|---|---|---|---|
+| EURUSD M5 / M30 | 0.71-0.90 | 2,663-4,962 | 89-100% | 0 / 8 | pullback, RSI 55/45, sessions: 0.90, -38 / -125 |
+| EURUSD M30 / H4 | 0.72-0.93 | 960-2,374 | 58-94% | 0 / 8 | cross, RSI 55/45, no sessions: 0.93, +19 / -95 |
+| USDJPY M5 / M30 | 0.88-0.95 | 3,497-7,781 | 89-99% | 0 / 8 | cross, RSI 50, no sessions: 0.95, -39 / -211 |
+| USDJPY M30 / H4 | 0.87-1.07 | 1,058-2,842 | 56-90% | 2 / 8 | pullback, RSI 50, sessions: 1.07, +121 / -12 |
+| EURGBP M5 / M30 | 0.58-0.87 | 2,447-3,956 | 98-100% | 0 / 8 | pullback, RSI 50, sessions: 0.87, -204 / -268 |
+| EURGBP M30 / H4 | 0.58-0.71 | 858-1,980 | 81-99% | 0 / 8 | cross, RSI 55/45, no sessions: 0.71, -179 / -103 |
+
+**Gate A: 0 of 48 pass.** No cell is positive in 2025-26; the 8 cells positive in 2022-24 are all M30/H4 (6 USDJPY,
+2 EURUSD) and all give it back in 2025-26. Plateau, prop_mc and the joint rule were not reached. Mean PF by switch:
+cross 0.81 vs pullback 0.82, RSI 50 0.82 vs 55/45 0.81, sessions 0.83 vs none 0.80: none of the author's
+refinements moves the result.
+
+Where it loses (lot 1 = 10-pip scalp, lot 2 = break-even then swing trail):
+
+| cell | lot-1 hit rate (needed) | lot-1 R | lot-2 R | lot-2 runners > +2 R |
+|---|---|---|---|---|
+| EURUSD M5 cross, RSI 50, sessions | 46.2% (52.4%) | -216 | -227 | 127 of 1,854 |
+| EURUSD M30 cross, RSI 50, sessions | 48.8% (52.4%) | -50 | -32 | 61 of 701 |
+| USDJPY M30 pullback, RSI 50, sessions | 49.7% (52.8%) | -43 | +152 | 66 of 749 |
+
+The scalp lot loses everywhere: the cost of a round trip moves the break-even hit rate to 52-53% and the signal
+delivers 46-50%. The runner lot only pays where the pair trended for years (USDJPY 2022-24), as the hypothesis
+expected, and that trend ended in 2025.
+
+### Verdict
+TEB_MTF_EA as posted fails Stage A on all three of the author's pairs. CLOSED: no retune (stops and targets are
+fixed by the post, and every switch the post offers was tested). The EA, profile, self-check and batch stay as tools.
+The expectation (cross cells PF 0.85-1.05, most cells fail, M30/H4 likelier) was right; sessions and pullbacks helped
+less than expected.
