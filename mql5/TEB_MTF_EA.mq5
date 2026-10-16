@@ -233,7 +233,7 @@ void OnTick()
    const double tp1    = NormalizeDouble(buy ? price + tpDist : price - tpDist, g_symbol.Digits());
    MqlDateTime d;
    TimeToStruct(bar, d);
-   PrintFormat("TEB SIGNAL %s f1=%.5f f2=%.5f s1=%.5f s2=%.5f r1=%.2f fT=%.5f sT=%.5f rT=%.2f c1=%.5f c2=%.5f lo2=%.5f hi2=%.5f hour=%d sl_dist=%.5f tp_dist=%.5f spread=%.5f mode=%d trend=%d",
+   PrintFormat("TEB SIGNAL %s f1=%.8f f2=%.8f s1=%.8f s2=%.8f r1=%.4f fT=%.8f sT=%.8f rT=%.4f c1=%.5f c2=%.5f lo2=%.5f hi2=%.5f hour=%d sl_dist=%.5f tp_dist=%.5f spread=%.5f mode=%d trend=%d",
                buy ? "BUY" : "SELL", f1, f2, s1, s2, r1, fT[0], sT[0], rT[0], c1, c2, lo2, hi2, d.hour, slDist, tpDist, spread, (int)InpEntryMode, trend);
    Core_LogBar(bar, ctx + StringFormat(" | %s stop %.1f pips, lot-1 target %.5f", buy ? "BUY" : "SELL", InpStopPips, tp1));
    const ENUM_POSITION_TYPE type = buy ? POSITION_TYPE_BUY : POSITION_TYPE_SELL;
