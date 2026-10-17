@@ -77,6 +77,16 @@ PROFILES = {
         "InpFastEMA": "5", "InpSlowEMA": "12", "InpRsiPeriod": "21", "InpRsiLevel": "50.0",
         "InpCciPeriod": "80", "InpCciLevel": "0.0", "InpStopPips": "35.0", "InpTargetPips": "0.0", "InpAllowShort": "true",
     }),
+    # FZMR_EA v1.00 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
+    # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
+    "FZMR_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261019", "InpComment": "FZMR", "InpTimeframe": "15", "InpSpreadWaitMin": "0",
+        "InpZPeriod": "20", "InpZThreshold": "2.0", "InpERPeriod": "10", "InpMaxER": "0.40",
+        "InpUseTrendFilter": "true", "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200",
+        "InpRSIPeriod": "7", "InpRSIOverbought": "70.0", "InpRSIOversold": "30.0",
+        "InpATRPeriod": "14", "InpSLMultiplier": "2.0", "InpTPMultiplier": "2.5", "InpTargetR": "0.0", "InpMaxHoldBars": "24",
+        "InpStartHour": "2", "InpEndHour": "20", "InpSkipNYOpen": "true", "InpAllowShort": "true",
+    }),
     # EMA_VWAP_Trail_EA v1.03 compiled defaults (Pine port: M15, daily VWAP, EMA 9, 2 x ATR(14) stop + trail from entry)
     "EMA_VWAP_Trail_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261013", "InpComment": "EMA_VWAP", "InpTimeframe": "15",

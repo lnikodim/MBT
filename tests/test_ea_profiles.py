@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA", "TEB_MTF_EA", "EMA_RSI_CCI_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA", "TEB_MTF_EA", "EMA_RSI_CCI_EA", "FZMR_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -178,3 +178,13 @@ def test_ema_rsi_cci_profile_pins_the_forum_post():
     assert (p["InpFastEMA"], p["InpSlowEMA"], p["InpRsiPeriod"], p["InpCciPeriod"]) == ("5", "12", "21", "80")
     assert p["InpRsiLevel"] == "50.0" and p["InpCciLevel"] == "0.0"                   # user: CCI midline 0
     assert p["InpStopPips"] == "35.0" and p["InpTargetPips"] == "0.0" and p["InpAllowShort"] == "true"
+
+
+def test_fzmr_profile_pins_the_v6_defaults():
+    p = P.PROFILES["FZMR_EA"]
+    assert p["InpMagic"] == "261019" and p["InpComment"] == "FZMR"
+    assert p["InpTimeframe"] == "15" and p["InpMaxSpreadPoints"] == "150" and p["InpSpreadWaitMin"] == "0"  # M15; v6 skips a blocked bar
+    assert (p["InpZPeriod"], p["InpZThreshold"], p["InpERPeriod"], p["InpMaxER"]) == ("20", "2.0", "10", "0.40")
+    assert (p["InpFastEMAPeriod"], p["InpSlowEMAPeriod"], p["InpRSIPeriod"]) == ("50", "200", "7")
+    assert (p["InpSLMultiplier"], p["InpTPMultiplier"], p["InpTargetR"], p["InpMaxHoldBars"]) == ("2.0", "2.5", "0.0", "24")
+    assert (p["InpStartHour"], p["InpEndHour"], p["InpSkipNYOpen"], p["InpAllowShort"]) == ("2", "20", "true", "true")
