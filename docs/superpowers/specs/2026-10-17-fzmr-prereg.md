@@ -79,8 +79,8 @@ check's own minimum of 30; the window was widened to the full year before any St
 | long 3R H1 | 35 | 1.42 | 6.0% | +7.5 / +3.3 | +3.1% | fail (trades) |
 
 **Gate A: 0 of 8 pass**; plateau, prop_mc and the joint rule were not reached. M15: every cell loses (PF 0.82-0.91).
-The v6 defaults pay about +1.2 R at the target against -1.0 R at the stop and win 45.7% (sells 46.0%, buys 44.6%),
-under the 45-46% needed; dropping sells, or a 2-3 R target, does not change the sign. H1: every cell is positive in both
+The v6 defaults win 45.7% (buys 44.7%, sells 46.9%) at an average win of +1.06 R against -0.98 R, under the 48%
+needed (target +1.22 R, stop -1.02 R, time exits +0.1 to +0.2 R); dropping sells, or a 2-3 R target, does not change the sign. H1: every cell is positive in both
 regimes but trades 35-57 times in 4.75 years (7-12 a year), too few to tell an edge from luck (long 3R H1: +10.8 R on
 35 trades). The user's +50% from 2025: the best cell made +3.1% in 2025-26 at 1% risk.
 Expectation check: v6 M15 PF 0.90 and buy-only 0.89-0.91 were inside the predicted ranges; the target cells did not
