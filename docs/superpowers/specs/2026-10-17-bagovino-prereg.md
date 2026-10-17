@@ -60,3 +60,20 @@ hit (57 / 46 times), so the result is the signal itself. The expectation held (P
 
 ### Verdict
 Bagovino's 5/12 EMA + RSI 21 has no edge on EURUSD H1 2022-26. CLOSED with its descendants (EMA_RSI_CCI, TEB_MTF).
+
+## Amendment 1 (2026-10-17, before any run): confirmation candle
+User: "BUY signal only if the previous rules are confirmed AND the next candle is also bullish AND RSI is above or
+equal to 55; SELL signal only if the previous rules are confirmed AND the next candle is also bearish AND RSI is below
+or equal to 45. After applying the rules, backtest the EA again on 1H timeframe".
+Reading: the previous rules fire on bar N (both crossed); the trade is taken at the open of bar N+2 only if bar N+1
+(the next candle) closes in the signal direction (close > open for buys, < for sells) with RSI(21) on bar N+1 >= 55
+(sells <= 45). Only the immediately next candle counts; otherwise the signal is dropped. In stop-and-reverse mode
+the exit is the opposite confirmed signal. Code: v1.02 `InpConfirmRsi` (0 = off = v1.01).
+
+Checks: (1) v1.00 parity selfcheck OK; (2) v1.01 parity: `rev35` without confirmation reproduces 1,594 trades and net
+-52,856.68 exactly; (3) confirmation check (EURUSD H1 2026-01..07, real ticks, rev35 inputs + confirmation): every
+SIGNAL line has the previous rules on the bar before (agreement at shift 2, not at shift 3), the confirming candle in
+its direction and RSI >= 55 / <= 45; every EXIT line is the opposite confirmed signal; entries match their signal hour;
+35-pip stops; one position; >= 90% of signal exits reversed in the same hour.
+Stage A again (`reports/bagovino/confirm.py`): the same 4 cells and gate with `InpConfirmRsi` 55 (`c_rev35`, `c_rev60`,
+`c_ind35`, `c_ind60`). Expectation: fewer trades (about a third), later entries; PF 0.80-1.00; 0 of 4 pass.

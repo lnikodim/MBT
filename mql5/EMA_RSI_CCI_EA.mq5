@@ -11,14 +11,17 @@
 //|  crossed" (EMA side and RSI side agree, one just turned); exit   |
 //|  mode "reverse" (exit only on the opposite signal, then reverse).|
 //|  Defaults = v1.00. Spec 2026-10-17-bagovino-prereg.md           |
+//|  v1.02: confirmation candle (InpConfirmRsi > 0): a signal on    |
+//|  the bar before trades only if the last closed candle closes in |
+//|  its direction with RSI >= level (sells <= 100 - level).        |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 #property description "EMA 5/12 cross + RSI(21) and CCI(80) filter, indicator exit, fixed pip stop; MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "EMA_RSI_CCI_EA"
-#define EA_VERSION "1.01"
+#define EA_VERSION "1.02"
 #define EA_MAGIC   261018
 #define EA_COMMENT "EMARC"
 #define EA_TIMEFRAME PERIOD_H1
@@ -48,6 +51,7 @@ input double InpTargetPips = 0.0;   // Take profit (pips, 0 = indicator exit onl
 input bool   InpAllowShort = true;  // Allow sells
 input ENUM_EMARC_ENTRY InpEntryMode = ENTRY_EMA_CROSS; // Entry
 input ENUM_EMARC_EXIT  InpExitMode  = EXIT_INDICATOR;  // Exit
+input double InpConfirmRsi = 0.0;   // Confirmation candle: next candle in the signal direction, RSI >= this (sells <= 100 - this); 0 = off
 
 int g_fast = INVALID_HANDLE, g_slow = INVALID_HANDLE, g_rsi = INVALID_HANDLE, g_cci = INVALID_HANDLE;
 
@@ -57,9 +61,10 @@ double Pip() { return((_Digits == 5 || _Digits == 3) ? 10.0 * _Point : _Point); 
 int OnInit()
   {
    if(InpFastEMA < 1 || InpSlowEMA <= InpFastEMA || InpRsiPeriod < 2 || (InpCciPeriod != 0 && InpCciPeriod < 2) || InpStopPips <= 0.0 ||
-      InpTargetPips < 0.0 || InpRsiLevel < 50.0 || InpRsiLevel >= 100.0 || InpCciLevel < 0.0)
+      InpTargetPips < 0.0 || InpRsiLevel < 50.0 || InpRsiLevel >= 100.0 || InpCciLevel < 0.0 ||
+      (InpConfirmRsi != 0.0 && (InpConfirmRsi < 50.0 || InpConfirmRsi >= 100.0)))
      {
-      Print("Invalid inputs: slow EMA > fast EMA >= 1, RSI period >= 2, CCI period 0 or >= 2, stop pips > 0, target pips >= 0, 50 <= RSI level < 100, CCI level >= 0");
+      Print("Invalid inputs: slow EMA > fast EMA >= 1, RSI period >= 2, CCI period 0 or >= 2, stop pips > 0, target pips >= 0, 50 <= RSI level < 100, CCI level >= 0, confirm RSI 0 or 50-100");
       return(INIT_PARAMETERS_INCORRECT);
      }
    if(!Core_Init())
@@ -76,9 +81,9 @@ int OnInit()
      }
    PrintFormat("%s v%s started on %s %s, magic %I64u, own positions: %d",
                EA_NAME, EA_VERSION, _Symbol, EnumToString(InpTimeframe), InpMagic, CountOwnPositions());
-   PrintFormat("Inputs: EMA %d/%d | RSI(%d) level %.0f | CCI(%d) level %.0f | entry %s | exit %s | stop %.1f pips | target %s | shorts %s | risk %s %.2f",
+   PrintFormat("Inputs: EMA %d/%d | RSI(%d) level %.0f | CCI(%d) level %.0f | entry %s | exit %s | confirm RSI %.0f | stop %.1f pips | target %s | shorts %s | risk %s %.2f",
                InpFastEMA, InpSlowEMA, InpRsiPeriod, InpRsiLevel, InpCciPeriod, InpCciLevel,
-               InpEntryMode == ENTRY_EMA_CROSS ? "EMA cross" : "both crossed", InpExitMode == EXIT_INDICATOR ? "indicator" : "reverse", InpStopPips,
+               InpEntryMode == ENTRY_EMA_CROSS ? "EMA cross" : "both crossed", InpExitMode == EXIT_INDICATOR ? "indicator" : "reverse", InpConfirmRsi, InpStopPips,
                InpTargetPips > 0.0 ? StringFormat("%.1f pips", InpTargetPips) : "off", InpAllowShort ? "on" : "off",
                InpRiskMode == RISK_PERCENT ? "percent" : "money", InpRiskValue);
    Core_PrintReady();
@@ -94,6 +99,17 @@ void OnDeinit(const int reason)
    Core_Deinit(reason);
   }
 
+//--- entry signal of the previous rules on the bar at index i of oldest-first arrays (i - 1 = the bar before it)
+int RawSignal(const double &f[], const double &s[], const double &r[], const double &c[], const int i)
+  {
+   const bool cciOff = (InpCciPeriod == 0);
+   const bool bull  = (r[i]     > InpRsiLevel && (cciOff || c[i]     > InpCciLevel)), bear  = (r[i]     < 100.0 - InpRsiLevel && (cciOff || c[i]     < -InpCciLevel));
+   const bool bullP = (r[i - 1] > InpRsiLevel && (cciOff || c[i - 1] > InpCciLevel)), bearP = (r[i - 1] < 100.0 - InpRsiLevel && (cciOff || c[i - 1] < -InpCciLevel));
+   if(InpEntryMode == ENTRY_EMA_CROSS)
+      return((f[i] > s[i] && f[i - 1] <= s[i - 1] && bull) ? 1 : (f[i] < s[i] && f[i - 1] >= s[i - 1] && bear) ? -1 : 0);
+   return((f[i] > s[i] && bull && !(f[i - 1] > s[i - 1] && bullP)) ? 1 : (f[i] < s[i] && bear && !(f[i - 1] < s[i - 1] && bearP)) ? -1 : 0);
+  }
+
 void OnTick()
   {
    Core_OnTickStart();
@@ -101,19 +117,24 @@ void OnTick()
    Core_RetryPending(bar);
    if(!Core_IsNewBar(bar))
       return;
-   double f[2], s[2], r[2], c[2] = {0.0, 0.0};
-   if(CopyBuffer(g_fast, 0, 1, 2, f) < 2 || CopyBuffer(g_slow, 0, 1, 2, s) < 2 ||
-      CopyBuffer(g_rsi, 0, 1, 2, r) < 2 || (InpCciPeriod > 0 && CopyBuffer(g_cci, 0, 1, 2, c) < 2))
+   double f[3], s[3], r[3], c[3] = {0.0, 0.0, 0.0};
+   const double o1 = iOpen(_Symbol, InpTimeframe, 1), c1 = iClose(_Symbol, InpTimeframe, 1);
+   if(CopyBuffer(g_fast, 0, 1, 3, f) < 3 || CopyBuffer(g_slow, 0, 1, 3, s) < 3 ||
+      CopyBuffer(g_rsi, 0, 1, 3, r) < 3 || (InpCciPeriod > 0 && CopyBuffer(g_cci, 0, 1, 3, c) < 3) || o1 == 0.0 || c1 == 0.0)
       return;                                      // data not ready: bar stays unprocessed, retried next tick
    Core_MarkBar(bar);
-   // oldest-first: f[1] = shift 1 (last closed bar), f[0] = shift 2
-   const double f1 = f[1], f2 = f[0], s1 = s[1], s2 = s[0], rsi = r[1], rsi2 = r[0], cci = c[1], cci2 = c[0];
+   // oldest-first: [2] = shift 1 (last closed bar), [1] = shift 2, [0] = shift 3
+   const double f1 = f[2], f2 = f[1], s1 = s[2], s2 = s[1], rsi = r[2], rsi2 = r[1], cci = c[2], cci2 = c[1];
    const bool crossUp = (f1 > s1 && f2 <= s2), crossDn = (f1 < s1 && f2 >= s2);
    const bool cciOff = (InpCciPeriod == 0);
    const bool bull  = (rsi  > InpRsiLevel && (cciOff || cci  > InpCciLevel)), bear  = (rsi  < 100.0 - InpRsiLevel && (cciOff || cci  < -InpCciLevel));
-   const bool bull2 = (rsi2 > InpRsiLevel && (cciOff || cci2 > InpCciLevel)), bear2 = (rsi2 < 100.0 - InpRsiLevel && (cciOff || cci2 < -InpCciLevel));
-   const bool buySig  = (InpEntryMode == ENTRY_EMA_CROSS) ? (crossUp && bull) : (f1 > s1 && bull && !(f2 > s2 && bull2));
-   const bool sellSig = (InpEntryMode == ENTRY_EMA_CROSS) ? (crossDn && bear) : (f1 < s1 && bear && !(f2 < s2 && bear2));
+   int raw = RawSignal(f, s, r, c, 2);
+   if(InpConfirmRsi > 0.0)                         // signal on the bar before, confirmed by the last closed candle
+     {
+      const int prev = RawSignal(f, s, r, c, 1);
+      raw = (prev > 0 && c1 > o1 && rsi >= InpConfirmRsi) ? 1 : (prev < 0 && c1 < o1 && rsi <= 100.0 - InpConfirmRsi) ? -1 : 0;
+     }
+   const bool buySig = (raw > 0), sellSig = (raw < 0);
    const string ctx = StringFormat("ema %.6f/%.6f rsi %.2f cci %.2f", f1, s1, rsi, cci);
    ulong ticket = 0;
    if(Core_SelectOwnPosition(ticket))
@@ -126,7 +147,8 @@ void OnTick()
          Core_LogBar(bar, ctx + " | holding");
          return;
         }
-      PrintFormat("EMARC EXIT %s f1=%.8f f2=%.8f s1=%.8f s2=%.8f rsi=%.4f cci=%.4f rsi2=%.4f cci2=%.4f", isBuy ? "BUY" : "SELL", f1, f2, s1, s2, rsi, cci, rsi2, cci2);
+      PrintFormat("EMARC EXIT %s f1=%.8f f2=%.8f s1=%.8f s2=%.8f rsi=%.4f cci=%.4f rsi2=%.4f cci2=%.4f f3=%.8f s3=%.8f rsi3=%.4f o1=%.5f c1=%.5f",
+                  isBuy ? "BUY" : "SELL", f1, f2, s1, s2, rsi, cci, rsi2, cci2, f[0], s[0], r[0], o1, c1);
       if(!Core_ClosePosition(ticket, "expert") || CountOwnPositions() > 0)
         {
          Core_LogBar(bar, ctx + " | exit sent");
@@ -145,8 +167,8 @@ void OnTick()
    const double price  = buy ? g_symbol.Ask() : g_symbol.Bid();
    const double slDist = InpStopPips * Pip();
    const double tp     = InpTargetPips > 0.0 ? NormalizeDouble(buy ? price + InpTargetPips * Pip() : price - InpTargetPips * Pip(), g_symbol.Digits()) : 0.0;
-   PrintFormat("EMARC SIGNAL %s f1=%.8f f2=%.8f s1=%.8f s2=%.8f rsi=%.4f cci=%.4f rsi2=%.4f cci2=%.4f sl_dist=%.5f tp=%.5f",
-               buy ? "BUY" : "SELL", f1, f2, s1, s2, rsi, cci, rsi2, cci2, slDist, tp);
+   PrintFormat("EMARC SIGNAL %s f1=%.8f f2=%.8f s1=%.8f s2=%.8f rsi=%.4f cci=%.4f rsi2=%.4f cci2=%.4f f3=%.8f s3=%.8f rsi3=%.4f o1=%.5f c1=%.5f sl_dist=%.5f tp=%.5f",
+               buy ? "BUY" : "SELL", f1, f2, s1, s2, rsi, cci, rsi2, cci2, f[0], s[0], r[0], o1, c1, slDist, tp);
    Core_LogBar(bar, ctx + StringFormat(" | %s stop %.1f pips", buy ? "BUY" : "SELL", InpStopPips));
    Core_Open(buy ? POSITION_TYPE_BUY : POSITION_TYPE_SELL, slDist, tp);
   }

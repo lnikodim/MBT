@@ -76,7 +76,7 @@ PROFILES = {
         "InpMagic": "261018", "InpComment": "EMARC", "InpTimeframe": "16385", "InpMaxSpreadPoints": "30",
         "InpFastEMA": "5", "InpSlowEMA": "12", "InpRsiPeriod": "21", "InpRsiLevel": "50.0",
         "InpCciPeriod": "80", "InpCciLevel": "0.0", "InpStopPips": "35.0", "InpTargetPips": "0.0", "InpAllowShort": "true",
-        "InpEntryMode": "0", "InpExitMode": "0",   # v1.01 (Bagovino modes); defaults = v1.00 rules
+        "InpEntryMode": "0", "InpExitMode": "0", "InpConfirmRsi": "0.0",   # v1.01/1.02 (Bagovino modes); defaults = v1.00 rules
     }),
     "BarDump": {},   # tester helper: M1 bars to Common\Files\bars_<symbol>_M1.csv, no inputs
     # Enhanced Range Breakout EA v1.89 (third-party .ex5, no source; installed without the dot in "v1.89"): compiled

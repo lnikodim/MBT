@@ -179,6 +179,7 @@ def test_ema_rsi_cci_profile_pins_the_forum_post():
     assert p["InpRsiLevel"] == "50.0" and p["InpCciLevel"] == "0.0"                   # user: CCI midline 0
     assert p["InpStopPips"] == "35.0" and p["InpTargetPips"] == "0.0" and p["InpAllowShort"] == "true"
     assert p["InpEntryMode"] == "0" and p["InpExitMode"] == "0"                       # v1.01 modes default to v1.00 rules
+    assert p["InpConfirmRsi"] == "0.0"                                                  # v1.02 confirmation candle off by default
 
 
 def test_fzmr_profile_pins_the_v6_defaults():
