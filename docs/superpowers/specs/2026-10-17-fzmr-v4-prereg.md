@@ -45,3 +45,24 @@ Gate A per cell: trades >= 150, tester PF >= 1.00, net R > 0 in both 2022-24 and
 Plateau for passers: z threshold 1.75 / 2.25 and stop x0.75 / x1.25 (source defaults 1.2 / 2.0; 13:11 values 1.9 / 3.1);
 mean PF >= 1.00 and >= 3 of 4 profitable. A plateau passer then gets an EACore port (CSV log) and the joint rule against
 the 4-EA Darwinex control, pre-registered separately.
+
+## Outcome (2026-10-17, Darwinex-Demo real ticks, log `reports/fzmr/v4_stage_a.log`, runs `reports/fzmr_v4*`)
+Step 0: the pasted source IS the 13:11 build: 215 / 215 entries match by time and side; the rerun ended +609 USD, PF 1.01,
++1.3 R (buys -7.9 R, sells +9.1 R): the user's "+0.7%" reproduced, and it is breakeven.
+
+| cell | trades | PF | tester DD | R 2022-24 / 2025-26 | exits (n, avg R) | Gate A |
+|---|---|---|---|---|---|---|
+| v4 defaults XAUUSD, cap 15 | 74 | 1.07 | 6.4% | +1.1 / +1.5 | EA 42 +0.85, stop 32 -1.04 | fail (trades) |
+| v4 defaults XAUUSD, cap 150 | 181 | 0.97 | 13.5% | -8.5 / +6.6 | EA 98 +0.81, target 3, stop 80 -1.07 | fail |
+| v4 defaults EURUSD, cap 15 | 167 | 0.99 | 14.3% | -11.4 / +11.3 | EA 89 +0.80, target 5, stop 73 -1.06 | fail |
+| 13:11 values XAUUSD, cap 150 | 771 | 0.90 | 29.3% | -18.9 / -7.8 | EA 429 +0.41, target 83, stop 259 -1.03 | fail |
+| 13:11 values EURUSD, cap 25 | 547 | 0.97 | 14.8% | -5.6 / +1.3 | EA 282 +0.41, target 86, stop 179 -1.05 | fail |
+
+**Gate A: 0 of 5 pass**; plateau and joint not reached. The expectation held: XAUUSD PF 0.90-0.97 (the cap-15 cell is
+positive only on 74 trades), EURUSD 0.97-0.99, failing 2022-24 in every cell. The z-target exit wins 54-64% of trades
+at +0.4 to +0.85 R against -1.05 R stops, which is breakeven before costs at best. The 2025-26 window the user saw is the
+kind part: in 2022-24 every 150+-trade cell lost.
+
+### Verdict
+FZMR v4 as written is breakeven-to-losing on XAUUSD and EURUSD 2022-26; its "profit" was +0.7% on one EURUSD window.
+CLOSED with the rest of FZMR; no retune. The source, profile and batch stay as tools.
