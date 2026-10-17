@@ -121,3 +121,62 @@ gold spread-wait seen in the self-check mostly vanishes.
 
 **New rule.** A Gate A pass on 1-min OHLC counts only after the same cell is rerun on real ticks with the same inputs
 and window and still passes Gate A.
+
+## Outcome (2026-10-17)
+Logs: `reports/erb/stage_a.log` and `reports/erb/confirm_part1.log`; runs in `reports/erb/runs`. Settings: Darwinex,
+M15, 2022-01-01..2026-10-01, starter config, 1% risk.
+
+### Stage A on 1-min OHLC
+| cell | trades | PF | net USD | DD | R 2022-24 / 2025-26 | R by year 22 / 23 / 24 / 25 / 26 | exits: target / stop / EA close | Gate A |
+|---|---|---|---|---|---|---|---|---|
+| XAUUSD cap 30 | 1,090 | 1.07 | +30,372 | 28.1% | +22.5 / +8.3 | -8.5 / +1.7 / +29.2 / +7.8 / +0.4 | 429 / 381 / 279 | pass |
+| XAUUSD no cap | 1,194 | 1.13 | +66,725 | 28.1% | +22.5 / +33.2 | -8.5 / +1.7 / +29.2 / +7.9 / +25.3 | 478 / 402 / 314 | pass |
+| EURUSD cap 2 | 1,227 | 0.88 | -55,511 | 65.4% | -39.8 / -35.6 | +3.7 / -20.3 / -23.3 / -37.3 / +1.7 | 529 / 554 / 144 | fail |
+| GBPUSD cap 2 | 1,229 | 0.81 | -70,460 | 72.4% | -71.6 / -44.7 | -24.1 / -41.1 / -6.3 / -32.2 / -12.5 | 514 / 586 / 129 | fail |
+
+- Targets average +0.97 to +0.98 R, stops -1.01 to -1.03 R, EA closes -0.03 R on gold and -0.12 to -0.14 R on FX.
+- No margin rejections in any cell.
+- Trades held over a weekend: 25-58 per cell, -2.9 to -6.3 R.
+- On gold, the 30-point cap never bound in 2022-24 (the year splits are identical to the no-cap cell). In 2025-26 it
+  removed 104 trades and about 25 R.
+
+### Plateau (1-min OHLC)
+- **Cap 30:** PF 1.07 (target 0.75R), 0.98 (1.5R), 1.03 (range end 05:00), 1.05 (07:00). Mean 1.03, 3 of 4 profitable:
+  plateau.
+- **No cap:** PF 1.12, 1.02, 1.08, 1.12. Mean 1.085, 4 of 4 profitable: plateau.
+
+### Real-tick confirmation (amendment 1)
+| cell | trades | PF | net USD | DD | R 2022-24 / 2025-26 | R by year 22 / 23 / 24 / 25 / 26 | Gate A |
+|---|---|---|---|---|---|---|---|
+| XAUUSD cap 30 | 1,090 | 1.01 | +4,809 | 32.7% | +7.8 / +1.3 | -12.8 / -3.7 / +24.3 / +1.1 / +0.2 | pass |
+| XAUUSD no cap | skipped by the user (19:07, after 4 min) | | | | | | unconfirmed |
+
+- **Capped cell.** The same 1,090 trades as on 1-min OHLC: the cap delays entries rather than skipping them. Real
+  spreads take the cell from +30.8 R to +9.1 R, which is +0.008 R per trade. Exits: 419 targets +1.00 R, 388 stops
+  -1.03 R, 282 EA closes -0.04 R. 55 weekend holds, -7.0 R.
+- **Skip rule.** Before the no-cap run, the user said to skip it if the real-tick and 1-min OHLC results were
+  identical. They were not; the user then skipped the run anyway.
+
+**Log flood.** With the cap on, real ticks make the EA print "Spread too wide: 43.0 pips (max 30.0). Skipping." on
+every tick above the cap. That came to a 19.4 GB tester agent log for one run. Reading it in Python filled the swap.
+Live, the same lines go to the Experts journal.
+
+### Verdict
+- **Hypothesis:** PF 0.90-1.05 everywhere, 0 of 4 pass. FX was worse than expected; gold was better on 1-min OHLC
+  (1.07-1.13) and inside the range on real ticks (1.01).
+- **EURUSD and GBPUSD:** CLOSED. They lose in every year but two, on both sides, with 65-72% drawdowns at 1% risk.
+- **XAUUSD with the guide's 30-point cap:** passes Stage A by the letter (Gate A on real ticks, plateau on 1-min OHLC),
+  with almost no margin.
+  - +0.008 R per trade.
+  - All of the profit is 2024 (+24.3 R): 2022-23 lost 16.5 R and 2025-26 made +1.3 R on about 450 trades.
+  - 32.7% drawdown at 1% risk.
+  - Read as noise around breakeven, not an edge.
+  - The spec's next step (prop_mc and the joint rule, pre-registered separately) was not started.
+- **XAUUSD with no cap:** the best 1-min OHLC cell (PF 1.13) but unconfirmed. Real ticks cost the capped cell 0.02 R
+  per trade, and without a cap the EA would also take every wide-spread entry, so its real-tick PF would likely sit
+  well below 1.13.
+- **Live-use findings, independent of the edge:**
+  - The build needs AVX2.
+  - The guide's 22:00 UK session end is Darwinex's daily close, so EA closes land in rollover and Friday trades are
+    held over the weekend.
+  - With a spread cap, the per-tick "Spread too wide" message floods the journal.
