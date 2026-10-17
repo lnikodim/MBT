@@ -78,6 +78,15 @@ PROFILES = {
         "InpCciPeriod": "80", "InpCciLevel": "0.0", "InpStopPips": "35.0", "InpTargetPips": "0.0", "InpAllowShort": "true",
     }),
     "BarDump": {},   # tester helper: M1 bars to Common\Files\bars_<symbol>_M1.csv, no inputs
+    # FZMR_Quant_Scalper_v4: the user's own v4 source (Gemini), unmodified; not EACore, so no CSV log (trades come from
+    # the report's Deals table). Compiled defaults (spec 2026-10-17-fzmr-v4)
+    "FZMR_Quant_Scalper_v4": {
+        "InpZPeriod": "20", "InpZThreshold": "2.0", "InpExitAtMean": "true", "InpExitZTarget": "0.25", "InpMinProfitPts": "45",
+        "InpERPeriod": "10", "InpMaxER": "0.38", "InpUseTrendFilter": "true", "InpTrendEMAPeriod": "200", "InpEMASlopeBars": "3",
+        "InpRSIPeriod": "7", "InpRSIOverbought": "70.0", "InpRSIOversold": "30.0", "InpRiskPercent": "1.0", "InpFixedLot": "0.10",
+        "InpATRPeriod": "14", "InpSLMultiplier": "1.60", "InpTPMultiplier": "2.20", "InpMinATRPts": "40", "InpMaxHoldBars": "20",
+        "InpStartHour": "8", "InpEndHour": "19", "InpMaxSpreadPts": "15", "InpMagicNumber": "884422",
+    },
     # FZMR_EA v1.01 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
     # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
     "FZMR_EA": dict(_CORE_DEFAULTS, **{

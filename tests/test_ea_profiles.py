@@ -193,3 +193,11 @@ def test_fzmr_profile_pins_the_v6_defaults():
 def test_fzmr_v101_filters_default_off():
     p = P.PROFILES["FZMR_EA"]
     assert (p["InpSkipFromHour"], p["InpSkipToHour"], p["InpMaxBarRetrace"], p["InpSellMaxDistATR"]) == ("0", "0", "0.0", "0.0")
+
+
+def test_fzmr_v4_profile_pins_the_user_source_defaults():
+    p = P.PROFILES["FZMR_Quant_Scalper_v4"]
+    assert (p["InpZPeriod"], p["InpZThreshold"], p["InpExitAtMean"], p["InpExitZTarget"], p["InpMinProfitPts"]) == ("20", "2.0", "true", "0.25", "45")
+    assert (p["InpERPeriod"], p["InpMaxER"], p["InpTrendEMAPeriod"], p["InpEMASlopeBars"]) == ("10", "0.38", "200", "3")
+    assert (p["InpSLMultiplier"], p["InpTPMultiplier"], p["InpMinATRPts"], p["InpMaxHoldBars"]) == ("1.60", "2.20", "40", "20")
+    assert (p["InpStartHour"], p["InpEndHour"], p["InpMaxSpreadPts"], p["InpRiskPercent"]) == ("8", "19", "15", "1.0")
