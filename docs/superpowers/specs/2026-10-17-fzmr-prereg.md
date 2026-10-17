@@ -138,3 +138,20 @@ Five runs: base (v6 defaults), base + F1, base + F2, base + F3, base + F1 + F2 +
 - Confirmed if all three hold and the all-filters run has >= 60 trades, PF >= 1.00 and net R > 0.
 - Confirmed: v1.01 with all three filters goes to Stage A on 2022-26 (real ticks; in-sample for the filters, so the
   2019-21 result is the evidence), Gate A, plateau, joint rule. Not confirmed: FZMR stays closed, no further filter search.
+
+### Confirmation outcome (2026-10-17, Darwinex-Demo real ticks, log `reports/fzmr/confirm.log`, runs `reports/fzmr_cf_*`)
+Self-check v1.01: parity with v1.00 exact (60 trades, net 2,382 on 2025 1-min OHLC); on real ticks every filtered
+entry obeys the three filters; v6 and buy-only 2 R checks pass: OK.
+
+| run (2019-21, M15) | trades | PF | tester DD | net R | avg R | buys / sells R |
+|---|---|---|---|---|---|---|
+| base (v6) | 201 | 0.75 | 28.0% | -27.9 | -0.139 | -13.3 / -14.6 |
+| + F1 hours | 129 | 0.59 | 28.8% | -32.1 | -0.249 | -13.1 / -19.0 |
+| + F2 bar retrace | 136 | 0.82 | 16.2% | -13.4 | -0.099 | -7.8 / -5.6 |
+| + F3 sell distance | 138 | 0.65 | 30.3% | -27.4 | -0.198 | -13.3 / -14.1 |
+| + all three | 57 | 0.45 | 20.1% | -20.3 | -0.357 | -10.1 / -10.3 |
+
+**NOT CONFIRMED.** F1 and F3 reverse on unseen data (worse than base); F2 holds (-0.099 vs -0.139 R per trade) but stays
+negative; all three together: 57 trades (< 60), PF 0.45, -20.3 R. v6 itself is worse in 2019-21 (PF 0.75) than in
+2022-26 (0.90). The two-standard-error splits from 2022-26 were noise, as the multiple-comparison warning said.
+Per the spec: FZMR stays closed, no further filter search. v1.01 keeps the filters as inputs, off by default.
