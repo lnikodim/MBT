@@ -42,3 +42,21 @@ profitable), then the joint rule against the 4-EA Darwinex control, pre-register
 ## Expectation
 EMA 5/12 on H1 crosses often, so stop-and-reverse pays the spread on many whipsaws; the indicator exit cut winners in
 EMA_RSI_CCI. Expected PF 0.80-1.00, win rate 30-45% (not 85%), 0 of 4 pass.
+
+## Outcome (2026-10-17, Darwinex-Demo real ticks, log `reports/bagovino/stage_a.log`)
+Step 0: v1.00 parity SELFCHECK OK; Bagovino check OK (146 entries, 126 signal exits, all reversed in the same hour).
+
+| cell | trades | PF | win | tester DD | R 2022-24 / 2025-26 | avg win / loss | R per trade | Gate A |
+|---|---|---|---|---|---|---|---|---|
+| rev35 | 1,594 | 0.88 | 28.4% | 63.3% | -61.2 / -2.9 | +1.25 / -0.54 | -0.040 | fail |
+| rev60 | 1,570 | 0.88 | 28.9% | 45.4% | -40.1 / -1.8 | +0.74 / -0.33 | -0.027 | fail |
+| ind35 | 2,480 | 0.80 | 24.0% | 75.2% | -109.8 / -12.7 | +1.02 / -0.38 | -0.049 | fail |
+| ind60 | 2,509 | 0.80 | 24.2% | 58.4% | -70.3 / -9.5 | +0.60 / -0.23 | -0.032 | fail |
+
+**Gate A: 0 of 4 pass.** The win rate is 24-29%, not 85%. Stop and reverse is about breakeven before costs (it
+needs about 30% wins at its win/loss ratio and gets 28-29%); the spread and commission on ~330 round trips a year
+make it lose. The indicator exit is worse (it cuts the winners, as in EMA_RSI_CCI). The 60-pip stop is almost never
+hit (57 / 46 times), so the result is the signal itself. The expectation held (PF 0.80-0.88).
+
+### Verdict
+Bagovino's 5/12 EMA + RSI 21 has no edge on EURUSD H1 2022-26. CLOSED with its descendants (EMA_RSI_CCI, TEB_MTF).
