@@ -178,6 +178,7 @@ def test_ema_rsi_cci_profile_pins_the_forum_post():
     assert (p["InpFastEMA"], p["InpSlowEMA"], p["InpRsiPeriod"], p["InpCciPeriod"]) == ("5", "12", "21", "80")
     assert p["InpRsiLevel"] == "50.0" and p["InpCciLevel"] == "0.0"                   # user: CCI midline 0
     assert p["InpStopPips"] == "35.0" and p["InpTargetPips"] == "0.0" and p["InpAllowShort"] == "true"
+    assert p["InpEntryMode"] == "0" and p["InpExitMode"] == "0"                       # v1.01 modes default to v1.00 rules
 
 
 def test_fzmr_profile_pins_the_v6_defaults():
