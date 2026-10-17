@@ -46,3 +46,24 @@ profitable. A plateau passer then gets the joint rule against the 4-EA Darwinex 
 On gold the 1R + 5-pip BE rules were negative before costs; the "win rate" was BE scratches. EURUSD costs are smaller
 relative to the stop, but nothing in the rules changes the entry. Expected PF 0.75-0.95, 0 of 6 pass.
 If 0 pass, HoLo stays closed (now on EURUSD too).
+
+## Outcome (2026-10-17, Darwinex-Demo real ticks, log `reports/holo_eur/stage_a.log`)
+Step 0: 12/12 tester checks passed on EURUSD.
+
+| cell | trades | PF | tester DD | R 2022-24 / 2025-26 | decided win (TP vs full stop) | Gate A |
+|---|---|---|---|---|---|---|
+| NY, M30 | 412 | 0.69 | 45.7% | -27.3 / -27.6 | 45% | fail |
+| NY, M15 | 852 | 0.73 | 67.8% | -58.0 / -48.3 | 45% | fail |
+| NY, M5 | 1,507 | 0.80 | 80.3% | -89.8 / -56.1 | 48% | fail |
+| whole day, M30 | 1,894 | 0.65 | 96.6% | -217.8 / -112.6 | 44% | fail |
+| whole day, M15 | 2,952 | 0.60 | 99.5% | -346.0 / -177.9 | 44% | fail |
+| whole day, M5 | 3,894 | 0.66 | 99.8% | -412.9 / -232.1 | 45% | fail |
+
+**Gate A: 0 of 6 pass**, no session violations in any cell. Exits in every cell: TP about +0.93 R, full stop about
+-1.12 R, BE +0.03 R. With TP 1R and stop 1R the trade needs 55% decided wins after costs (50% before); it gets 44-48%,
+so it loses before costs too, as on gold. The whole trading day is worse than New York only (more Asian-session
+setups, same loss rate). The expectation held (PF 0.60-0.80).
+
+### Verdict
+HoLo is closed on EURUSD as well: the touch of the day's highest/lowest H1 open is not a reversal point on EURUSD
+2022-26. No exit retune.
