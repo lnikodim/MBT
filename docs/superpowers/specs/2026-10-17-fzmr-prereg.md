@@ -90,3 +90,19 @@ pass on M15, and H1 failed on trade count as flagged before the run.
 FZMR v6 as written loses on XAUUSD M15 in both regimes, with or without sells and with a 2-3 R target. CLOSED: no retune.
 The H1 cells' positive PF rests on 35-57 trades; more trades would need the looser filters of the user's earlier
 inputs, which lost (PF 0.83-0.94 on the user's own runs). EA, profile, self-check and batch stay as tools.
+
+### Root cause of the buy losses (post-hoc diagnosis, 2026-10-17; no new rule tested)
+`mql5/BarDump.mq5` exported Darwinex XAUUSD M1 bars 2022-26 (1-min OHLC); `reports/fzmr/rootcause.py` rebuilt the v6
+buy signal offline (all 159 EA buys matched) and replayed each trade's path.
+- No bounce after the signal: the close 1, 2, 4, 8 bars after a buy signal moved +0.02, -0.02, +0.05, +0.04 ATR, against
+  +0.01, +0.03, +0.05, +0.10 ATR after any M15 bar in the same uptrend (standard error of the signal mean 0.06-0.13 ATR).
+  A 2-sigma dip in an uptrend is followed by the same drift as a random bar in that uptrend.
+- So the stop/target race is a coin flip: 42.3% of the trades that ended at the stop or the target hit the target,
+  against 44.4% for a random walk with a 2.5 ATR target and a 2.0 ATR stop. Costs (spread about 0.02 R, commission and
+  swap about 0.03 R per trade) are about the whole loss (-0.055 R per trade).
+- Not a give-back problem: of 82 stopped buys, 22 were ever +0.5 R and 5 were ever +1 R, so a break-even or partial exit
+  has little to work with; stops took a median 77 minutes (12 within one bar), not an instant falling knife.
+- No entry feature separates winners from losers: terciles of z depth, RSI depth, ER, distance to EMA 200, EMA 50-200
+  gap and slope, the 4-bar drop, close location in the signal bar, ATR, hour and year all sit within about 0.2 R of each
+  other (standard error about 0.15 R per tercile) with no monotonic pattern.
+Conclusion: the buy setup has no edge to filter or to manage; more filters or different exits only reshuffle a coin flip.

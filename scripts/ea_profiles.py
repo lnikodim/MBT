@@ -77,6 +77,7 @@ PROFILES = {
         "InpFastEMA": "5", "InpSlowEMA": "12", "InpRsiPeriod": "21", "InpRsiLevel": "50.0",
         "InpCciPeriod": "80", "InpCciLevel": "0.0", "InpStopPips": "35.0", "InpTargetPips": "0.0", "InpAllowShort": "true",
     }),
+    "BarDump": {},   # tester helper: M1 bars to Common\Files\bars_<symbol>_M1.csv, no inputs
     # FZMR_EA v1.00 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
     # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
     "FZMR_EA": dict(_CORE_DEFAULTS, **{
