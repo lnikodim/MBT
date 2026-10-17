@@ -7,14 +7,15 @@
 //|  Added for the test: buys-only switch, target in R.              |
 //|  Execution, guards and trade log from EACore.mqh.                |
 //|  v1.00: spec 2026-10-17-fzmr-prereg.md                           |
+//|  v1.01: optional filters from the root-cause split (default off) |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #property description "FZMR v6 z-score fade (ER, RSI, EMA 50/200 filters, ATR stop/target, time exit); MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "FZMR_EA"
-#define EA_VERSION "1.00"
+#define EA_VERSION "1.01"
 #define EA_MAGIC   261019
 #define EA_COMMENT "FZMR"
 #define EA_TIMEFRAME PERIOD_M15
@@ -41,6 +42,10 @@ input int    InpStartHour      = 2;     // Trading start hour (server)
 input int    InpEndHour        = 20;    // Trading end hour (server)
 input bool   InpSkipNYOpen     = true;  // Skip server hours 15-16
 input bool   InpAllowShort     = true;  // Allow sells
+input int    InpSkipFromHour   = 0;     // Skip entries from this server hour
+input int    InpSkipToHour     = 0;     // ...to this server hour (exclusive, = from: off)
+input double InpMaxBarRetrace  = 0.0;   // Skip if the signal bar closed this share of its range off its extreme (0 = off)
+input double InpSellMaxDistATR = 0.0;   // Sells only within N x ATR below EMA 200 (0 = off)
 
 int g_ma = INVALID_HANDLE, g_sd = INVALID_HANDLE, g_rsi = INVALID_HANDLE, g_atr = INVALID_HANDLE,
     g_fast = INVALID_HANDLE, g_slow = INVALID_HANDLE;
@@ -51,9 +56,10 @@ int OnInit()
    if(InpZPeriod < 2 || InpZThreshold <= 0.0 || InpERPeriod < 1 || InpMaxER <= 0.0 || InpFastEMAPeriod < 1 ||
       InpSlowEMAPeriod <= InpFastEMAPeriod || InpRSIPeriod < 2 || InpATRPeriod < 1 || InpSLMultiplier <= 0.0 ||
       InpTPMultiplier <= 0.0 || InpTargetR < 0.0 || InpMaxHoldBars < 0 || InpStartHour < 0 || InpEndHour > 24 ||
-      InpStartHour >= InpEndHour)
+      InpStartHour >= InpEndHour || InpSkipFromHour < 0 || InpSkipToHour < InpSkipFromHour || InpSkipToHour > 24 ||
+      InpMaxBarRetrace < 0.0 || InpMaxBarRetrace > 1.0 || InpSellMaxDistATR < 0.0)
      {
-      Print("Invalid inputs: periods >= 2 (ER/EMA/ATR >= 1, slow EMA > fast), thresholds/multipliers > 0, target R >= 0, hold >= 0, 0 <= start < end <= 24");
+      Print("Invalid inputs: periods >= 2 (ER/EMA/ATR >= 1, slow EMA > fast), thresholds/multipliers > 0, target R >= 0, hold >= 0, 0 <= start < end <= 24, 0 <= skip from <= skip to <= 24, 0 <= retrace <= 1, sell dist >= 0");
       return(INIT_PARAMETERS_INCORRECT);
      }
    if(!Core_Init())
@@ -78,6 +84,10 @@ int OnInit()
                InpTargetR > 0.0 ? StringFormat("%.2f R", InpTargetR) : StringFormat("%.2f ATR", InpTPMultiplier),
                InpMaxHoldBars, InpStartHour, InpEndHour, InpSkipNYOpen ? " skip 15-16" : "", InpAllowShort ? "on" : "off",
                InpRiskMode == RISK_PERCENT ? "percent" : "money", InpRiskValue);
+   PrintFormat("Filters: skip hours %s | bar retrace %s | sell dist to EMA 200 %s",
+               InpSkipToHour > InpSkipFromHour ? StringFormat("%d-%d", InpSkipFromHour, InpSkipToHour) : "off",
+               InpMaxBarRetrace > 0.0 ? StringFormat("<= %.2f", InpMaxBarRetrace) : "off",
+               InpSellMaxDistATR > 0.0 ? StringFormat("<= %.2f ATR", InpSellMaxDistATR) : "off");
    Core_PrintReady();
    return(INIT_SUCCEEDED);
   }
@@ -150,7 +160,8 @@ void OnTick()
      }
    MqlDateTime dt;
    TimeCurrent(dt);
-   if(dt.hour < InpStartHour || dt.hour >= InpEndHour || (InpSkipNYOpen && (dt.hour == 15 || dt.hour == 16)))
+   if(dt.hour < InpStartHour || dt.hour >= InpEndHour || (InpSkipNYOpen && (dt.hour == 15 || dt.hour == 16)) ||
+      (InpSkipToHour > InpSkipFromHour && dt.hour >= InpSkipFromHour && dt.hour < InpSkipToHour))
      {
       Core_LogBar(bar, ctx + " | outside hours");
       return;
@@ -168,6 +179,12 @@ void OnTick()
       sig = 1;
    else if(z >= InpZThreshold && rsi[0] > InpRSIOverbought && bearOK && InpAllowShort)
       sig = -1;
+   // v1.01 filters: how far the signal bar closed off its extreme in the stretch direction, sells near EMA 200 only
+   const double retrace = range > 0.0 ? (sig > 0 ? close - r[0].low : r[0].high - close) / range : 0.0;
+   if(sig != 0 && InpMaxBarRetrace > 0.0 && retrace > InpMaxBarRetrace)
+      sig = 0;
+   if(sig < 0 && InpSellMaxDistATR > 0.0 && slow[3] - close > InpSellMaxDistATR * atr[0])
+      sig = 0;
    if(sig == 0)
      {
       Core_LogBar(bar, ctx + " | no signal");
@@ -180,8 +197,8 @@ void OnTick()
    const double slDist = InpSLMultiplier * atr[0];
    const double tpDist = InpTargetR > 0.0 ? InpTargetR * slDist : InpTPMultiplier * atr[0];
    const double tp     = NormalizeDouble(buy ? price + tpDist : price - tpDist, g_symbol.Digits());
-   PrintFormat("FZMR SIGNAL %s z=%.8f rsi=%.8f er=%.8f fast=%.8f slow=%.8f slow4=%.8f close=%.8f range=%.8f atr=%.8f sl_dist=%.8f tp_dist=%.8f",
-               buy ? "BUY" : "SELL", z, rsi[0], er, fast[0], slow[3], slow[0], close, range, atr[0], slDist, tpDist);
+   PrintFormat("FZMR SIGNAL %s z=%.8f rsi=%.8f er=%.8f fast=%.8f slow=%.8f slow4=%.8f close=%.8f high=%.8f low=%.8f range=%.8f atr=%.8f sl_dist=%.8f tp_dist=%.8f",
+               buy ? "BUY" : "SELL", z, rsi[0], er, fast[0], slow[3], slow[0], close, r[0].high, r[0].low, range, atr[0], slDist, tpDist);
    Core_LogBar(bar, ctx + StringFormat(" | %s", buy ? "BUY" : "SELL"));
    Core_Open(buy ? POSITION_TYPE_BUY : POSITION_TYPE_SELL, slDist, tp);
   }

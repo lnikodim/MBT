@@ -188,3 +188,8 @@ def test_fzmr_profile_pins_the_v6_defaults():
     assert (p["InpFastEMAPeriod"], p["InpSlowEMAPeriod"], p["InpRSIPeriod"]) == ("50", "200", "7")
     assert (p["InpSLMultiplier"], p["InpTPMultiplier"], p["InpTargetR"], p["InpMaxHoldBars"]) == ("2.0", "2.5", "0.0", "24")
     assert (p["InpStartHour"], p["InpEndHour"], p["InpSkipNYOpen"], p["InpAllowShort"]) == ("2", "20", "true", "true")
+
+
+def test_fzmr_v101_filters_default_off():
+    p = P.PROFILES["FZMR_EA"]
+    assert (p["InpSkipFromHour"], p["InpSkipToHour"], p["InpMaxBarRetrace"], p["InpSellMaxDistATR"]) == ("0", "0", "0.0", "0.0")

@@ -1,7 +1,9 @@
-"""FZMR_EA self-check: XAUUSD M15 2025-01..2026-01 on 1-min OHLC (loss guards off), run twice.
+"""FZMR_EA self-check: XAUUSD M15 2025-01..2026-01 (loss guards off), real ticks unless noted.
 v6 defaults: every FZMR SIGNAL line satisfies z / RSI / ER / trend / range / session rules, every entry has its signal
 line, stop = 2 x ATR and target = 2.5 x ATR of the signal bar, every expert exit is at >= 24 bars with z back at 0 or at
 >= 34 bars, one position at a time. Buy-only 2 R run: buys only, target = 2 x stop distance, no expert exits.
+v1.01: parity run (filters off, 1-min OHLC) must reproduce v1.00's 60 trades / net 2,382; filter run: no entry in
+server hours 5-10, signal bar closed within 25% of its range from its extreme, sells within 1.4 ATR of EMA 200.
 Run from the repo root with the MT5 GUI closed."""
 import re, sys
 sys.path.insert(0, "scripts"); import vwap_rsi_eval as E, holo_eval as H
@@ -11,9 +13,9 @@ SIG = re.compile(r"\t(\d{4}\.\d\d\.\d\d \d\d:\d\d):\d\d   FZMR SIGNAL (BUY|SELL)
 EXT = re.compile(r"FZMR EXIT (BUY|SELL) (.*)")
 KV = re.compile(r"(\w+)=(-?[\d.]+)")
 
-def check(name, sets, tp_of, buys_only, time_exit, min_trades):
+def check(name, sets, tp_of, buys_only, time_exit, min_trades, model="real_ticks", extra=None):
     mark = H.agent_log_size()
-    d, rows = E.run(name, dict(BASE, **sets), period="M15", expert="FZMR_EA", model="1min_ohlc", symbol="XAUUSD",
+    d, rows = E.run(name, dict(BASE, **sets), period="M15", expert="FZMR_EA", model=model, symbol="XAUUSD",
                     frm=WIN[0], to=WIN[1], timeout=1200)
     log = H.agent_log_since(mark)
     rows = sorted((r for r in rows if r["r_multiple"] is not None), key=lambda r: r["open_time"])
@@ -34,6 +36,8 @@ def check(name, sets, tp_of, buys_only, time_exit, min_trades):
         assert s["er"] <= 0.40 and s["range"] <= 2.0 * s["atr"], ("er / range", t, s)
         assert 2 <= hour < 20 and hour not in (15, 16), ("session", t)
         assert abs(s["sl_dist"] - 2.0 * s["atr"]) < 1e-6 and abs(s["tp_dist"] - tp_of(s)) < 1e-6, ("stop / target", t, s)
+        if extra:
+            extra(t, buy, hour, s)
     for side, x in exits:
         assert time_exit, ("expert exit with the time exit off", side, x)
         assert x["held"] >= 34 or (x["held"] >= 24 and (x["z"] >= 0.0 if side == "BUY" else x["z"] <= 0.0)), ("exit rule", side, x)
@@ -51,7 +55,19 @@ def check(name, sets, tp_of, buys_only, time_exit, min_trades):
     assert peak == 1, ("more than one position at a time", peak)
     print(f"  entries {len(rows)} ({sum(r['side'] == 'buy' for r in rows)} buys) | sl {sum(r['exit_reason'] == 'sl' for r in rows)} "
           f"tp {sum(r['exit_reason'] == 'tp' for r in rows)} expert {len(exits)} | peak concurrent {peak}", flush=True)
+    return m
 
+m = check("fzmr_sc_parity", {}, lambda s: 2.5 * s["atr"], buys_only=False, time_exit=True, min_trades=30, model="1min_ohlc")
+assert int(m["trades"]) == 60 and abs(m["net_profit"] - 2382.08) < 0.01, ("v1.01 with filters off != v1.00", m)
+
+def filters(t, buy, hour, s):
+    assert not 5 <= hour < 11, ("entry in skipped hours", t)
+    retrace = ((s["close"] - s["low"]) if buy else (s["high"] - s["close"])) / s["range"]
+    assert retrace <= 0.25 + 1e-9, ("bar retrace", t, retrace)
+    assert buy or s["slow"] - s["close"] <= 1.4 * s["atr"] + 1e-9, ("sell too far below EMA 200", t, s)
+
+check("fzmr_sc_filters", {"InpSkipFromHour": "5", "InpSkipToHour": "11", "InpMaxBarRetrace": "0.25", "InpSellMaxDistATR": "1.4"},
+      lambda s: 2.5 * s["atr"], buys_only=False, time_exit=True, min_trades=10, extra=filters)
 check("fzmr_sc_v6", {}, lambda s: 2.5 * s["atr"], buys_only=False, time_exit=True, min_trades=30)
 check("fzmr_sc_long2r", {"InpAllowShort": "false", "InpTargetR": "2.0", "InpMaxHoldBars": "0"},
       lambda s: 2.0 * s["sl_dist"], buys_only=True, time_exit=False, min_trades=10)

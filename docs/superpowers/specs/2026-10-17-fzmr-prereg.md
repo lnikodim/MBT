@@ -119,3 +119,22 @@ Conclusion: the buy setup has no edge to filter or to manage; more filters or di
 Seen on both sides (post-hoc, about 2 standard errors each, not tested): server hours 05-11 were the worst third
 (buys 36% / -0.20 R, sells 36% / -0.26 R) and hours 11-19 the best (55% / +0.10 R, 61% / +0.21 R); signal bars that
 closed far from their extreme were the worst third (buys -0.26 R, sells -0.19 R).
+
+## Filter confirmation on unseen data (pre-registration, 2026-10-17, before any 2019-21 run)
+User: "implement the proposal given the analysis results" (the proposal: fix the three filters from the root-cause
+split, test them on 2019-21, which was never analysed; that is outside the usual 2022-26 window, so the user's OK was
+asked for in the proposal) and "also bring back the real ticks modelling when backtesting as default". So the test runs
+the EA itself on real ticks instead of an offline M1 replay.
+FZMR_EA v1.01 adds three inputs, all off by default (v1.00 behaviour; the self-check's parity run must reproduce v1.00's
+60 trades and net 2,382 on 2025 1-min OHLC):
+- F1 `InpSkipFromHour 5`, `InpSkipToHour 11`: no entries in server hours 05:00-10:59 (the worst hour third on both sides).
+- F2 `InpMaxBarRetrace 0.25`: skip when the signal bar closed more than 25% of its range off its extreme (buys: (close -
+  low) / range, sells: (high - close) / range; the worst third on both sides started at 0.26 / 0.27).
+- F3 `InpSellMaxDistATR 1.4`: sells only when the close is within 1.4 x ATR below EMA 200 (the best sell third ended at
+  1.39); buys unaffected.
+Test (`reports/fzmr/confirm.py`): XAUUSD M15, Darwinex real ticks, 2019-01-01..2021-12-31, 1% risk, guards as usual.
+Five runs: base (v6 defaults), base + F1, base + F2, base + F3, base + F1 + F2 + F3.
+- A filter holds if its run's average R per trade is higher than base's.
+- Confirmed if all three hold and the all-filters run has >= 60 trades, PF >= 1.00 and net R > 0.
+- Confirmed: v1.01 with all three filters goes to Stage A on 2022-26 (real ticks; in-sample for the filters, so the
+  2019-21 result is the evidence), Gate A, plateau, joint rule. Not confirmed: FZMR stays closed, no further filter search.

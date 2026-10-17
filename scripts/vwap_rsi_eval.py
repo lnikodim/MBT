@@ -64,7 +64,7 @@ def free_agent_ports():
 
 
 def run(name, sets, period="H1", mode="single", ranges=None, frm=SC_WIN[0], to=SC_WIN[1], timeout=900,
-        expert=EXPERT, model="1min_ohlc", symbol="XAUUSD"):
+        expert=EXPERT, model="real_ticks", symbol="XAUUSD"):
     """macd_sweep.run with one retry after killing a hung Wine terminal; singles also return the trade-log rows."""
     for attempt in (1, 2):
         if not mt5_running():                                       # orphaned agents of an earlier run (our own MT5 processes)

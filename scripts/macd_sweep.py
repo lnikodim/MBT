@@ -39,7 +39,7 @@ def winpath(p):
     return "Z:" + p.replace("/", "\\")
 
 
-def run(mode, name, sets=None, ranges=None, model="1min_ohlc", frm=IS_FROM, to=IS_TO, timeout=3000, symbol="XAUUSD",
+def run(mode, name, sets=None, ranges=None, model="real_ticks", frm=IS_FROM, to=IS_TO, timeout=3000, symbol="XAUUSD",
         expert="MACD_Cross_EA", period="H1", leverage=None):
     os.makedirs(OUTDIR, exist_ok=True)
     out = os.path.join(OUTDIR, name + ".json")

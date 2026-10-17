@@ -115,7 +115,7 @@ def main():
     ap.add_argument("--name", required=True)
     ap.add_argument("--symbol", default="XAUUSD")
     ap.add_argument("--period", default="H1")
-    ap.add_argument("--model", default="1min_ohlc")
+    ap.add_argument("--model", default="real_ticks")   # user rule 2026-10-17: real ticks by default
     ap.add_argument("--deposit", default="100000")
     ap.add_argument("--leverage", default="20")
     ap.add_argument("--from", dest="date_from", default="2026-01-01")
