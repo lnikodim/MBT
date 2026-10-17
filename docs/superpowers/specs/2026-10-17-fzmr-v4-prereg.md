@@ -66,3 +66,20 @@ kind part: in 2022-24 every 150+-trade cell lost.
 ### Verdict
 FZMR v4 as written is breakeven-to-losing on XAUUSD and EURUSD 2022-26; its "profit" was +0.7% on one EURUSD window.
 CLOSED with the rest of FZMR; no retune. The source, profile and batch stay as tools.
+
+## Code review (2026-10-17, 5 independent read-only reviewers, each finding checked by 2 skeptics: 55 raw, 28 after
+merging, 28 upheld by both, 0 refuted)
+Highest impact:
+1. No edge: after a v4 signal price moves like any bar in the same trend and hours (k1/k2/k4: +0.001/+0.076/+0.018 ATR vs
+   +0.005/+0.004/+0.009); win rates sit at the breakeven the exits imply; gross R about +0.01-0.02 per trade, below costs.
+2. The 15-point spread cap is a points rule: on gold it removes about 59% of trades (74 left, none after Oct 2025) and
+   makes a PF 0.97 system look like +2 R; EURUSD barely affected.
+3. Spreads differ by model: the same 60 v6 gold trades in 2025 had a median entry spread of 9 points on 1-min OHLC and 28
+   on real ticks, so any cap-dependent verdict needs real ticks.
+4. The z-target exit (z >= 0.25 and +45 points) is v4's only real difference: +12 R on EURUSD's shared entries but about
+   -12 R on gold at the defaults (71 of 93 z-exits would have reached the 2.2 ATR target); every effect within ~2 SE.
+5. The 13:11 inputs need 63-65% wins and get about that; the +0.7% was one EURUSD window.
+6. InpMinATRPts 40 and InpMinProfitPts 45 bind on EURUSD and never on gold, so EURUSD evidence does not carry over.
+Smaller: ER <= 0.38 rejects ~81% of 2-sigma signals (sets the trade count); "1% risk" is 0.90%; the time exit closes
+whatever the P&L (the comment says otherwise) and counts wall-clock time; comment says 4 ATR, code 6 ATR; server hours
+8-19 are 06:00-17:00 London; no look-ahead, indexing and SL/TP placement are correct.
