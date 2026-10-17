@@ -28,8 +28,9 @@ void OnTick()
    g_last = t;
    MqlRates r[];
    if(CopyRates(_Symbol, PERIOD_M1, 1, 1, r) == 1)
-      FileWriteString(g_file, StringFormat("%s,%.2f,%.2f,%.2f,%.2f\n", TimeToString(r[0].time, TIME_DATE | TIME_MINUTES),
-                                           r[0].open, r[0].high, r[0].low, r[0].close));
+      FileWriteString(g_file, StringFormat("%s,%s,%s,%s,%s\n", TimeToString(r[0].time, TIME_DATE | TIME_MINUTES),
+                                           DoubleToString(r[0].open, _Digits), DoubleToString(r[0].high, _Digits),
+                                           DoubleToString(r[0].low, _Digits), DoubleToString(r[0].close, _Digits)));
   }
 
 void OnDeinit(const int reason) { if(g_file != INVALID_HANDLE) FileClose(g_file); }

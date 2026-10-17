@@ -201,3 +201,11 @@ def test_fzmr_v4_profile_pins_the_user_source_defaults():
     assert (p["InpERPeriod"], p["InpMaxER"], p["InpTrendEMAPeriod"], p["InpEMASlopeBars"]) == ("10", "0.38", "200", "3")
     assert (p["InpSLMultiplier"], p["InpTPMultiplier"], p["InpMinATRPts"], p["InpMaxHoldBars"]) == ("1.60", "2.20", "40", "20")
     assert (p["InpStartHour"], p["InpEndHour"], p["InpMaxSpreadPts"], p["InpRiskPercent"]) == ("8", "19", "15", "1.0")
+
+
+def test_erb_profile_pins_all_100_compiled_defaults():
+    p = P.PROFILES["Enhanced_Range_Breakout_EA_v189"]
+    assert len(p) == 100
+    assert (p["RangeStartHour"], p["RangeEndHour"], p["TradingEndHour"], p["RangeTimeToServerOffsetHours"]) == ("1", "6", "22", "0")
+    assert (p["EntryMode"], p["SlMode"], p["TpMode"], p["TakeProfitRR"], p["LotMode"]) == ("0", "0", "0", "1.0", "0")
+    assert (p["SkipCurrentSessionOnAttach"], p["MaxSpreadPips"], p["MaxTradesPerDay"]) == ("true", "0.0", "1")

@@ -78,6 +78,37 @@ PROFILES = {
         "InpCciPeriod": "80", "InpCciLevel": "0.0", "InpStopPips": "35.0", "InpTargetPips": "0.0", "InpAllowShort": "true",
     }),
     "BarDump": {},   # tester helper: M1 bars to Common\Files\bars_<symbol>_M1.csv, no inputs
+    # Enhanced Range Breakout EA v1.89 (third-party .ex5, no source; installed without the dot in "v1.89"): compiled
+    # defaults from the report of a no-inputs run on 2026-10-17. Not EACore, so no CSV log (trades come from the
+    # report's Deals table). Built for AVX2: the tester needs ROSETTA_ADVERTISE_AVX=1 on this Mac (spec 2026-10-17-erb)
+    "Enhanced_Range_Breakout_EA_v189": {
+        "RangeStartHour": "1", "RangeStartMin": "0", "RangeEndHour": "6", "RangeEndMin": "0", "TradingEndHour": "22",
+        "TradingEndMin": "0", "RangeTimeToServerOffsetHours": "0", "RangeTimeToServerOffsetMin": "0", "EntryMode": "0",
+        "BreakoutTimeframe": "15", "BreakoutBufferPips": "0.0", "PendingExpiryMins": "0", "TradeDirection": "0",
+        "MaxTradesPerDay": "1", "SkipCurrentSessionOnAttach": "true", "EntryCutoffHour": "0", "EntryCutoffMin": "0",
+        "TradeMonday": "true", "TradeTuesday": "true", "TradeWednesday": "true", "TradeThursday": "true",
+        "TradeFriday": "true", "FridayCloseHour": "0", "FridayCloseMin": "0", "NoNewTradesFriday": "false",
+        "SlMode": "0", "AtrSlTimeframe": "0", "AtrSlPeriod": "14", "AtrSlMultiplier": "1.5", "FixedSlPips": "20.0",
+        "TpMode": "0", "TakeProfitRR": "1.0", "FixedTpPips": "30.0", "BreakevenActivationPips": "0.0",
+        "BreakevenCushionPips": "0.0", "TrailActivationPips": "0.0", "TrailDistancePips": "15.0", "LotMode": "0",
+        "LotSize": "0.0", "RiskPercent": "1.0", "RiskMoney": "50.0", "MaxSpreadPips": "0.0", "DSTAutoSwitch": "false",
+        "SummerOffsetHours": "3", "WinterOffsetHours": "2", "SummerStartMonth": "3", "WinterStartMonth": "10",
+        "TrendFilterOn": "false", "TrendFilterTimeframe": "16385", "TrendFilterPeriod": "200", "MinATRPips": "0.0",
+        "ATRVolFilterPeriod": "14", "ATRVolFilterTimeframe": "16385", "MinRangeSizePips": "0.0",
+        "MaxRangeSizePips": "0.0", "MinRangeATRMult": "0.0", "MaxRangeATRMult": "0.0", "RangeATRPeriod": "14",
+        "RangeATRTimeframe": "16385", "ReentryCooldownMins": "0", "ShowSessionLabel": "false",
+        "MinRangeBarsRequired": "0", "MaxDailyLossAmount": "0.0", "MaxDailyProfitAmount": "0.0",
+        "MaxDrawdownAmount": "0.0", "ConsecutiveLossCount": "0", "ConsecutiveLossPauseDays": "1",
+        "MaxLotSizeCap": "0.0", "SlippagePoints": "30", "MagicNumber": "20260708", "MaxBoxHistory": "5",
+        "MaxArrowHistory": "20", "PanelShow": "true", "PanelCorner": "0", "PanelX": "10", "PanelY": "20",
+        "PanelFontSize": "9", "PanelTextColor": "16777215", "PanelBgColor": "1315860", "BoxFillColor": "65535",
+        "BoxOpacity": "80", "ShowLinesOnly": "false", "BoxBorderColor": "55295", "BoxBorderWidth": "1",
+        "BoxBorderStyle": "0", "ShowPriceLabels": "true", "PriceLabelColor": "16777215", "ShowRangeSizeLabel": "true",
+        "RangeSizeLabelColor": "0", "ShowExtendedLines": "false", "ExtendedLineBars": "100",
+        "ExtendedHighColor": "65280", "ExtendedLowColor": "255", "ExtendedLineStyle": "1", "ShowMidLine": "false",
+        "MidLineColor": "16776960", "MidLineStyle": "2", "ShowEntryArrows": "true", "BuyArrowColor": "65280",
+        "SellArrowColor": "255",
+    },
     # FZMR_Quant_Scalper_v4: the user's own v4 source (Gemini), unmodified; not EACore, so no CSV log (trades come from
     # the report's Deals table). Compiled defaults (spec 2026-10-17-fzmr-v4)
     "FZMR_Quant_Scalper_v4": {

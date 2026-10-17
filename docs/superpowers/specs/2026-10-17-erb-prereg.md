@@ -1,0 +1,106 @@
+# Enhanced Range Breakout EA v1.89: Stage A (pre-registration)
+
+Date: 2026-10-17. User: "backtest a new EA", with a compiled-only third-party EA,
+`~/Downloads/Enhanced_Range_Breakout_EA_v1.89.ex5` (127,354 bytes, sha256
+`3daf8c745ec317dd890c797d69b0c5e5fe5954dcc96fe6902d32f25abe71050f`), and its "1.89 EASY USER GUIDE.txt". No source.
+The user chose XAUUSD, EURUSD and GBPUSD; the guide's suggested starter configuration; and range hours on the UK clock.
+
+## Install
+- Installed as `Advisors\Enhanced_Range_Breakout_EA_v189.ex5`, without the dot in "v1.89".
+- The binary is not committed.
+- Profile `Enhanced_Range_Breakout_EA_v189` in `scripts/ea_profiles.py` pins all 100 inputs. Their compiled defaults
+  come from the report of a run with no inputs; the input names match the guide.
+- Batch: `reports/erb/erb.py` (`discover`, `selfcheck`, `stage_a`).
+
+**The EA is compiled for AVX2.** On this Mac, MT5 refuses to load it: "your CPU architecture does not allow to run the
+file ...: AVX2 required, you have X64 only". Rosetta 2 can execute AVX2 but does not advertise it by default, so every
+run of this EA sets `ROSETTA_ADVERTISE_AVX=1` in the launch environment. Without it, the tester exits in about 16 s and
+writes no report. A user without AVX2 hardware cannot run this build at all, in the tester or live.
+
+## What the EA does (from the guide; confirmed below where the tester can show it)
+1. Record the high and low of a time window (default 01:00-06:00 on the user's clock; `RangeTimeToServerOffsetHours`
+   converts that clock to server time).
+2. Enter on the first `BreakoutTimeframe` candle close beyond the range (`EntryMode` 0 = Candle Close).
+3. Place the stop at the opposite edge (`SlMode` 0 = Range) and the target at `TakeProfitRR` x the stop distance
+   (`TpMode` 0 = R:R).
+4. Take at most `MaxTradesPerDay` trades.
+5. Close everything at `TradingEndHour`.
+
+Enum order: as listed in the guide, from 0. The probe confirmed `SlMode` 2 = Fixed and `LotMode` 1 = % of balance.
+
+## Starter configuration (all cells)
+Compiled defaults (the guide's starter values), except:
+- `RangeTimeToServerOffsetHours=2`. Darwinex server = UK + 2 in both winter and summer.
+- `SkipCurrentSessionOnAttach=false`, as the guide says for backtests.
+- `LotMode=1`, `RiskPercent=1.0`. The guide says "Fixed, broker minimum"; 1% of balance makes R comparable with
+  the repo's other EAs.
+- `MaxSpreadPips` is per instrument, from the guide's anchors (cells below).
+
+So:
+- The range is 01:00-06:00 UK, which is 03:00-08:00 server.
+- Trading ends at 22:00 UK, which is 00:00 server.
+- Entry is a Candle Close on M15, buffer 0, both directions, 1 trade a day.
+- The stop is at the range edge and the target at 1R.
+- All filters and risk guards are off; `MinRangeBarsRequired` 0; `DSTAutoSwitch` off; `MaxLotSizeCap` 0.
+
+Known: UK and US DST dates differ for about 3 weeks a year (late March, late October to early November). In those
+weeks Darwinex is UK + 1 and the window runs 1 hour early.
+
+## Step 0: self-check (2026-01, starter config, `reports/erb/selfcheck.log`)
+**Unit probe** (`SlMode=2`, `FixedSlPips=20`): the stop distance / 20 gives the unit.
+- EURUSD: 0.0001, i.e. 1 pip. `LotMode=1` risks 988-1,004 USD at 100k.
+- XAUUSD: 0.01, i.e. 1 MT5 point. So the guide's gold anchor `MaxSpreadPips=30` is 30 points (0.30 USD).
+- At 1% risk, a 20-point gold stop needs more margin than 1:20 allows ("PlaceBuyTrade: not enough margin"), so the gold
+  probe ran at minimum lots.
+
+**Starter config, January 2026**: 21 trades on EURUSD, 21 on XAUUSD, and every check passed on both. Each trade was
+checked against M1 bars from `BarDump`:
+1. The stop sits exactly on the opposite edge of the server 03:00-08:00 range, which confirms the UK offset.
+2. Entry comes in the M15 bar right after the first M15 close beyond the range from 08:00 on.
+3. The target is 1R.
+4. At most 1 trade a day.
+5. Stop-outs lose -0.91 to -1.05 R.
+6. EA closes come at the first tick after 00:00 server.
+
+Two properties of this configuration on Darwinex:
+- **Entry delay on gold.** EURUSD enters at the bar open every time. XAUUSD enters 0-409 s later (median 31 s), which
+  fits the EA waiting for the spread to drop to 30 points.
+- **Where the session close lands.** 22:00 UK is 00:00 server, which is Darwinex's daily close. EURUSD ticks resume
+  at 00:04 and XAUUSD at 01:01, so EA closes happen there, in rollover spreads. A trade still open late on Friday is
+  closed at Monday's open: in January, gold held Fri 01-09 15:45 to Mon 01-12 01:01. Stage A counts these
+  weekend holds.
+
+`BarDump` now prints `_Digits` decimals instead of 2, so FX bars are usable.
+
+## Hypothesis (written before any Stage A run)
+- Prior result: the 2026-10-13 Donchian research found that opening-range breakouts go to zero after spread on CFDs.
+- A 1R target against a stop at the far edge of a 5-hour range needs a better than 50% win rate after costs.
+- Expected: tester PF 0.90-1.05 in every cell, failing at least one regime; most likely 0 of 4 pass.
+- The capped gold cell will trade less in 2026, as spreads widened.
+- Seen before the runs: only the 2026-01 self-check and one 2026-09 default-input discovery run.
+
+## Stage A (`python3 reports/erb/erb.py stage_a`, Darwinex real ticks, M15, 100,000 USD, 1% risk, to 2026-10-01)
+| cell | symbol | MaxSpreadPips | from | leverage |
+|---|---|---|---|---|
+| `erb_xau` | XAUUSD | 30 (guide anchor) | 2022-01-01 | 1:20 |
+| `erb_xau_nocap` | XAUUSD | 0 (off) | 2022-01-01 | 1:20 |
+| `erb_eur` | EURUSD | 2 (guide anchor) | 2022-01-01 | 1:30 |
+| `erb_gbp` | GBPUSD | 2 (guide anchor) | 2024-01-01 (Darwinex GBPUSD real ticks start 2024-01) | 1:30 |
+
+The no-cap gold cell is the FZMR lesson: Darwinex gold spreads were 22-26 points in late 2025 and 46-89 in 2026, so a
+30-point cap can stop the EA trading gold.
+
+**Measurement:**
+- Trades come from the report's Deals table (`blessing_eval.deals_trades`).
+- Net R per trade = profit / (0.01 x balance before the trade).
+- Exit reasons (stop, target, EA close) come from the tester agent log.
+- Also reported: R by year, trades held over a weekend (open Friday, closed after it) and their R, and "not enough
+  margin" rejections.
+
+**Gate A per cell:** trades >= 150, tester PF >= 1.00, net R > 0 in both regimes. The regimes are 2022-24 and 2025-26;
+for GBPUSD, 2024 and 2025-26.
+
+**Plateau for passers:**
+- Neighbours: `TakeProfitRR` 0.75 / 1.5 and `RangeEndHour` 5 / 7.
+- Pass: mean PF >= 1.00 and at least 3 of 4 profitable.
+- A plateau passer then gets prop_mc and the joint rule against the Darwinex control, pre-registered separately.
