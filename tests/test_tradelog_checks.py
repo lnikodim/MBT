@@ -120,6 +120,17 @@ def test_ny_session_violations(tmp_path):
     assert [r["open_time"].hour for r in bad] == [14, 23, 22]
 
 
+
+def test_ny_session_violations_full_trading_day(tmp_path):
+    # start > end wraps across 17:00 NY: 17:00 NY -> 16:55 NY next day = server 00:00-23:55, one trading day
+    rows = K.load_rows(write(tmp_path,
+                             row("2024.01.03 01:00:00", "2024.01.03 20:00:00"),          # 18:00 NY -> 13:00 NY: ok
+                             row("2024.01.03 00:00:00", "2024.01.03 00:30:00"),          # 17:00 NY open: ok
+                             row("2024.01.03 23:56:00", "2024.01.03 23:57:00"),          # opened 16:56 NY, after the end
+                             row("2024.01.03 22:00:00", "2024.01.04 01:00:00")))         # held across the 17:00 NY close
+    bad = K.ny_session_violations(rows, offset_h=7, start_min=1020, end_min=1015, slack_min=2)
+    assert [r["open_time"].hour for r in bad] == [23, 22]
+
 def test_unmoved_stop_rows(tmp_path):
     rows = K.load_rows(write(tmp_path,
                              row("2024.01.03 10:00:00", "2024.01.03 12:00:00", side="buy", op=2000, sl=1990),

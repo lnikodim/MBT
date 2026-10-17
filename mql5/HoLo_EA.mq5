@@ -13,14 +13,16 @@
 //|  Execution, guards and trade log from EACore.mqh (v1.42 core).   |
 //|                                                                  |
 //|  v1.00                                                           |
+//|  v1.01 session start > end wraps across 17:00 NY (1020-1015 =    |
+//|        the whole trading day); prices logged with 5 decimals (FX)|
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
-#property description "HoLo: fade the day's highest/lowest H1 open after a trigger candle opens in the Area of Interest; NY session only"
+#property description "HoLo: fade the day's highest/lowest H1 open after a trigger candle opens in the Area of Interest; NY session by default"
 
 #define EA_NAME            "HoLo_EA"
-#define EA_VERSION         "1.00"
+#define EA_VERSION         "1.01"
 #define EA_MAGIC           261007
 #define EA_COMMENT         "HOLO"
 #define EA_TIMEFRAME       PERIOD_M15   // trigger timeframe (InpTimeframe)
@@ -46,7 +48,7 @@ input double              InpMinStopPct      = 0.03;        // Skip setups with 
 input bool                InpBreakoutFilter  = true;        // No sells once the day broke the previous high (buys: low)
 
 input group "=== New York session ==="
-input int                 InpSessionStartNY  = 480;         // Entries from, minutes after NY midnight (480 = 08:00)
+input int                 InpSessionStartNY  = 480;         // Entries from, minutes after NY midnight (480 = 08:00; > end wraps: 1020 = 17:00)
 input int                 InpSessionEndNY    = 1015;        // Entries until and flat at (1015 = 16:55)
 input int                 InpServerNYOffset  = 7;           // Server time minus New York time, hours (Darwinex: 7 all year)
 
@@ -82,10 +84,11 @@ int OnInit()
      }
    if(InpRR < 0.0 || InpBETriggerPct < 0.0 || InpBELockPct < 0.0 ||
       (InpBETriggerPct > 0.0 && InpBELockPct >= InpBETriggerPct) || InpMaxLatePct < 0.0 || InpMinStopPct < 0.0 ||
-      InpSessionStartNY < 0 || InpSessionEndNY > 1440 || InpSessionStartNY >= InpSessionEndNY ||
+      InpSessionStartNY < 0 || InpSessionStartNY > 1440 || InpSessionEndNY < 0 || InpSessionEndNY > 1440 ||
+      InpSessionStartNY == InpSessionEndNY ||
       InpServerNYOffset < -12 || InpServerNYOffset > 14)
      {
-      Print("Invalid HoLo inputs (RR/BE/late/min stop >= 0, BE lock below trigger, session start < end within 0-1440)");
+      Print("Invalid HoLo inputs (RR/BE/late/min stop >= 0, BE lock below trigger, session start != end within 0-1440)");
       return(INIT_PARAMETERS_INCORRECT);
      }
    if(!Core_Init())
@@ -149,13 +152,13 @@ void ExcWrite(const int j)
    const int h = FileOpen(g_excFile, FILE_READ | FILE_WRITE | FILE_TXT | FILE_ANSI | g_excFlags);
    if(h == INVALID_HANDLE)
       return;
-   string row = StringFormat("%I64u,%s,%.2f,%.2f,%.2f,%.3f", g_exc[j].position, g_exc[j].buy ? "buy" : "sell",
+   string row = StringFormat("%I64u,%s,%.5f,%.5f,%.5f,%.3f", g_exc[j].position, g_exc[j].buy ? "buy" : "sell",
                              g_exc[j].entry, g_exc[j].risk, g_exc[j].riskMoney, g_exc[j].mfe);
    for(int k = 0; k < EXC_N; k++)
       row += StringFormat(",%d,%d,%.3f", g_exc[j].hit[k] ? 1 : 0, g_exc[j].back[k] ? 1 : 0, g_exc[j].run[k]);
    string path = g_exc[j].path;
    if(g_exc[j].mfeP != g_exc[j].lastM || g_exc[j].maeP != g_exc[j].lastA)
-      path += StringFormat("%.2f:%.2f|", g_exc[j].mfeP, g_exc[j].maeP);
+      path += StringFormat("%.5f:%.5f|", g_exc[j].mfeP, g_exc[j].maeP);
    row += StringFormat(",%.0f,%.0f,%.3f,%.3f,%s", g_exc[j].trendH4, g_exc[j].trendH12, g_exc[j].aoiAtr, g_exc[j].atrTrig, path);
    FileSeek(h, 0, SEEK_END);
    FileWriteString(h, row + "\n");
@@ -211,7 +214,7 @@ void ExcTrack()
          g_exc[j].maeP = -fav;
          if(g_exc[j].maeP >= g_exc[j].lastA + 0.02 * g_exc[j].risk || g_exc[j].mfeP > g_exc[j].lastM)
            {
-            g_exc[j].path += StringFormat("%.2f:%.2f|", g_exc[j].mfeP, g_exc[j].maeP);
+            g_exc[j].path += StringFormat("%.5f:%.5f|", g_exc[j].mfeP, g_exc[j].maeP);
             g_exc[j].lastM = g_exc[j].mfeP;
             g_exc[j].lastA = g_exc[j].maeP;
            }
@@ -276,7 +279,8 @@ bool InSession(const datetime t)
       endNY = SessionEndNY(dt.day_of_week);
      }
    const int m = NYMinute(t);
-   return(m >= InpSessionStartNY && m < endNY);
+   return(InpSessionStartNY < InpSessionEndNY ? (m >= InpSessionStartNY && m < endNY)
+                                              : (m >= InpSessionStartNY || m < endNY));   // wraps across 17:00 NY
   }
 
 //--- day (or 5-day window for D1 levels): highest/lowest level-timeframe open, high/low, previous window's high/low
@@ -317,15 +321,15 @@ bool OnNewTriggerBar(const datetime bar, const bool session)
    if(g_sellArmed && (lv.ho != g_sellHO || lv.high > g_sellHigh))
      {
       g_sellArmed = false;
-      Diag(StringFormat("SELL setup cancelled: HO %.2f -> %.2f, high %.2f -> %.2f", g_sellHO, lv.ho, g_sellHigh, lv.high));
+      Diag(StringFormat("SELL setup cancelled: HO %.5f -> %.5f, high %.5f -> %.5f", g_sellHO, lv.ho, g_sellHigh, lv.high));
      }
    if(g_buyArmed && (lv.lo != g_buyLO || lv.low < g_buyLow))
      {
       g_buyArmed = false;
-      Diag(StringFormat("BUY setup cancelled: LO %.2f -> %.2f, low %.2f -> %.2f", g_buyLO, lv.lo, g_buyLow, lv.low));
+      Diag(StringFormat("BUY setup cancelled: LO %.5f -> %.5f, low %.5f -> %.5f", g_buyLO, lv.lo, g_buyLow, lv.low));
      }
    const double o = iOpen(_Symbol, InpTimeframe, 0);
-   const string ctx = StringFormat("open %.2f | HO %.2f LO %.2f | high %.2f low %.2f | prev high %.2f low %.2f",
+   const string ctx = StringFormat("open %.5f | HO %.5f LO %.5f | high %.5f low %.5f | prev high %.5f low %.5f",
                                    o, lv.ho, lv.lo, lv.high, lv.low, lv.pdHigh, lv.pdLow);
    if(!session || CountOwnPositions() > 0)
      {
@@ -396,7 +400,7 @@ void TryCloseConfirmEntry(const datetime bar)
    if(g_sellArmed && prevBar >= g_sellArmBar && prevClose < g_sellHO)
      {
       const double sl = g_sellHigh + (ask - bid);
-      PrintFormat("HOLO SELL (close-confirmed %.2f < HO %.2f): bid %.2f, stop %.2f", prevClose, g_sellHO, bid, sl);
+      PrintFormat("HOLO SELL (close-confirmed %.5f < HO %.5f): bid %.5f, stop %.5f", prevClose, g_sellHO, bid, sl);
       SetEntryContext(g_sellHO, g_sellHigh);
       g_sellArmed = g_buyArmed = false;
       Core_Open(POSITION_TYPE_SELL, sl - bid, InpRR > 0.0 ? bid - InpRR * (sl - bid) : 0.0);
@@ -404,7 +408,7 @@ void TryCloseConfirmEntry(const datetime bar)
      }
    if(g_buyArmed && prevBar >= g_buyArmBar && prevClose > g_buyLO)
      {
-      PrintFormat("HOLO BUY (close-confirmed %.2f > LO %.2f): ask %.2f, stop %.2f", prevClose, g_buyLO, ask, g_buyLow);
+      PrintFormat("HOLO BUY (close-confirmed %.5f > LO %.5f): ask %.5f, stop %.5f", prevClose, g_buyLO, ask, g_buyLow);
       SetEntryContext(g_buyLO, g_buyLow);
       g_sellArmed = g_buyArmed = false;
       Core_Open(POSITION_TYPE_BUY, ask - g_buyLow, InpRR > 0.0 ? ask + InpRR * (ask - g_buyLow) : 0.0);
@@ -459,7 +463,7 @@ void TryEntry()
      {
       const double sl = g_sellHigh + (ask - bid);   // the high is a Bid high, a sell stop triggers on the Ask
       const double dist = sl - bid;
-      PrintFormat("HOLO SELL: bid %.2f at HO %.2f, stop %.2f (high %.2f + spread)", bid, g_sellHO, sl, g_sellHigh);
+      PrintFormat("HOLO SELL: bid %.5f at HO %.5f, stop %.5f (high %.5f + spread)", bid, g_sellHO, sl, g_sellHigh);
       SetEntryContext(g_sellHO, g_sellHigh);
       g_sellArmed = g_buyArmed = false;
       Core_Open(POSITION_TYPE_SELL, dist, InpRR > 0.0 ? bid - InpRR * dist : 0.0);
@@ -468,7 +472,7 @@ void TryEntry()
    if(g_buyArmed && ask >= g_buyLO && ask - g_buyLO <= InpMaxLatePct / 100.0 * g_buyLO)
      {
       const double dist = ask - g_buyLow;             // the low is a Bid low and a buy stop triggers on the Bid
-      PrintFormat("HOLO BUY: ask %.2f at LO %.2f, stop %.2f", ask, g_buyLO, g_buyLow);
+      PrintFormat("HOLO BUY: ask %.5f at LO %.5f, stop %.5f", ask, g_buyLO, g_buyLow);
       SetEntryContext(g_buyLO, g_buyLow);
       g_sellArmed = g_buyArmed = false;
       Core_Open(POSITION_TYPE_BUY, dist, InpRR > 0.0 ? ask + InpRR * dist : 0.0);
@@ -497,12 +501,12 @@ void OnTick()
    if(g_sellArmed && bid > g_sellHigh)
      {
       g_sellArmed = false;
-      Diag(StringFormat("SELL setup cancelled: new high %.2f above %.2f (intraday breakout)", bid, g_sellHigh));
+      Diag(StringFormat("SELL setup cancelled: new high %.5f above %.5f (intraday breakout)", bid, g_sellHigh));
      }
    if(g_buyArmed && bid < g_buyLow)
      {
       g_buyArmed = false;
-      Diag(StringFormat("BUY setup cancelled: new low %.2f below %.2f (intraday breakout)", bid, g_buyLow));
+      Diag(StringFormat("BUY setup cancelled: new low %.5f below %.5f (intraday breakout)", bid, g_buyLow));
      }
    TryEntry();
   }

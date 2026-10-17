@@ -95,13 +95,15 @@ def median_r(rows, reason):
 
 def ny_session_violations(rows, offset_h, start_min, end_min, slack_min=2):
     """Trades opened outside [start, end) New York minutes, closed after end + slack, or held across 17:00 NY.
-    New York time = server time - offset_h (Darwinex: 7, all year)."""
+    start > end wraps across 17:00 NY (1020-1015 = the whole trading day). New York time = server time - offset_h
+    (Darwinex: 7, all year); minutes are counted from the 17:00 NY day start."""
+    start_td, end_td = (start_min + 420) % 1440, (end_min + 420) % 1440
     bad = []
     for r in rows:
-        o = r["open_time"] - dt.timedelta(hours=offset_h)
-        c = r["close_time"] - dt.timedelta(hours=offset_h)
+        o = r["open_time"] - dt.timedelta(hours=offset_h - 7)       # trading-day clock: 17:00 NY = 00:00
+        c = r["close_time"] - dt.timedelta(hours=offset_h - 7)
         o_min, c_min = o.hour * 60 + o.minute, c.hour * 60 + c.minute
-        if not (start_min <= o_min < end_min) or c.date() != o.date() or c_min > end_min + slack_min:
+        if not (start_td <= o_min < end_td) or c.date() != o.date() or c_min > end_td + slack_min:
             bad.append(r)
     return bad
 

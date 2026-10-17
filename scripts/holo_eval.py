@@ -3,6 +3,7 @@
 Quit the MT5 GUI first. Real ticks throughout: entries are exact touches of a price level.
 
   python3 scripts/holo_eval.py selfcheck     # H1 levels, M15 trigger, 2025-01..04, guards off
+  python3 scripts/holo_eval.py selfcheck --symbol EURUSD --set InpBETriggerPct=0.045 ...   # other symbols/inputs
   python3 scripts/holo_eval.py stage-a       # levels H1/H4/D1 x trigger M30/M15/M5, 2019-01..2026-10
   python3 scripts/holo_eval.py stage-b H1_M30 H4_M15 D1_M5   # RR x break-even grid, 2019-21 and 2022-24
   python3 scripts/holo_eval.py excursions H1_M30 H4_M15 D1_M5  # one run each, exit rules replayed offline
@@ -55,8 +56,12 @@ def agent_log_since(mark):
     return data[:len(data) // 2 * 2].decode("utf-16-le", errors="ignore")
 
 
+SYMBOL, EXTRA, LEVERAGE = "XAUUSD", {}, None      # --symbol / --set / --leverage: every run of this invocation
+
+
 def run(name, sets, frm=SC_WIN[0], to=SC_WIN[1], period="M15", timeout=900):
-    return E.run(name, sets, period=period, frm=frm, to=to, timeout=timeout, expert=EXPERT, model="real_ticks")
+    return E.run(name, dict(EXTRA, **sets), period=period, frm=frm, to=to, timeout=timeout, expert=EXPERT,
+                 model="real_ticks", symbol=SYMBOL, leverage=LEVERAGE)
 
 
 def selfcheck():
@@ -277,7 +282,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["selfcheck", "stage-a", "stage-b", "excursions", "screen"])
     ap.add_argument("configs", nargs="*", help="stage-b: LEVEL_TRIGGER, e.g. H1_M30")
+    ap.add_argument("--symbol", default="XAUUSD")
+    ap.add_argument("--leverage", type=int)
+    ap.add_argument("--set", action="append", default=[], metavar="INPUT=VALUE", help="added to every run")
     args = ap.parse_args()
+    global SYMBOL, LEVERAGE
+    SYMBOL, LEVERAGE = args.symbol, args.leverage
+    EXTRA.update(kv.split("=", 1) for kv in args.set)
     if E.mt5_running():
         sys.exit("Quit the MetaTrader 5 GUI first (MT5 is single-instance).")
     M.OUTDIR = os.path.join(E.REPORTS, "holo")

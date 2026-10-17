@@ -64,14 +64,14 @@ def free_agent_ports():
 
 
 def run(name, sets, period="H1", mode="single", ranges=None, frm=SC_WIN[0], to=SC_WIN[1], timeout=900,
-        expert=EXPERT, model="real_ticks", symbol="XAUUSD"):
+        expert=EXPERT, model="real_ticks", symbol="XAUUSD", leverage=None):
     """macd_sweep.run with one retry after killing a hung Wine terminal; singles also return the trade-log rows."""
     for attempt in (1, 2):
         if not mt5_running():                                       # orphaned agents of an earlier run (our own MT5 processes)
             subprocess.run(["pkill", "-KILL", "-f", "metatester64.exe"])
         free_agent_ports()
         d = M.run(mode, name, sets=sets, ranges=ranges, model=model, frm=frm, to=to, timeout=timeout,
-                  expert=expert, period=period, symbol=symbol)
+                  expert=expert, period=period, symbol=symbol, leverage=leverage)
         if mode == "opt" and d.get("passes"):
             return d, None
         if mode == "single" and d.get("metrics") and d.get("trade_log"):
