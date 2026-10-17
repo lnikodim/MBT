@@ -47,7 +47,8 @@ def agent_log_since(mark):
     if not f:
         return ""
     with open(f[-1], "rb") as h:
-        h.seek(size if f[-1] == path else 0)
+        # MT5 restarts a large agent log at the next run's start; a file shorter than the mark is a fresh one
+        h.seek(size if f[-1] == path and os.path.getsize(path) >= size else 0)
         data = h.read()
     if data[:2] == b"\xff\xfe":
         data = data[2:]
