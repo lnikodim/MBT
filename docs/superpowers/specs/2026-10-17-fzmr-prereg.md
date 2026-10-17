@@ -106,3 +106,16 @@ buy signal offline (all 159 EA buys matched) and replayed each trade's path.
   gap and slope, the 4-bar drop, close location in the signal bar, ATR, hour and year all sit within about 0.2 R of each
   other (standard error about 0.15 R per tercile) with no monotonic pattern.
 Conclusion: the buy setup has no edge to filter or to manage; more filters or different exits only reshuffle a coin flip.
+
+### Root cause of the sell losses (same diagnosis, v6 M15 run, 143 sells, all matched offline)
+- No reversal after the signal: in the trade direction, the close 1, 2, 4, 8 bars later moved -0.04, +0.02, +0.02,
+  +0.20 ATR, against -0.01, -0.02, -0.03, -0.05 ATR after any bar in the same downtrend (standard error 0.05-0.15 ATR;
+  the 8-bar gap is 1.6 standard errors).
+- Coin flip: 41.9% of stop/target exits hit the target (random walk 44.4%); costs about 0.05 R per trade.
+- Of 72 stopped sells, 26 were ever +0.5 R and 7 ever +1 R; stops took a median 116 minutes (3 within one bar).
+- Terciles: the weakest-downtrend third (close within 1.4 ATR of EMA 200, EMA gap < 2.9 ATR, flat EMA 200) won 62-64%
+  at +0.21 to +0.25 R; the stronger thirds lost (-0.15 to -0.21 R). Three correlated views of one effect, about 2
+  standard errors, post-hoc.
+Seen on both sides (post-hoc, about 2 standard errors each, not tested): server hours 05-11 were the worst third
+(buys 36% / -0.20 R, sells 36% / -0.26 R) and hours 11-19 the best (55% / +0.10 R, 61% / +0.21 R); signal bars that
+closed far from their extreme were the worst third (buys -0.26 R, sells -0.19 R).
