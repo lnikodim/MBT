@@ -104,3 +104,20 @@ for GBPUSD, 2024 and 2025-26.
 - Neighbours: `TakeProfitRR` 0.75 / 1.5 and `RangeEndHour` 5 / 7.
 - Pass: mean PF >= 1.00 and at least 3 of 4 profitable.
 - A plateau passer then gets prop_mc and the joint rule against the Darwinex control, pre-registered separately.
+
+## Amendment 1 (2026-10-17 17:07, before any Stage A result): 1-min OHLC
+**What happened.** The real-tick Stage A was stopped by the user's decision ("let's test the EA with 1min OHLC instead,
+it should be quicker"). It had reached 2023-07 in cell 1 after 22 minutes and produced no result, so nothing was seen.
+
+**Changes.**
+1. All Stage A and plateau runs use 1-min OHLC.
+2. GBPUSD starts 2022-01-01, like the other cells. Its 2024 start came only from real-tick coverage; Darwinex has
+   GBPUSD M1 history from 2014. Its regimes are now 2022-24 and 2025-26.
+3. Everything else is unchanged: cells, caps, inputs, Gate A and plateau.
+
+**Caveat.** 1-min OHLC uses bar spreads. On Darwinex gold these are far tighter than real ticks: the FZMR review found
+median entry spreads of 9 points on 1-min OHLC vs 28 on real ticks. So the 30-point gold cap binds much less, and the
+gold spread-wait seen in the self-check mostly vanishes.
+
+**New rule.** A Gate A pass on 1-min OHLC counts only after the same cell is rerun on real ticks with the same inputs
+and window and still passes Gate A.
