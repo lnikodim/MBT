@@ -61,3 +61,32 @@ Then stand-alone prop_mc and the joint rule against the account's Darwinex contr
 RSI_Reversal v1.20, MA_Channel v1.01): joint pass >= control at both 0.3% and 0.5%, p95 DD at 0.5% not more than 1 pt
 worse, on 3 seeds. The user's "+50% net profit from 2025" is reported for every cell but is not a gate: one window
 and one number can be reached by tuning alone.
+
+## Outcome (2026-10-17, Darwinex-Demo 1-min OHLC, log `reports/fzmr/stage_a.log`, runs `reports/fzmr_*`)
+Self-check (XAUUSD M15 2025): v6 defaults 60 trades, buy-only 2 R 37 trades; every signal, entry, stop, target and
+expert exit satisfies its rule, one position at a time: OK. (The first try on Jan-Jun 2025 gave 26 trades, under the
+check's own minimum of 30; the window was widened to the full year before any Stage A run.)
+
+| cell | trades | PF | tester DD | R 2022-24 / 2025-26 | 2025-26 at 1% | Gate A |
+|---|---|---|---|---|---|---|
+| v6 M15 | 302 | 0.90 | 23.6% | -16.6 / +2.2 | +1.6% | fail |
+| long M15 | 159 | 0.89 | 12.7% | -6.1 / -2.6 | -2.9% | fail |
+| long 2R M15 | 152 | 0.91 | 16.2% | -5.8 / -2.5 | -3.0% | fail |
+| long 3R M15 | 148 | 0.82 | 27.1% | -19.1 / +0.5 | -0.3% | fail |
+| v6 H1 | 57 | 1.13 | 5.9% | +1.7 / +2.0 | +1.8% | fail (trades) |
+| long H1 | 37 | 1.17 | 5.1% | +0.1 / +2.8 | +2.8% | fail (trades) |
+| long 2R H1 | 36 | 1.04 | 6.8% | +0.9 / +0.5 | +0.3% | fail (trades) |
+| long 3R H1 | 35 | 1.42 | 6.0% | +7.5 / +3.3 | +3.1% | fail (trades) |
+
+**Gate A: 0 of 8 pass**; plateau, prop_mc and the joint rule were not reached. M15: every cell loses (PF 0.82-0.91).
+The v6 defaults pay about +1.2 R at the target against -1.0 R at the stop and win 45.7% (sells 46.0%, buys 44.6%),
+under the 45-46% needed; dropping sells, or a 2-3 R target, does not change the sign. H1: every cell is positive in both
+regimes but trades 35-57 times in 4.75 years (7-12 a year), too few to tell an edge from luck (long 3R H1: +10.8 R on
+35 trades). The user's +50% from 2025: the best cell made +3.1% in 2025-26 at 1% risk.
+Expectation check: v6 M15 PF 0.90 and buy-only 0.89-0.91 were inside the predicted ranges; the target cells did not
+pass on M15, and H1 failed on trade count as flagged before the run.
+
+### Verdict
+FZMR v6 as written loses on XAUUSD M15 in both regimes, with or without sells and with a 2-3 R target. CLOSED: no retune.
+The H1 cells' positive PF rests on 35-57 trades; more trades would need the looser filters of the user's earlier
+inputs, which lost (PF 0.83-0.94 on the user's own runs). EA, profile, self-check and batch stay as tools.
