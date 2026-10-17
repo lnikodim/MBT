@@ -77,3 +77,22 @@ its direction and RSI >= 55 / <= 45; every EXIT line is the opposite confirmed s
 35-pip stops; one position; >= 90% of signal exits reversed in the same hour.
 Stage A again (`reports/bagovino/confirm.py`): the same 4 cells and gate with `InpConfirmRsi` 55 (`c_rev35`, `c_rev60`,
 `c_ind35`, `c_ind60`). Expectation: fewer trades (about a third), later entries; PF 0.80-1.00; 0 of 4 pass.
+
+## Amendment 1 outcome (2026-10-17, log `reports/bagovino/confirm.log`)
+Checks: v1.00 parity OK; v1.01 parity OK (1,594 trades, net -52,856.68); confirmation check OK (36 entries, 19 signal
+exits, all reversed).
+
+| cell | trades | PF | win | tester DD | R 2022-24 / 2025-26 | R by year 2022 / 23 / 24 / 25 / 26 | Gate A |
+|---|---|---|---|---|---|---|---|
+| c_rev35 | 414 | 0.93 | 25.9% | 48.8% | -35.0 / +27.9 | -24.8 / -13.8 / +3.6 / +8.2 / +19.7 | fail |
+| c_rev60 | 366 | 0.99 | 32.2% | 34.5% | -24.0 / +25.8 | -18.1 / -5.9 / -0.0 / +12.3 / +13.5 | fail |
+| c_ind35 | 692 | 0.88 | 31.9% | 46.9% | -49.8 / +27.4 | -38.6 / -8.9 / -2.3 / +18.2 / +9.1 | fail |
+| c_ind60 | 692 | 0.91 | 33.0% | 32.2% | -29.7 / +18.7 | -22.0 / -4.8 / -2.9 / +10.3 / +8.5 | fail |
+
+**Gate A: 0 of 4 pass.** The confirmation candle cuts trades by 56-74% and lifts PF by 0.03-0.11 (0.88 -> 0.93-0.99
+reverse, 0.80 -> 0.88-0.91 indicator), but no cell is profitable over 2022-26: every cell lost 2022-23 and gained
+2025-26. Win rate 26-33%. One period positive and the other negative is the regime pattern Gate A exists to reject.
+
+### Verdict
+Bagovino with the confirmation candle is breakeven at best (c_rev60 PF 0.99, +0.005 R per trade) on EURUSD H1
+2022-26. CLOSED; no retune (the 2025-26 gains alone would be fitting a regime).
