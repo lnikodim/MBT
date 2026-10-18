@@ -32,3 +32,21 @@ lighter in the MA_Channel Stage A. Expected: all four EAs pass both checks, PFs 
 All checks pass: the account numbers carry over to IC Markets (provisional for 2022-25, generated ticks). An EA that fails
 Gate A or consistency is flagged to the user, whose call it is whether it stays on the IC account; no retune. If only the
 joint check fails, the IC pass probability is the one to quote for this account.
+
+## Outcome (2026-10-18, ICMarketsEU-Demo confirmed in every agent log, history quality 10%, log `reports/portfolio/icm_confirm.log`)
+| EA | IC trades / PF / DD | Darwinex trades / PF / DD | IC R 2022-24 / 2025-26 | entries matching Darwinex | checks |
+|---|---|---|---|---|---|
+| MACD v1.45 H1 | 945 / 1.95 / 29.9% | 955 / 1.79 / 29.5% | +138.9 / +237.0 | 99% | pass |
+| Donchian v1.01 H4 | 157 / 1.72 / 8.6% | 157 / 1.66 / 10.2% | +27.1 / +32.4 | 93% | pass |
+| RSI_Reversal v1.20 H6 | 347 / 1.63 / 14.2% | 358 / 1.56 / 13.3% | +40.0 / +60.5 | 97% | pass |
+| MA_Channel v1.01 H1 | 292 / 1.59 / 12.3% | 299 / 1.55 / 12.2% | +53.9 / +44.6 | 95% | pass |
+
+Joint 4-EA prop_mc, P(pass both phases) at 0.3% / 0.5%: IC 97.2 / 90.0, 97.0 / 89.5, 96.9 / 89.9 vs Darwinex 94.5 / 85.1,
+94.6 / 85.3, 94.0 / 85.2 (seeds 1-3); max-loss breach at 0.5% 5.4-5.8% vs 8.1-8.3%; p95 DD at 0.3% 9.8% vs 10.8%.
+**All checks pass**: the account numbers carry over to IC Markets, and are better there. The hypothesis held on signals
+(93-99% of entries match) but underrated the cost gap. In 2026, the only real-tick year on both servers, IC entries had
+median spreads of 5-8 points against 45-59 on Darwinex, and commission was 7.00 USD per lot against about 22.5. The
+2022-25 IC part uses generated ticks with similar low spreads, so its exact margin is provisional, but the 2026 real ticks
+show the IC cost advantage is real. Side note: on IC the first gold ticks after the session open arrive about a minute
+before trading opens, so MACD logs "market closed" stop modifications there; they retry on the next tick, and the
+matched entries show no effect on trades.
