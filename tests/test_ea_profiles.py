@@ -17,7 +17,7 @@ def test_profiles_have_core_inputs():
     core = ["InpMagic", "InpTimeframe", "InpComment", "InpSlippagePoints", "InpMaxSpreadPoints",
             "InpRiskMode", "InpRiskValue", "InpSpreadWaitMin", "InpDailyLossPct", "InpMonthlyLossPct",
             "InpTradeLog", "InpLogEveryBar"]
-    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA", "TEB_MTF_EA", "EMA_RSI_CCI_EA", "FZMR_EA"):
+    for name in ("MACD_Cross_EA", "MeanRev_EA", "VWAP_RSI_EA", "HoLo_EA", "EuroRiddle_EA", "Icarus_EA", "VWAP_EMA_Cross_EA", "EMA_VWAP_Trail_EA", "Camvcvoo_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA", "TEB_MTF_EA", "EMA_RSI_CCI_EA", "FZMR_EA", "RSI8020_EA"):
         for k in core:
             assert k in P.PROFILES[name], (name, k)
     assert P.PROFILES["MeanRev_EA"]["InpMagic"] == "240819"
@@ -211,3 +211,13 @@ def test_erb_profile_pins_all_100_compiled_defaults():
     assert (p["RangeStartHour"], p["RangeEndHour"], p["TradingEndHour"], p["RangeTimeToServerOffsetHours"]) == ("1", "6", "22", "0")
     assert (p["EntryMode"], p["SlMode"], p["TpMode"], p["TakeProfitRR"], p["LotMode"]) == ("0", "0", "0", "1.0", "0")
     assert (p["SkipCurrentSessionOnAttach"], p["MaxSpreadPips"], p["MaxTradesPerDay"]) == ("true", "0.0", "1")
+
+
+def test_rsi8020_profile_pins_the_article():
+    p = P.PROFILES["RSI8020_EA"]
+    assert p["InpMagic"] == "261020" and p["InpComment"] == "RSI8020" and p["InpTimeframe"] == "16385"
+    assert p["InpSpreadWaitMin"] == "0" and p["InpMaxSpreadPoints"] == "50"           # the EA retries from the stop price itself
+    assert (p["InpRsiPeriod"], p["InpRsiLevel"], p["InpLookback"]) == ("8", "20.0", "50")   # article: RSI 8, 80/20, 50 candles
+    assert (p["InpExpiryBars"], p["InpTargetR"], p["InpSLBufferATR"]) == ("50", "3.0", "0.1")
+    assert p["InpAllowShort"] == "true" and p["InpRetryMin"] == "60"
+    assert p["InpExtremeMode"] == "0" and p["InpWideStopATR"] == "0.0"                # lows/highs, setup-low stop (reconciled reading)

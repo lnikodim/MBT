@@ -121,6 +121,13 @@ PROFILES = {
     },
     # FZMR_EA v1.01 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
     # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
+    # RSI8020_EA v1.00 compiled defaults (TradingStrategyGuides RSI 80-20: RSI 8 at 80/20, 50-bar low/high extreme,
+    # divergence, close beyond A, swing stop + 0.1 ATR, 3R; spec 2026-10-18-rsi8020-prereg.md)
+    "RSI8020_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261020", "InpComment": "RSI8020", "InpTimeframe": "16385", "InpSpreadWaitMin": "0", "InpMaxSpreadPoints": "50",
+        "InpRsiPeriod": "8", "InpRsiLevel": "20.0", "InpExtremeMode": "0", "InpLookback": "50", "InpExpiryBars": "50", "InpTargetR": "3.0",
+        "InpSLBufferATR": "0.1", "InpWideStopATR": "0.0", "InpAllowShort": "true", "InpRetryMin": "60",
+    }),
     "FZMR_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261019", "InpComment": "FZMR", "InpTimeframe": "15", "InpSpreadWaitMin": "0",
         "InpZPeriod": "20", "InpZThreshold": "2.0", "InpERPeriod": "10", "InpMaxER": "0.40",
