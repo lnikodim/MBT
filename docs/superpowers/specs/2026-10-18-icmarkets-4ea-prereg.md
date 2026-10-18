@@ -47,6 +47,6 @@ Joint 4-EA prop_mc, P(pass both phases) at 0.3% / 0.5%: IC 97.2 / 90.0, 97.0 / 8
 (93-99% of entries match) but underrated the cost gap. In 2026, the only real-tick year on both servers, IC entries had
 median spreads of 5-8 points against 45-59 on Darwinex, and commission was 7.00 USD per lot against about 22.5. The
 2022-25 IC part uses generated ticks with similar low spreads, so its exact margin is provisional, but the 2026 real ticks
-show the IC cost advantage is real. Side note: on IC the first gold ticks after the session open arrive about a minute
-before trading opens, so MACD logs "market closed" stop modifications there; they retry on the next tick, and the
-matched entries show no effect on trades.
+show the IC cost advantage is real. Side note: on IC the first gold ticks after the daily reopen arrive before trading opens. All 6,619 "market closed"
+stop modifications in the batch (MACD and RSI_Reversal, a few MA_Channel) fall at 01:00-01:09 server time, on 102
+days; the EAs retry on the next tick, and the 93-99% entry match shows no effect on trades.
