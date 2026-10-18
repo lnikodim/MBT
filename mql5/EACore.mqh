@@ -266,7 +266,7 @@ double CalculateLots(const double slDistance, const ENUM_ORDER_TYPE orderType, c
    if(riskMoney <= 0.0)
       return(0.0);
    double tickSize  = g_symbol.TickSize();
-   double tickValue = g_symbol.TickValueLoss();
+   double tickValue = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE_LOSS);   // live: CSymbolInfo caches it at Core_Init, and it moves with the quote currency (JPY, CHF)
    if(tickSize <= 0.0 || tickValue <= 0.0)
       return(0.0);
    double lossPerLot = slDistance / tickSize * tickValue;
