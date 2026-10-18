@@ -11,6 +11,9 @@
 //| cannot duplicate a trade. Only positions with InpMagic on        |
 //| _Symbol are touched.                                             |
 //|                                                                  |
+//| v1.21: EACore 2026-10-18 fixes (session-aware bars, spread retry |
+//|        window from the delay, late-signal guard, daily-stop      |
+//|        latch, trade log per login); signal logic unchanged.      |
 //| v1.20: execution, guards and trade log from EACore.mqh (the      |
 //|        MACD_Cross_EA v1.42 core: spread cap + in-bar retry,      |
 //|        daily / monthly loss stops, closed-trade CSV, Ready check |
@@ -27,7 +30,7 @@
 //| profitable on its own), held out 2025-26: PF 1.77 real ticks.    |
 //+------------------------------------------------------------------+
 #property copyright   "MBT"
-#define EA_VERSION    "1.20"
+#define EA_VERSION    "1.21"
 #property version     EA_VERSION
 #property strict
 #property description "RSI threshold entries with a re-arm at 50, optional MA filter, % SL / TP,"

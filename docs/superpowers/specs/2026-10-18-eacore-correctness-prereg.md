@@ -58,3 +58,44 @@ holds the account's earlier EA closes once, with r_multiple filled.
 P1-P4 pass on IC: the new builds are the release candidates (Darwinex checks follow when the terminal is on Darwinex).
 A P1/P2 entry that the listed causes cannot explain, or any 10018 order failure, stops the release until explained. An EA
 failing Gate A after the fix is flagged to the user; no retune.
+
+## Outcome, IC Markets (2026-10-18, ICMarketsEU-Demo in every agent log, history quality 10%, log `reports/portfolio/eacore_fix_parity_ic.log`)
+The tester's XAUUSD trade session prints as Mon-Thu 01:02-23:59, Fri 01:02-23:57, which confirms the 01:00 quote comes before trading opens.
+
+| EA | old trades / PF / net R | new trades / PF / net R | old-only / new-only entries (reopen bar) | P1 | P2 | P3 (order/close 10018) | P4 |
+|---|---|---|---|---|---|---|---|
+| MACD v1.46 | 945 / 1.95 / +375.8 | 958 / 1.96 / +379.9 | 2 / 15 (14) | pass | pass | 0, pass | pass |
+| Donchian v1.02 | 157 / 1.72 / +59.5 | 156 / 1.80 / +63.5 | 12 / 11 (7) | pass | pass | 0, pass | pass |
+| RSI_Reversal v1.21 | 347 / 1.63 / +100.5 | 362 / 1.73 / +118.3 | 32 / 47 (47) | pass | pass | 0, pass | pass |
+| MA_Channel v1.02 | 292 / 1.59 / +98.6 | 302 / 1.49 / +88.7 | 2 / 12 (9) | pass | pass | 0, pass | pass |
+
+Joint 4-EA prop_mc at 0.3% / 0.5%, seeds 1-3: new 97.3/90.4, 97.0/90.7, 97.4/90.5 vs old 97.2/90.0, 97.0/89.5, 96.9/89.9.
+The max-loss breach at 0.5% fell from 5.4-5.8% to 4.8-5.1%. **P1-P4 all pass on IC**: the new builds are the release candidates.
+
+The hypothesis held except for RSI, whose net R rose by +17.8 R, outside the forecast ±15 R. All 47 lost reopen entries
+now open on their own bar; before the fix, 32 of them re-fired on a later bar. MA_Channel lost 9.9 R, as the review
+predicted: its 5 reopen exits now close at 01:02. In the old build those exits failed and the positions ran to later,
+luckier exits. Stop modifications rejected at 01:00-01:01 remain (MACD 3,039, RSI 2,839). They retry on the next tick
+and #1 does not cover them.
+
+What changed between the two runs:
+- **Run 1 (`eacore_fix_parity_ic_run1.log`)** had the same trades. It failed P3 for RSI: 1,071 rejected closes, all
+  from one daily stop. On 2023-10-09 gold gapped at the 01:00:38 pre-session quote and the daily stop fired. The closes
+  were sent on every tick until 01:02 (the old build sent 315 of them). The new build sent each close twice per tick,
+  once from the retry queue and once from the latched loop.
+- **Run 1 also failed P2 for MA_Channel** on 3 entries. Each was a moved exit: the old build held a position whose 01:00
+  exit failed, and the new build was flat after its 01:02 exit. Moved exits are a displacement caused by #1, so the P2
+  rule was amended after run 1 to admit "exit moved".
+- **The independent review** (3 reviewers, each finding checked by a skeptic; 6 confirmed, all minor, 3 refuted) led
+  to four code changes before run 2:
+  - daily-stop closes and close retries are sent only inside the session, once per tick;
+  - the late-signal guard (#4) keeps the load moment in GMT, since `TimeTradeServer()` may be wrong before login;
+  - the guard treats a bar as late only if it had quotes before the load, so an EA loaded during the daily break keeps
+    the 00:00 H4/H6 bar;
+  - caught-up log rows get the balance right after their deal.
+
+  Run 2 has the same trades as run 1, with P3 at 0.
+
+Release builds (MD5): MACD_Cross_EA 4a47ce4b88087ba913932ac54a5c0ce7, Donchian_Breakout_EA
+482a8a8ded225d9457c667e94b464d1c, RSI_Reversal_EA 21b69b80a68c15181e8d672a7ed26cb1, MA_Channel_EA
+a2cac05840a8849c14241bf0012429c4. Darwinex checks are pending until the terminal is on Darwinex-Demo.

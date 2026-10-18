@@ -3,6 +3,16 @@
 //|  MACD line / signal line crossover Expert Advisor                |
 //|  Designed for XAUUSD, works on any symbol.                       |
 //|                                                                  |
+//|  v1.46                                                           |
+//|  Changelog 1.46 (correctness, signal/exit logic unchanged; spec  |
+//|  2026-10-18-eacore-correctness-prereg.md): a bar is processed   |
+//|  only inside the trade session (IC 01:00 quote before 01:02     |
+//|  open); spread-retry window counts from the delay; live: no     |
+//|  entry on a bar that opened before load, one instance per       |
+//|  symbol+magic, alert on foreign own-magic entries, trade log    |
+//|  per login with catch-up; daily stop latches for the day; lots  |
+//|  sized with the live tick value.                                |
+//|                                                                  |
 //|  v1.45                                                           |
 //|  Changelog 1.45: trailing stop off by default (InpTrailStartPct |
 //|  0; set 1.0 for the v1.44 exits). 2022-26 real ticks: +332.6 R  |
@@ -51,7 +61,7 @@
 //|  - OnTester custom criterion for optimization ("Custom max")     |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#define EA_VERSION "1.45"
+#define EA_VERSION "1.46"
 #property version   EA_VERSION
 #property strict
 #property description "MACD crossover EA with trend/strength filters, % SL/TP, trailing and risk-based lots"
@@ -127,15 +137,20 @@ bool          g_manageStops  = false;  // true if BE or trailing enabled
 //--- v1.42 guards
 int           g_pendingType  = -1;     // spread-blocked signal: POSITION_TYPE_BUY/SELL, -1 = none
 datetime      g_pendingBar   = 0;
+datetime      g_pendingSince = 0;      // when the signal was delayed: its retry window starts here
 datetime      g_dayStart     = 0;      // server day / month whose start balance is cached
 double        g_dayBalance   = 0.0;
 datetime      g_monthStart   = 0;
 double        g_monthBalance = 0.0;
 bool          g_dayStopHit   = false;  // daily stop reported for g_dayStart
 long          g_guardLogin   = 0;      // account the cached start balances belong to
+datetime      g_loadGMT      = 0;      // live: GMT at load; no entry on a bar that had quotes before it (LateBar)
+string        g_lockName     = "";     // live: single-instance lock (temporary terminal global variable)
 //--- trade log
 string        g_logFile      = "";
 int           g_logFlags     = 0;
+ulong         g_lastLoggedDeal = 0;    // newest closing deal written to the trade log
+bool          g_logCaughtUp  = true;   // live: closes made while the EA was not running are appended once
 struct EntryInfo { ulong position; int spread; double slippage; double risk; };
 EntryInfo     g_entries[];
 
@@ -203,6 +218,19 @@ int OnInit()
       return(INIT_FAILED);
      }
    g_symbol.Refresh();
+   if(!MQLInfoInteger(MQL_TESTER))
+     {
+      g_lockName = StringFormat("MACD_Cross_EA_%s_%I64u_lock", _Symbol, InpMagic);
+      GlobalVariableTemp(g_lockName);
+      if(!GlobalVariableSetOnCondition(g_lockName, LockValue(), 0.0) && GlobalVariableGet(g_lockName) != LockValue())
+        {
+         PrintFormat("MACD_Cross_EA already runs on %s with magic %I64u on another chart: this instance does not start",
+                     _Symbol, InpMagic);
+         g_lockName = "";
+         return(INIT_FAILED);
+        }
+      g_loadGMT = TimeGMT();
+     }
 
 //--- indicators
    g_macdHandle = iMACD(_Symbol, InpTimeframe, InpFastEMA, InpSlowEMA, InpSignalSMA, InpAppliedPrice);
@@ -265,6 +293,7 @@ int OnInit()
    UpdatePeriodBalances();
    LogInit();
    Print("Ready check: ", TradePermissionText(), " | ", GuardStatus());
+   Print("Trade sessions (server): ", SessionText());
    return(INIT_SUCCEEDED);
   }
 
@@ -276,6 +305,9 @@ void OnDeinit(const int reason)
    ReleaseHandle(g_macdHandle);
    ReleaseHandle(g_trendHandle);
    ReleaseHandle(g_atrHandle);
+   if(g_lockName != "" && GlobalVariableGet(g_lockName) == LockValue())
+      GlobalVariableDel(g_lockName);
+   g_lockName = "";
 //--- drop persistence only when removed on purpose; keep it on restart / recompile
    if(reason == REASON_REMOVE || reason == REASON_PARAMETERS || reason == REASON_CHARTCHANGE)
       GlobalVariableDel(g_gvLastBar);
@@ -318,6 +350,8 @@ void LogBar(const datetime bar, const double m, const double s, const string ver
 //+------------------------------------------------------------------+
 void OnTick()
   {
+   if(!g_logCaughtUp)
+      LogCatchUp();
 //--- loss stops first: a breached daily stop closes our positions
    GuardsOnTick();
 
@@ -329,8 +363,8 @@ void OnTick()
    datetime barTime = iTime(_Symbol, InpTimeframe, 0);
    if(g_pendingType >= 0)
       RetryPendingSignal(barTime);
-   if(barTime == 0 || barTime == g_lastBarTime)
-      return;
+   if(barTime == 0 || barTime == g_lastBarTime || !SessionOpen())
+      return;                          // a quote before the session opens (IC gold 01:00, trading 01:02) must not consume the bar
    g_pendingType = -1;                 // a new bar replaces any stale pending signal
 
 //--- MACD values of the two last CLOSED bars (shift 1 and 2)
@@ -466,13 +500,21 @@ void OpenPosition(const ENUM_POSITION_TYPE type)
       PrintFormat("Signal skipped, %s", why);
       return;
      }
+   const datetime bar = iTime(_Symbol, InpTimeframe, 0);
+   if(LateBar(bar))
+     {
+      PrintFormat("Signal skipped, late signal: bar %s had quotes before the EA was loaded (%s GMT)",
+                  TimeToString(bar, TIME_DATE | TIME_MINUTES), TimeToString(g_loadGMT, TIME_DATE | TIME_SECONDS));
+      return;
+     }
 
    if(InpMaxSpreadPoints > 0 && g_symbol.Spread() > InpMaxSpreadPoints)
      {
       if(InpSpreadWaitMin > 0 && g_pendingType < 0)
         {
-         g_pendingType = (int)type;
-         g_pendingBar  = iTime(_Symbol, InpTimeframe, 0);
+         g_pendingType  = (int)type;
+         g_pendingBar   = bar;
+         g_pendingSince = TimeCurrent();
          PrintFormat("Signal delayed, spread %d > %d points -- retrying for up to %d min",
                      g_symbol.Spread(), InpMaxSpreadPoints, InpSpreadWaitMin);
         }
@@ -609,7 +651,7 @@ double CalculateLots(const double slDistance, const ENUM_ORDER_TYPE orderType, c
       return(0.0);
 
    double tickSize  = g_symbol.TickSize();
-   double tickValue = g_symbol.TickValueLoss();
+   double tickValue = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE_LOSS);   // live: CSymbolInfo caches it at init, and it moves with the account currency
    if(tickSize <= 0.0 || tickValue <= 0.0)
       return(0.0);
 
@@ -700,6 +742,54 @@ double OnTester()
    double ddP = TesterStatistics(STAT_EQUITY_DDREL_PERCENT);
    return(profit * pf / (1.0 + ddP));
   }
+
+//+------------------------------------------------------------------+
+//| Trade session (server time of the last tick); none listed = open |
+//+------------------------------------------------------------------+
+bool SessionOpen()
+  {
+   const datetime now = TimeCurrent();
+   const datetime sec = now % 86400;
+   MqlDateTime t;
+   TimeToStruct(now, t);
+   datetime from, to;
+   uint i = 0;
+   for(; SymbolInfoSessionTrade(_Symbol, (ENUM_DAY_OF_WEEK)t.day_of_week, i, from, to); i++)
+      if(from < to ? (sec >= from && sec < to) : (sec >= from || sec < to))
+         return(true);
+   return(i == 0);
+  }
+
+string SessionText()
+  {
+   const string days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+   string txt = "";
+   for(int d = 1; d <= 5; d++)
+     {
+      txt += (d > 1 ? " | " : "") + days[d];
+      datetime from, to;
+      uint i = 0;
+      for(; SymbolInfoSessionTrade(_Symbol, (ENUM_DAY_OF_WEEK)d, i, from, to); i++)
+         txt += StringFormat(" %s-%s", TimeToString(from, TIME_MINUTES), TimeToString(to, TIME_MINUTES));
+      if(i == 0)
+         txt += " none listed (open)";
+     }
+   return(txt);
+  }
+
+double LockValue() { return((double)(ChartID() % 1000000000000 + 1)); }   // exact in a double
+
+//--- live: the current bar had quotes before this instance loaded (fresh attach, re-attach, restart mid-bar). The load
+//--- moment is kept in GMT (OS clock, valid before login) and moved to server time here, once quotes flow. A bar that
+//--- began quoting only after the load (the 00:00 H4/H6 bar during the daily break) is not late.
+bool LateBar(const datetime bar)
+  {
+   if(g_loadGMT == 0)
+      return(false);
+   const long     offset = (long)MathRound(((long)TimeTradeServer() - (long)TimeGMT()) / 900.0) * 900;
+   const datetime load   = (datetime)((long)g_loadGMT + offset);
+   return(bar < load && Bars(_Symbol, PERIOD_M1, bar, load - 1) > 0);
+  }
 //+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
@@ -763,7 +853,7 @@ string GuardStatus()
   {
    const double eq = AccountInfoDouble(ACCOUNT_EQUITY);
    return(StringFormat("guards %s | day %+.2f%% (stop -%.1f%%) | month %+.2f%% (stop -%.1f%%)",
-                       DailyStopped() ? "DAILY STOP" : MonthlyStopped() ? "MONTHLY STOP" : "ok",
+                       g_dayStopHit || DailyStopped() ? "DAILY STOP" : MonthlyStopped() ? "MONTHLY STOP" : "ok",
                        g_dayBalance   > 0.0 ? 100.0 * (eq / g_dayBalance   - 1.0) : 0.0, InpDailyLossPct,
                        g_monthBalance > 0.0 ? 100.0 * (eq / g_monthBalance - 1.0) : 0.0, InpMonthlyLossPct));
   }
@@ -771,14 +861,16 @@ string GuardStatus()
 void GuardsOnTick()
   {
    UpdatePeriodBalances();
-   if(!DailyStopped())
-      return;
+   if(!DailyStopped() && !g_dayStopHit)
+      return;                          // after a daily stop: stay flat until the next server day
    if(!g_dayStopHit)
      {
       g_dayStopHit = true;
       PrintFormat("DAILY STOP: equity %.2f <= floor %.2f (-%.1f%% of day start %.2f) -- closing own positions, no entries until next server day",
                   AccountInfoDouble(ACCOUNT_EQUITY), DailyFloor(), InpDailyLossPct, g_dayBalance);
      }
+   if(!SessionOpen())
+      return;                          // a close sent before the session opens only fails (IC gold 01:00-01:02)
    for(int i = PositionsTotal() - 1; i >= 0; i--)
      {
       const ulong ticket = PositionGetTicket(i);
@@ -791,8 +883,8 @@ void GuardsOnTick()
 bool GuardsAllowEntry(string &why)
   {
    why = "";
-   if(DailyStopped())
-      why = StringFormat("daily loss stop (equity %.2f <= %.2f)", AccountInfoDouble(ACCOUNT_EQUITY), DailyFloor());
+   if(g_dayStopHit || DailyStopped())
+      why = StringFormat("daily loss stop hit today (equity %.2f, floor %.2f)", AccountInfoDouble(ACCOUNT_EQUITY), DailyFloor());
    else if(MonthlyStopped())
       why = StringFormat("monthly loss stop (equity %.2f <= %.2f)", AccountInfoDouble(ACCOUNT_EQUITY), MonthlyFloor());
    return(why == "");
@@ -801,7 +893,7 @@ bool GuardsAllowEntry(string &why)
 //--- a spread-blocked signal is retried on every tick of the same bar, up to InpSpreadWaitMin minutes
 void RetryPendingSignal(const datetime barTime)
   {
-   if(barTime != g_pendingBar || TimeCurrent() - g_pendingBar > InpSpreadWaitMin * 60)
+   if(barTime != g_pendingBar || TimeCurrent() - g_pendingSince > InpSpreadWaitMin * 60)
      {
       PrintFormat("Delayed %s signal dropped, spread stayed above %d points",
                   g_pendingType == POSITION_TYPE_BUY ? "BUY" : "SELL", InpMaxSpreadPoints);
@@ -824,12 +916,15 @@ void RetryPendingSignal(const datetime barTime)
 
 void LogInit()
   {
-   g_logFile = "";
+   g_logFile        = "";
+   g_lastLoggedDeal = 0;
+   g_logCaughtUp    = true;
    if(!InpTradeLog || MQLInfoInteger(MQL_OPTIMIZATION))
       return;
    const bool tester = (bool)MQLInfoInteger(MQL_TESTER);
    g_logFlags = tester ? FILE_COMMON : 0;
-   const string name = StringFormat("MACD_Cross_EA_%s_%I64u%s_trades.csv", _Symbol, InpMagic, tester ? "_tester" : "");
+   const string name = StringFormat("MACD_Cross_EA_%s_%I64u_%s_trades.csv", _Symbol, InpMagic,
+                                    tester ? "tester" : IntegerToString(AccountInfoInteger(ACCOUNT_LOGIN)));
    if(tester)
       FileDelete(name, g_logFlags);
    const int h = FileOpen(name, FILE_READ | FILE_WRITE | FILE_TXT | FILE_ANSI | g_logFlags);
@@ -840,8 +935,64 @@ void LogInit()
      }
    if(FileSize(h) == 0)
       FileWriteString(h, TRADE_LOG_HEADER);
+   else if(!tester)
+      g_lastLoggedDeal = LastLoggedDeal(h);
    FileClose(h);
-   g_logFile = name;
+   g_logFile     = name;
+   g_logCaughtUp = tester;
+  }
+
+//--- deal ticket of the file's last row (0 for a header-only file)
+ulong LastLoggedDeal(const int h)
+  {
+   string last = "";
+   FileSeek(h, 0, SEEK_SET);
+   while(!FileIsEnding(h))
+     {
+      const string line = FileReadString(h);
+      if(line != "")
+         last = line;
+     }
+   string f[];
+   return(StringSplit(last, ',', f) == 21 ? (ulong)StringToInteger(f[18]) : 0);
+  }
+
+//--- live: log every closing deal newer than the last one written (own symbol and magic only, see LogClosingDeal)
+void LogCatchUp()
+  {
+   g_logCaughtUp = true;
+   if(g_logFile == "" || !HistorySelect(0, TimeCurrent() + 86400))
+      return;
+   ulong pending[];
+   for(int i = 0; i < HistoryDealsTotal(); i++)
+     {
+      const ulong d = HistoryDealGetTicket(i);
+      if(d > g_lastLoggedDeal)
+        {
+         const int n = ArraySize(pending);
+         ArrayResize(pending, n + 1, 16);
+         pending[n] = d;
+        }
+     }
+   ArraySort(pending);
+   for(int i = 0; i < ArraySize(pending); i++)
+      LogClosingDeal(pending[i], true);
+  }
+
+//--- account balance right after a deal: today's balance minus everything booked after it (credit is not balance)
+double BalanceAfter(const ulong deal)
+  {
+   double bal = AccountInfoDouble(ACCOUNT_BALANCE);
+   if(!HistorySelect(0, TimeCurrent() + 86400))
+      return(bal);
+   for(int i = HistoryDealsTotal() - 1; i >= 0; i--)
+     {
+      const ulong d = HistoryDealGetTicket(i);
+      if(d > deal && HistoryDealGetInteger(d, DEAL_TYPE) != DEAL_TYPE_CREDIT)
+         bal -= HistoryDealGetDouble(d, DEAL_PROFIT) + HistoryDealGetDouble(d, DEAL_SWAP) +
+                HistoryDealGetDouble(d, DEAL_COMMISSION) + HistoryDealGetDouble(d, DEAL_FEE);
+     }
+   return(bal);
   }
 
 string ReasonName(const long reason)
@@ -859,11 +1010,13 @@ string ReasonName(const long reason)
    return("other");
   }
 
-void LogClosingDeal(const ulong deal)
+void LogClosingDeal(const ulong deal, const bool caughtUp = false)
   {
-   if(g_logFile == "" || !HistoryDealSelect(deal))
-      return;
+   if(g_logFile == "" || deal <= g_lastLoggedDeal || !HistoryDealSelect(deal))
+      return;                          // written already: the catch-up and the trade event can both see a deal
    const long entry = HistoryDealGetInteger(deal, DEAL_ENTRY);
+   if(entry != DEAL_ENTRY_IN)
+      g_lastLoggedDeal = deal;
    if(entry != DEAL_ENTRY_OUT && entry != DEAL_ENTRY_INOUT && entry != DEAL_ENTRY_OUT_BY)
       return;
    if(HistoryDealGetString(deal, DEAL_SYMBOL) != _Symbol)
@@ -884,6 +1037,7 @@ void LogClosingDeal(const ulong deal)
       return;
    datetime openTime = 0;
    long     inMagic  = -1;
+   ulong    inDeal   = 0;
    double   inVol = 0.0, inPxVol = 0.0, inFee = 0.0;
    for(int i = 0; i < HistoryDealsTotal(); i++)
      {
@@ -895,6 +1049,7 @@ void LogClosingDeal(const ulong deal)
         {
          openTime = (datetime)HistoryDealGetInteger(d, DEAL_TIME);
          inMagic  = HistoryDealGetInteger(d, DEAL_MAGIC);
+         inDeal   = d;
         }
       inVol   += v;
       inPxVol += HistoryDealGetDouble(d, DEAL_PRICE) * v;
@@ -916,6 +1071,11 @@ void LogClosingDeal(const ulong deal)
             rMult = DoubleToString(net / (g_entries[i].risk * share), 3);
          break;
         }
+   double perLot = 0.0, inSL = HistoryDealGetDouble(inDeal, DEAL_SL);
+   if(rMult == "" && inSL > 0.0 &&     // entry not seen by this instance (restart, catch-up): risk from its stop
+      OrderCalcProfit(wasBuy ? ORDER_TYPE_BUY : ORDER_TYPE_SELL, _Symbol, inVol, inPxVol / inVol, inSL, perLot) && perLot < 0.0)
+      rMult = DoubleToString(net / (-perLot * share), 3);
+   const double balance = caughtUp ? BalanceAfter(deal) : AccountInfoDouble(ACCOUNT_BALANCE);
    const int h = FileOpen(g_logFile, FILE_READ | FILE_WRITE | FILE_TXT | FILE_ANSI | g_logFlags);
    if(h == INVALID_HANDLE)
      {
@@ -927,13 +1087,29 @@ void LogClosingDeal(const ulong deal)
                    TimeToString(closeTime, TIME_DATE | TIME_SECONDS), TimeToString(openTime, TIME_DATE | TIME_SECONDS),
                    _Symbol, wasBuy ? "buy" : "sell", vol, DoubleToString(inPxVol / inVol, dg), DoubleToString(px, dg),
                    DoubleToString(sl, dg), DoubleToString(tp, dg), gross, comm, swap, net,
-                   AccountInfoDouble(ACCOUNT_BALANCE), rMult, reason, spread, slip, deal, pos, InpMagic));
+                   balance, rMult, reason, spread, slip, deal, pos, InpMagic));
    FileClose(h);
   }
 
 void OnTradeTransaction(const MqlTradeTransaction &trans, const MqlTradeRequest &request, const MqlTradeResult &result)
   {
-   if(trans.type == TRADE_TRANSACTION_DEAL_ADD && trans.deal != 0)
-      LogClosingDeal(trans.deal);
+   if(trans.type != TRADE_TRANSACTION_DEAL_ADD || trans.deal == 0)
+      return;
+   if(!g_logCaughtUp)
+      LogCatchUp();
+   LogClosingDeal(trans.deal);
+//--- live: an entry on this magic and symbol that this instance did not send (second terminal on the account)
+   if(MQLInfoInteger(MQL_TESTER) || !HistoryDealSelect(trans.deal) ||
+      HistoryDealGetInteger(trans.deal, DEAL_ENTRY) != DEAL_ENTRY_IN ||
+      HistoryDealGetInteger(trans.deal, DEAL_MAGIC) != (long)InpMagic || HistoryDealGetString(trans.deal, DEAL_SYMBOL) != _Symbol)
+      return;
+   const ulong order = (ulong)HistoryDealGetInteger(trans.deal, DEAL_ORDER);
+   for(int i = ArraySize(g_entries) - 1; i >= 0; i--)
+      if(g_entries[i].position == order)
+         return;
+   const string msg = StringFormat("MACD_Cross_EA %s magic %I64u: order #%I64u was not sent by this instance -- another chart or terminal trades this magic on the account",
+                                   _Symbol, InpMagic, order);
+   Print(msg);
+   Alert(msg);
   }
 //+------------------------------------------------------------------+

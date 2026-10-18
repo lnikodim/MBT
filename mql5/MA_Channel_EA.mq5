@@ -8,17 +8,19 @@
 //|  cross, or fast/slow SMA cross against the position, or R x stop |
 //|  target. Protective stop k x ATR in every mode. One position at a|
 //|  time. Execution, guards and trade log from EACore.mqh.          |
+//|  v1.02: pullback state rebuilt on every init (a failed rebuild    |
+//|        retries next tick) + EACore 2026-10-18 fixes; logic same. |
 //|  v1.01 defaults: H1, PULLBACK entry, CHANNEL exit, long-only     |
 //|        (Stage A winner, spec 2026-10-16 outcome: PF 1.61, +99 R).|
 //|  v1.00: the PDF's breakout system (BREAKOUT, CHANNEL, both sides)|
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 #property description "MA price channel (SMA of highs/lows + fast SMA of closes): breakout or pullback entry, channel / MA-cross / target exit; MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "MA_Channel_EA"
-#define EA_VERSION "1.01"
+#define EA_VERSION "1.02"
 #define EA_MAGIC   261016
 #define EA_COMMENT "MA_CH"
 #define EA_TIMEFRAME PERIOD_H1
@@ -46,7 +48,8 @@ input int             InpTrendEMA   = 0;              // Trend EMA period on tha
 
 int g_fast = INVALID_HANDLE, g_slow = INVALID_HANDLE, g_up = INVALID_HANDLE, g_lo = INVALID_HANDLE,
     g_atr = INVALID_HANDLE, g_trend = INVALID_HANDLE;
-int g_state = 0;   // last channel break: +1 up, -1 down, 0 none seen yet (rebuilt from bars after a restart)
+int  g_state      = 0;      // last channel break: +1 up, -1 down, 0 none seen yet (rebuilt from bars after a restart)
+bool g_stateBuilt = false;  // reset in OnInit: a parameter change re-runs OnInit without reloading the program
 
 ENUM_TIMEFRAMES TrendTF() { return(InpTrendTF == PERIOD_CURRENT ? InpTimeframe : InpTrendTF); }
 
@@ -61,6 +64,8 @@ int OnInit()
      }
    if(!Core_Init())
       return(INIT_PARAMETERS_INCORRECT);
+   g_state      = 0;
+   g_stateBuilt = false;
    g_fast = iMA(_Symbol, InpTimeframe, InpFastMA, 0, MODE_SMA, PRICE_CLOSE);
    g_slow = iMA(_Symbol, InpTimeframe, InpSlowMA, 0, MODE_SMA, PRICE_CLOSE);
    g_up   = iMA(_Symbol, InpTimeframe, InpChannelMA, 0, MODE_SMA, PRICE_HIGH);
@@ -94,18 +99,19 @@ void OnDeinit(const int reason)
    Core_Deinit(reason);
   }
 
-//--- rebuild g_state from the last 300 closed bars (restart safety for PULLBACK mode)
-void RebuildState()
+//--- rebuild g_state from the last 300 closed bars (restart safety for PULLBACK mode); false = data not ready
+bool RebuildState()
   {
    double f[], u[], l[];
    const int n = 300;
    if(CopyBuffer(g_fast, 0, 1, n, f) < n || CopyBuffer(g_up, 0, 1, n, u) < n || CopyBuffer(g_lo, 0, 1, n, l) < n)
-      return;
+      return(false);
    for(int i = 1; i < n; i++)                        // oldest-first: i-1 is the bar before i
      {
       if(f[i] > u[i] && f[i - 1] <= u[i - 1]) g_state = 1;
       else if(f[i] < l[i] && f[i - 1] >= l[i - 1]) g_state = -1;
      }
+   return(true);
   }
 
 void OnTick()
@@ -115,7 +121,6 @@ void OnTick()
    Core_RetryPending(bar);
    if(!Core_IsNewBar(bar))
       return;
-   static bool stateBuilt = false;
    double f[3], s[2], u[3], l[3], atr[1], ema[1];
    double htfClose = 0.0;
    ema[0] = 0.0;
@@ -128,7 +133,12 @@ void OnTick()
       if(CopyBuffer(g_trend, 0, 1, 1, ema) < 1 || ema[0] == EMPTY_VALUE || htfClose <= 0.0)
          return;
      }
-   if(!stateBuilt) { RebuildState(); stateBuilt = true; }
+   if(!g_stateBuilt)
+     {
+      if(!RebuildState())
+         return;                                   // history not ready: bar stays unprocessed, retried next tick
+      g_stateBuilt = true;
+     }
    Core_MarkBar(bar);
    // CopyBuffer arrays are oldest-first: [2] = shift 1 (last closed bar), [1] = shift 2, [0] = shift 3
    const double f1 = f[2], f2 = f[1], f3 = f[0], u1 = u[2], u2 = u[1], l1 = l[2], l2 = l[1], s1 = s[1], s2 = s[0];

@@ -6,17 +6,19 @@
 //|  mirrored). Stop k x ATR, target R x stop, one break-even step,  |
 //|  no trailing, one position at a time, opposite signals ignored.  |
 //|  Execution, guards and trade log from EACore.mqh.                |
+//|  v1.02: EACore 2026-10-18 fixes (session-aware bars, late-signal |
+//|        guard, close retry, daily-stop latch, log); logic same.   |
 //|  v1.01 defaults: H4, N 20, 2 x ATR(20), 2R, long-only, BE off    |
 //|        (amendment 1 of the 2026-10-13 spec, passes Gate A).      |
 //|  v1.00 H1, N 48, 3R, both sides, BE +1R (failed Gate A).          |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 #property description "Donchian channel breakout + HTF EMA trend filter; k x ATR stop, R x stop target, one break-even; MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "Donchian_Breakout_EA"
-#define EA_VERSION "1.01"
+#define EA_VERSION "1.02"
 #define EA_MAGIC   261015
 #define EA_COMMENT "DONCH"
 #define EA_TIMEFRAME PERIOD_H4   // v1.01 defaults = the published, Gate-A-passing cell (spec 2026-10-13 amendment 1)
