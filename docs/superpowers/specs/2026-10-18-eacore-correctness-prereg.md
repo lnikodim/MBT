@@ -99,3 +99,14 @@ What changed between the two runs:
 Release builds (MD5): MACD_Cross_EA 4a47ce4b88087ba913932ac54a5c0ce7, Donchian_Breakout_EA
 482a8a8ded225d9457c667e94b464d1c, RSI_Reversal_EA 21b69b80a68c15181e8d672a7ed26cb1, MA_Channel_EA
 a2cac05840a8849c14241bf0012429c4. Darwinex checks are pending until the terminal is on Darwinex-Demo.
+
+## Outcome, Darwinex (2026-10-19, Darwinex-Demo real ticks; runs of specs 2026-10-19-macd-m15-m30 and 2026-10-19-lower-tf-3ea)
+- MACD v1.46 H1: 955/955 entries identical to `v145_default_20261011_092414` (PF 1.79, Gate A pass).
+- Donchian v1.02 H4: identical to `donch_a1_pub_20261013_095001` (157 trades, PF 1.67).
+- RSI_Reversal v1.21 H6: 362 trades, PF 1.58, vs 358 / 1.56 in `rsi_ctl_20261014_125232`. 15 new-only and 11
+  control-only entries, all explained (reopen bar, spread retry, displacement); 0 unexplained.
+- MA_Channel v1.02 H1, first Darwinex real-tick run: 299 trades, PF 1.49, +89.1 R, R 2022-24 / 2025-26 +52.1 / +37.1,
+  Gate A pass. The v1.01 real-tick run was not done (no tester profile for a renamed build). IC parity already covered
+  MA_Channel.
+- Darwinex joint 4-EA on real ticks: 94.1/84.2, 93.9/84.7, 93.7/84.2 at 0.3% / 0.5%.
+**Darwinex checks pass.**
