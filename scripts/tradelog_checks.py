@@ -16,6 +16,8 @@ def load_rows(path):
                  "side": r["side"], "exit_reason": r["exit_reason"]}
             for k in _FLOATS:
                 d[k] = float(r[k])
+            for k in ("commission", "swap"):            # absent in logs older than the EACore header
+                d[k] = float(r.get(k) or 0.0)
             d["r_multiple"] = float(r["r_multiple"]) if r["r_multiple"] else None
             d["spread_pts"] = int(r["spread_pts"]) if r["spread_pts"] else None
             rows.append(d)

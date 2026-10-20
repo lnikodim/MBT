@@ -157,3 +157,10 @@ def test_fixed_stop_target_violations(tmp_path):
                              row("2024.01.03 14:00:00", "2024.01.03 15:00:00", side="buy", op=1.10000, sl=1.09800, tp=1.10250)))
     bad = K.fixed_stop_target_violations(rows, stop=0.0015, target=0.0025, tol=0.00002)
     assert len(bad) == 1 and bad[0]["sl"] == pytest.approx(1.09800)
+
+
+def test_load_rows_costs(tmp_path):
+    f = tmp_path / "c.csv"
+    f.write_text(HDR + "2024.01.03 12:00:00,2024.01.03 10:00:00,EURUSD,buy,1.00,1.1,1.1,1.09,0,-50,-5.25,-1.5,-56.75,99943.25,-0.5,sl,8,0.0,1,1,261021\n")
+    (r,) = K.load_rows(str(f))
+    assert (r["commission"], r["swap"]) == (-5.25, -1.5)

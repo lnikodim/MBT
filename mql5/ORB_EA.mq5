@@ -182,6 +182,8 @@ int OnInit()
       return(INIT_FAILED);
    if(!Core_Init())
       return(INIT_PARAMETERS_INCORRECT);
+   g_loadGMT = 0;                                   // late attach is handled by the day state (DAY_DONE after the range end):
+                                                    // EACore's bar check would drop a NY H1 breakout after a 17:00-17:29 load
    g_atr = iATR(_Symbol, PERIOD_D1, InpATRPeriod);
    if(g_atr == INVALID_HANDLE)
      {

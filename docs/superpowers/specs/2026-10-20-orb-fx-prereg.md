@@ -28,6 +28,14 @@ Calls made for the translation (not in the paper):
 - Days with no range data 10 min after the range end (holidays) are skipped. On a day the market closes before 23:50
   (24 and 31 December), a position is closed at the next day's first tick.
 - Live: an EA attached after the range end waits for the next day; a restart after today's entry does not trade again.
+- EACore loss guards at their defaults (daily -4%, monthly -12%), as in the earlier Stage A batches and live.
+
+Pre-run amendment (independent review before the batch: 4 reviewers, each finding checked by a skeptic; 3 confirmed,
+6 refuted): the batch script read a commission column the trade-log loader did not load (it would have crashed on the
+first cell; `load_rows` now loads commission and swap, with a test); one failing cell no longer stops the batch; live
+only, EACore's late-bar check is off in ORB_EA (`g_loadGMT = 0`), because the day state already handles a late attach
+and the check dropped a New York H1 breakout after a 17:00-17:29 restart. No tester trade changes; the self-check
+passed before the fixes.
 
 ## Runs (`reports/orb/orb_fx.py`, Darwinex-Demo, real ticks, 2022-01-01..2026-10-01, 1% risk, 1:30, 100k USD)
 - Self-check first (EURUSD 2025-01..04, New York M5 and London M15, `InpLogEveryBar`): range start times incl. the March
