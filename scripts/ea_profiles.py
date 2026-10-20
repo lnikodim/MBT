@@ -121,6 +121,16 @@ PROFILES = {
     },
     # FZMR_EA v1.01 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
     # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
+    # DonchianTrend_EA v1.00 (the user's EA in MQL5/Experts/Advisors, compiled by the user 2026-10-20; standalone, no
+    # trade log, no InpMagic: trades are rebuilt from the report's Deals table). Compiled defaults.
+    "DonchianTrend_EA": {
+        "InpSignalTimeframe": "16388", "InpDonchianPeriod": "20", "InpBreakoutBufferATR": "0.0",
+        "InpRequireSignalCandleDirection": "true", "InpAllowLong": "true", "InpAllowShort": "true",
+        "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200", "InpUseADXFilter": "true", "InpADXPeriod": "14", "InpMinADX": "18.0",
+        "InpATRPeriod": "14", "InpATRStopMultiplier": "2.0", "InpRewardRiskRatio": "1.0", "InpRiskPercent": "0.25",
+        "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
+        "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
+    },
     # ORB_EA v1.00 compiled defaults (Zarattini/Barbon/Aziz 2024 base ORB on forex: New York 09:30 open, 5-min range,
     # stop 0.10 x D1 ATR(14), close 23:50 server, spread cap 3 pips, server clock UTC+2 with US DST)
     "ORB_EA": dict(_CORE_DEFAULTS, **{
