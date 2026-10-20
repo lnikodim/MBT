@@ -31,3 +31,27 @@ A silver EA is a candidate to add to the account only if it passes Gate A and go
 0.3% on all 3 seeds. A candidate then gets a plateau test and an exposure check (gold + silver open risk against FTMO's
 5% daily limit), pre-registered separately. Otherwise silver is closed for these EAs as they are. No retuning in this
 round.
+
+## Outcome (2026-10-20, Darwinex-Demo, XAGUSD history quality 99%, real ticks from 2022-01, median entry spread 12 points, log `reports/macd_tf/xagusd_4ea.log`)
+| EA (timeframe) | trades | PF | equity DD | net R (per trade) | R 2022-24 / 2025-26 | Gate A | alone @0.3% |
+|---|---|---|---|---|---|---|---|
+| MACD (H1) | 1036 | 0.94 | 63.1% | +0.7 (+0.001) | -27.5 / +28.2 | fail | 13.1-13.9% |
+| Donchian (H4) | 140 | 1.36 | 10.9% | +31.5 (+0.225) | +14.0 / +17.5 | fail (trades < 150) | 0.0% |
+| RSI_Reversal (H6) | 384 | 0.73 | 53.0% | -57.8 (-0.150) | -38.9 / -18.9 | fail | 0.0% |
+| MA_Channel (H1) | 303 | 1.05 | 20.6% | +15.3 (+0.050) | +18.9 / -3.6 | fail | 1.7-1.8% |
+
+Joint P(pass both) at 0.3% / 0.5%: silver 4-EA 20.0/27.2, 19.6/27.2, 19.8/26.8 vs gold 4-EA 94.1/84.2, 93.9/84.7, 93.7/84.2.
+Daily R correlation between the gold set and the silver set is +0.19 over 1,140 days. Gold + silver would hold up to 11
+positions at once, against 8 for gold alone.
+
+**No candidate: 0 of 4 pass Gate A, so silver is closed for these EAs as they are.**
+- **%-stop EAs:** these failed as expected. MACD is breakeven with a 63% drawdown, and RSI loses in both regimes
+  (PF 0.73).
+- **ATR-stop EAs:** these held up better, also as expected. MA_Channel's edge is thin (PF 1.05) and it loses in
+  2025-26.
+- **Donchian is the only near-miss:** PF 1.36, profitable in both regimes, 10.9% DD, but 140 trades, below the 150
+  minimum. Under the rule it was not joint-tested.
+- **The correlation hypothesis was wrong.** At +0.19, silver diversifies gold more than expected. The obstacle is that
+  the gold-tuned EAs have little edge on silver.
+
+A silver-specific version (stops scaled to silver's volatility) would be a new, separately pre-registered test.
