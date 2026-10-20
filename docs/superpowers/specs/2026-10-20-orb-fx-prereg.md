@@ -66,3 +66,14 @@ A cell is a candidate only if it passes Gate A, has the plateau, and gold 4-EA +
 at 0.3% on all 3 seeds. A candidate then gets a separately pre-registered robustness test (costs +50%, stop 0.08 /
 0.12 x ATR, the other open, IC Markets data). Without a candidate, the base ORB on the forex majors is closed. No
 retuning in this round.
+
+## Outcome (2026-10-20, Darwinex-Demo, history quality 99%): stopped by the user after 18 of 56 cells
+User: "leave this experiment, it seems that leaves to a deadend". Done: EURUSD and GBPUSD (all 16 cells), USDJPY London
+5 and 15 min.
+- EURUSD, GBPUSD: 0 of 16 pass Gate A. PF 0.72-0.92 (one cell 0.99), net -41 to -213 R, win rate 15-26%, drawdown
+  68-91% at 1% risk. Costs were 0.11 R per trade (EURUSD) and 0.14 R (GBPUSD), as forecast; most cells lose about the
+  cost or more, so the breakout has no edge before costs either.
+- USDJPY London: 5 min PF 1.03, +80.5 R (2022-24 -9.7, fails); 15 min PF 1.08, +131.3 R (+107.1 / +24.2), drawdown
+  71% at 1% risk, the only Gate A pass. Not followed up (no plateau, prop_mc or joint check) because the batch was stopped.
+**Closed: the base ORB on the forex majors is left as a dead end.** Run outputs and the batch script were deleted at the
+user's request ("remove all leftovers"); the EA and this record stay.
