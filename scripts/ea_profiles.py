@@ -121,10 +121,10 @@ PROFILES = {
     },
     # FZMR_EA v1.01 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
     # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
-    # DonchianTrend_EA v1.01 (the user's EA in MQL5/Experts/Advisors; standalone, no trade log, no InpMagic: trades are
-    # rebuilt from the report's Deals table). Defaults = the USDJPY H4 pick of spec 2026-10-21 at 0.3% risk (the user's
-    # request 2026-10-21; v1.00 had channel 20, shorts on, ADX 18, ATR stop 2.0, RR 1.0, risk 0.25).
-    "DonchianTrend_EA": {
+    # Donchian_Trend_EA v1.01 (the user's DonchianTrend_EA, renamed 2026-10-21; MQL5/Experts/Advisors; standalone, no
+    # trade log, no InpMagic: trades are rebuilt from the report's Deals table). Defaults = the USDJPY H4 pick of spec
+    # 2026-10-21 at 0.3% risk (the user's request; v1.00 had channel 20, shorts on, ADX 18, ATR stop 2.0, RR 1.0, 0.25%).
+    "Donchian_Trend_EA": {
         "InpSignalTimeframe": "16388", "InpDonchianPeriod": "10", "InpBreakoutBufferATR": "0.0",
         "InpRequireSignalCandleDirection": "true", "InpAllowLong": "true", "InpAllowShort": "false",
         "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200", "InpUseADXFilter": "true", "InpADXPeriod": "14", "InpMinADX": "20.0",
