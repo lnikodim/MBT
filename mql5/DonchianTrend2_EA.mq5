@@ -9,6 +9,7 @@
 //| its bar (v1.00 skipped every 00:00 H4 bar: rollover spread). With |
 //| InpSpreadWaitMin = 0 the trades are those of v1.00. Defaults =   |
 //| the stage 1 pick: long-only, channel 10, 1.5 x ATR, RR 1.5, ADX 20|
+//| Retry off by default: stage 2 (+$225, DD 1.36%) missed the PF bar. |
 //+------------------------------------------------------------------+
 #property copyright "OpenAI"
 #property version   "2.00"
@@ -43,7 +44,7 @@ input bool            InpSkipIfMinLotTooRisky = true; // Skip if minimum volume 
 
 input group "04. Execution and safety"
 input int             InpMaxSpreadPoints  = 30;       // Maximum spread in points (not pips)
-input int             InpSpreadWaitMin    = 30;       // Retry a spread-blocked signal for N minutes in its bar (0 = skip it)
+input int             InpSpreadWaitMin    =  0;       // Retry a spread-blocked signal for N minutes in its bar (0 = skip it)
 input int             InpDeviationPoints  = 10;       // Maximum price deviation in points
 input bool            InpOnePositionPerSymbol = true; // Do not enter if a position already exists on this symbol
 input ulong           InpMagicNumber      = 20261020; // EA identifier

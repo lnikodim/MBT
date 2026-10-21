@@ -1,0 +1,23 @@
+; DonchianTrend_EA v1.00 inputs: USDJPY H4 stage 1 pick (spec 2026-10-21-donchiantrend-usdjpy-prereg.md)
+; long-only, channel 10, stop 1.5 x ATR, RR 1.5, ADX >= 20; Darwinex real ticks 2022-01..2026-10: net +14,321, PF 1.50, max DD 1.52%
+InpSignalTimeframe=16388
+InpDonchianPeriod=10
+InpBreakoutBufferATR=0.0
+InpRequireSignalCandleDirection=true
+InpAllowLong=true
+InpAllowShort=false
+InpFastEMAPeriod=50
+InpSlowEMAPeriod=200
+InpUseADXFilter=true
+InpADXPeriod=14
+InpMinADX=20.0
+InpATRPeriod=14
+InpATRStopMultiplier=1.5
+InpRewardRiskRatio=1.5
+InpRiskPercent=0.25
+InpSkipIfMinLotTooRisky=true
+InpMaxSpreadPoints=30
+InpDeviationPoints=10
+InpOnePositionPerSymbol=true
+InpMagicNumber=20261020
+InpTradeComment=MajorFX DonchianTrend

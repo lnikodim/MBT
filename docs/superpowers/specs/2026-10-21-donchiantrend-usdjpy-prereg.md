@@ -72,3 +72,13 @@ Stage 1 pick plus the retry.
   with max DD no worse, profitable in both regimes. Otherwise v2.00 ships with `InpSpreadWaitMin` 0 (= the pick on v1.00).
 - Hypothesis: the 00:00 bar holds about a sixth of the bars; with the retry the trade count rises by 10-20%, at a similar
   R per trade (the delay is minutes on a 1.5 x ATR stop); net rises, PF within +/-0.1, DD similar.
+
+## Outcome, Stage 2 (2026-10-21, log `reports/dtrend/code.log`)
+- P1 parity: v2.00 with `InpSpreadWaitMin` 0 = the v1.00 pick (213 / 213 trades, same open times and profits, net
+  +14,321.23): **pass**.
+- Retry 30 min: net +14,546.39 (+225), PF 1.49 (-0.01), max DD 1.36% (-0.16), 217 trades, R +43.2 / +11.5, Gate A pass,
+  prop_mc 0.6 / 17.9-18.6. Only 10 signals ever fell on a 00:00 bar with the pick's filters (all executed, median 7 min
+  after the bar open; 0 dropped); the 1,145 skips of v1.00 were bar checks, almost all without a signal.
+- **Decision: the retry misses the PF condition, so v2.00 ships with `InpSpreadWaitMin` 0 (= the pick on v1.00).** The
+  option stays in v2.00. The pick inputs for the user's own EA: `mql5/DonchianTrend_EA_USDJPY_H4.set` (also saved as
+  MQL5/Profiles/Tester/DonchianTrend_EA_USDJPY_H4.set).

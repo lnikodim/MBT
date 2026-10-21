@@ -138,7 +138,7 @@ PROFILES = {
         "InpRequireSignalCandleDirection": "true", "InpAllowLong": "true", "InpAllowShort": "false",
         "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200", "InpUseADXFilter": "true", "InpADXPeriod": "14", "InpMinADX": "20.0",
         "InpATRPeriod": "14", "InpATRStopMultiplier": "1.5", "InpRewardRiskRatio": "1.5", "InpRiskPercent": "0.25",
-        "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpSpreadWaitMin": "30", "InpDeviationPoints": "10",
+        "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpSpreadWaitMin": "0", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
     # ORB_EA v1.00 compiled defaults (Zarattini/Barbon/Aziz 2024 base ORB on forex: New York 09:30 open, 5-min range,
