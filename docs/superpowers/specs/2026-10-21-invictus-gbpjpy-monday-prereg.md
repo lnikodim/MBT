@@ -1,0 +1,82 @@
+# Invictus_GBPJPY_Monday_EA on GBPJPY (pre-registration)
+
+Date: 2026-10-21. User: "test …/Downloads/InvictusGBPJPYMon.mq5, here are the rules:
+https://www.mql5.com/en/code/77835". Server: Darwinex-Demo (user rule: always the first choice for backtests).
+
+**The EA:** "Buy GBPJPY Every Monday" by Tomasz Wojciech Forszpaniak ("Orangutang Trading"), v1.30, MD5 f95e8067….
+It is copied unchanged to `mql5/Invictus_GBPJPY_Monday_EA.mq5` and renamed per the naming convention. It compiles with
+0 errors and 0 warnings. A one-second timer reads only the server clock:
+- **Entry:** buy at Monday 11:00 server time, or up to 5 minutes late.
+- **Exit:** close at 23:00 server time the same day. There is no stop and no target, and the EA is flat before the
+  rollover, so it pays no swap.
+- **Guards:** it skips the day if the spread is over 1.5 pips or margin level would fall under 300%. One attempt a day.
+- **Day mask:** `InpDayMask` picks the weekdays (Mon=1, Tue=2, Wed=4, Thu=8, Fri=16).
+
+**Server clock:** the EA is built for GMT+2 winter / GMT+3 summer with US DST, where 11:00-23:00 server is 04:00-16:00
+New York. Darwinex runs the same clock (UTC+2 with US DST; spec 2026-10-20-orb-fx), so the hours stay as written.
+
+**Author's claim** (code page: 2022-01-01..2026-09-17, 10k account, 0.2 lot, $6 per lot fees, H1 chart):
+- +52.9% net, PF 1.86, max DD 7.05%, win rate 59.1%, 242 trades.
+- Robust: still profitable with the entry anywhere from 09:00 to 13:00 server.
+- The author's own suggested control: run the same trade on Tuesday to Friday and compare.
+
+**Review before the run** (kept, as the file runs as written):
+- **No stop.** A 12-hour hold takes any move in full; a yen intervention or BoE/BoJ day hits it with no limit.
+- **A failed close is not retried until the next day's 23:00.** If all 3 close attempts fail (an early close on a
+  holiday, a requote storm), the next check is the following day at 23:00, and the position holds overnight with swap.
+  This matters live, not in the tester. The tester shows it as a hold longer than 12 hours.
+- **Selection.** The author says the pattern was found by scanning ("how you can on MT5 find these patterns"). The
+  published window, 2022-01..2026-09, is the window it was found in, which is also our standard test window. A run
+  there only replicates the claim; it is not evidence of an edge.
+
+## Runs (`reports/invictus/invictus_eval.py`; Darwinex-Demo, GBPJPY H1 chart, real ticks, 100k USD, 1:100)
+The only input changed is `InpLots` = 2.0. That is the author's 0.2 lot per 10k scaled to the 100k deposit, so the
+percentages compare directly with the claim.
+
+**R per trade** = net (profit + commission + swap) / $1,000 = % of the deposit at the author's sizing. With no stop,
+there is no planned loss to use as R.
+
+- **S0, as written:** Monday only, 2022-01-01..2026-10-01.
+- **S1, the author's control:** all weekdays (`InpDayMask` 31), same window.
+  - Each day's trade opens and closes the same day, at a fixed lot, so a weekday's trades in S1 are the trades that
+    day alone would make.
+  - **Parity:** S1's Monday trades must equal S0's: same open minute, net within $1. Mismatches are reported. A
+    mismatch means state carries across days and S1 is not a clean control.
+- **S2, out of sample:** all weekdays, 2019-01-01..2022-01-01. These are 3 years before the author's window. It is
+  first-time tick data for GBPJPY on Darwinex, so its history quality is reported, and below 90% S2 is inconclusive.
+- **S3, entry hour:** Monday, `InpEntryHour` 9:1:13, 2022-26, MT5 optimization (criterion 0). The exit stays at 23:00,
+  so the hold runs 10 to 14 hours. Reported only (the author's robustness claim).
+
+## Checks and reports
+- **Gate A (S0):** trades >= 150, PF >= 1.00, net R > 0 in both 2022-24 and 2025-26.
+- **Out-of-sample check (S2), all four must hold for Monday:**
+  - net > 0 and PF >= 1.05;
+  - mean R per trade t-statistic >= 1.65 (one-sided 5%; the RSI2 lesson: a holdout check needs a t-statistic);
+  - Monday's mean R above the mean of the pooled Tuesday-Friday trades, so the result isn't only from being long
+    GBPJPY.
+- **Reported:**
+  - S0: net, PF, max equity DD, win rate, R by regime;
+  - per-trade mean R and t;
+  - worst trade in R;
+  - holds outside 11.5-12.5 hours;
+  - skipped days by reason (spread, missed entry minute, margin) from the agent log, plus order and close errors;
+  - history quality.
+- **Per weekday (S1 and S2):** trades, PF, net R, mean R, t; Monday against pooled Tuesday-Friday (Welch t).
+- **prop_mc alone (S0):** close_time,R file, --bt-risk 1.0, --risk 0.5,1.0 (half and full the author's sizing), 10k
+  sims, seeds 1-3. Limit: the simulator sees closed trades only. A 12-hour hold with no stop has floating losses the
+  daily rule would count, so these numbers are optimistic.
+
+## Hypothesis
+A long-only hold on GBPJPY, which rose over 2022-26, is positive on most subsets of days. Monday was picked from
+5 days and many hours on the same window.
+- **S0:** about 235-245 trades (a few spread skips), PF 1.5-1.9, Gate A passes. The claim replicates in sample.
+- **S1:** Tuesday to Friday are also net positive on average, and Monday is the best day (it was chosen for that).
+- **S2:** the Monday edge shrinks to PF 0.9-1.2 and the t-statistic stays under 1.65. The chance the out-of-sample check
+  passes is about 20%.
+
+## Decision rule
+- **Gate A passes and the out-of-sample check passes:** a candidate. A stop and sizing that fit prop rules, and the
+  joint with the gold live set, are pre-registered next. The as-written file never goes live (no stop).
+- **Gate A passes but the out-of-sample check fails:** not a candidate. The Monday pattern holds only in the window it
+  was found in.
+- **Gate A fails:** closed. The claim does not replicate on Darwinex.
