@@ -159,3 +159,51 @@ The EA is restored unchanged from f054c99 (MD5 f95e8067…) with its profile, an
 - **Gate A and the out-of-sample check pass:** a candidate. A stop and sizing that fit prop rules, and the live-set
   joint decision, are pre-registered next. The no-stop file never goes live.
 - **Otherwise:** closed, and leftovers are removed (user rule).
+
+## Stage 2 outcome (2026-10-21; history quality 100% / 100% / 99%; log `reports/invictus/stage2.log`)
+| spread guard 3.0, 2.0 lots | net | PF | max equity DD | trades | win | mean R (t) | R 2022-24 / 2025-26 | check |
+|---|---|---|---|---|---|---|---|---|
+| S0b Monday 2022-26 | +52,155.70 | 1.87 | 6.88% | 240 | 58.3% | +0.217 (t 3.76) | +30.5 / +21.7 | **Gate A pass** |
+
+**S0b:**
+- **Skips:** 6 Mondays spread-skipped, against 148 at 1.5 pips. The per-trade edge is unchanged (+0.217 R against
+  +0.196 R).
+- **Worst trade:** -2.76 R on 2022-06-13 (a yen week), 2.8% of the deposit at the author's sizing, with no stop.
+- **One hold of 36 hours.** The trade of 2024-02-19 (US Presidents' Day) was not closed at 23:00 and ran to Tuesday
+  23:00 (+0.16 R). It shows the failure the review flagged: a missed 23:00 exit waits a full day.
+- **prop_mc alone** at 0.5x / 1.0x the author's sizing: 8.0-8.1 / 60.3-60.6%. That is closed trades only; a no-stop
+  hold's floating losses are not simulated.
+
+**S1b, weekday control 2022-26 (in sample)** and **S2b, 2019-21 (out of sample)**:
+| day | 2022-26 trades | PF | mean R (t) | 2019-21 trades | PF | mean R (t) |
+|---|---|---|---|---|---|---|
+| Mon | 240 | 1.89 | +0.217 (+3.76) | 152 | 1.36 | +0.122 (+1.41) |
+| Tue | 247 | 1.09 | +0.036 (+0.51) | 154 | 1.04 | +0.020 (+0.20) |
+| Wed | 245 | 1.28 | +0.101 (+1.38) | 151 | 1.39 | +0.126 (+1.53) |
+| Thu | 242 | 0.79 | -0.118 (-1.31) | 155 | 0.91 | -0.046 (-0.42) |
+| Fri | 242 | 0.99 | -0.006 (-0.08) | 150 | 0.77 | -0.112 (-1.17) |
+| Tue-Fri pooled | 976 | 1.01 | +0.004 (+0.09) | 610 | 0.99 | -0.003 (-0.06) |
+
+- Monday against pooled Tuesday-Friday: Welch t +3.08 in 2022-26, +1.26 in 2019-21.
+- Parity of S0b with S1b's Mondays: 240 of 240, 0 mismatches.
+
+**Out-of-sample check (S2b Monday): fails on the t-statistic alone.**
+- Net +18.5 R > 0: pass.
+- PF 1.36 >= 1.05: pass.
+- Mean +0.122 R above Tue-Fri -0.003 R: pass.
+- t 1.41 < 1.65: fail. It needed a mean of about +0.143 R on 152 trades.
+
+**Monday is not unique out of sample.** In 2019-21, Wednesday was as good (PF 1.39, t 1.53). Monday's lead over the
+other days fell from t 3.08 to 1.26.
+
+**Decision: not a candidate (rule).** Direction and PF held out of sample, so this is a near-miss rather than a reversal
+like Stoch_Daily_Breakout_EA. But the edge is about half its in-sample size, not significant, and not specific to
+Monday. On the hypothesis: S0b held (Gate A pass), and S2b's t stayed under 1.65 as forecast, though PF 1.36 was above
+the 0.9-1.2 range.
+
+What would settle it (not run, would be pre-registered separately):
+- more out-of-sample years from a broker with GBPJPY history before 2019 (Darwinex M1 starts in 2019);
+- or a forward test on demo.
+
+**Removal (user rule).** Removed `mql5/Invictus_GBPJPY_Monday_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5
+.mq5, .ex5, compile log and tester .set (no chart had it). The file stays in git at f054c99.
