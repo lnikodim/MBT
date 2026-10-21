@@ -121,3 +121,41 @@ Not tested, each to be pre-registered separately:
 **Removal (2026-10-21).** User rule: "when we decide that an EA is failing, always remove the leftovers". Removed
 `mql5/Invictus_GBPJPY_Monday_EA.mq5`, its `scripts/ea_profiles.py` entry and the MT5 tester .set; the MT5 .mq5 and .ex5
 were already gone. The file stays in git at f054c99.
+
+## Stage 2, spread guard at Darwinex levels (pre-registered 2026-10-21, before its runs)
+User: "what about this EA? we can setup it to run only on Mondays". It already runs Monday only (`InpDayMask` 1). What
+stopped it was the 1.5-pip spread guard. User: "ok, go ahead" with the plan below.
+
+The EA is restored unchanged from f054c99 (MD5 f95e8067…) with its profile, and recompiled with 0 errors and 0 warnings.
+
+**Spreads on the 148 skipped Mondays** (S0 agent log; spread at 11:00 server):
+- median 1.90 pips, 90th percentile 2.30;
+- by year (median): 2022 1.75, 2023 1.70, 2024 1.95, 2025 1.90, 2026 2.00;
+- 141 were at or under 2.75 pips, and 7 were 3 pips or more, including spikes of 19 and 40 pips (broken quotes).
+
+**The change:** `InpMaxSpreadPips` = 3.0, set from that distribution and chosen before any run with it.
+- The author calls the guard "a guard against broken quotes, not a tuning parameter". At 3.0 it still blocks those
+  quotes, and it passes Darwinex's normal spread.
+- The extra spread costs about 0.4 pip per trade, about $5 at 2 lots, which is about 0.005 R against the S0 mean of
+  +0.196 R.
+- Everything else is as in the runs above: 2.0 lots, R = net / $1,000, Darwinex-Demo, real ticks, 100k, 1:100.
+
+**Runs** (`reports/invictus/invictus_eval.py stage2`; run names `inv2_*`):
+- **S0b:** Monday, 2022-01-01..2026-10-01. Gate A as above.
+- **S1b:** all weekdays, same window: the in-sample weekday control, reported, plus S0b/S1b Monday parity.
+- **S2b:** all weekdays, 2019-01-01..2022-01-01, the out-of-sample check as above. For Monday: net > 0, PF >= 1.05,
+  mean R t >= 1.65, and mean R above the pooled Tuesday-Friday mean. If history quality is below 90%, it is
+  inconclusive.
+- **prop_mc alone (S0b):** 0.5x / 1.0x the author's sizing, seeds 1-3.
+- **If Gate A and the out-of-sample check both pass:** the joint with the gold live set at --risk 0.3,0.5, reported.
+  This EA then trades at 0.3x / 0.5x the author's sizing, i.e. 0.6 / 1.0 lot per 100k.
+
+**Hypothesis:**
+- **S0b:** about 235-245 trades with a similar per-trade edge (PF 1.5-1.8), so Gate A passes.
+- **S2b:** the Monday edge shrinks to PF 0.9-1.2 and t stays under 1.65. The chance it passes is about 20%, unchanged
+  from the first forecast.
+
+**Decision rule:**
+- **Gate A and the out-of-sample check pass:** a candidate. A stop and sizing that fit prop rules, and the live-set
+  joint decision, are pre-registered next. The no-stop file never goes live.
+- **Otherwise:** closed, and leftovers are removed (user rule).
