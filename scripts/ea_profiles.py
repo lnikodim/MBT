@@ -121,13 +121,14 @@ PROFILES = {
     },
     # FZMR_EA v1.01 compiled defaults (user's FZMR_Quant_Scalper v6: M15 z-score fade, ER/RSI/EMA 50-200 filters,
     # 2 ATR stop, 2.5 ATR target, 24-bar time exit, both sides; spread cap 150 pts, blocked bar skipped; spec 2026-10-17-fzmr)
-    # DonchianTrend_EA v1.00 (the user's EA in MQL5/Experts/Advisors, compiled by the user 2026-10-20; standalone, no
-    # trade log, no InpMagic: trades are rebuilt from the report's Deals table). Compiled defaults.
+    # DonchianTrend_EA v1.01 (the user's EA in MQL5/Experts/Advisors; standalone, no trade log, no InpMagic: trades are
+    # rebuilt from the report's Deals table). Defaults = the USDJPY H4 pick of spec 2026-10-21 at 0.3% risk (the user's
+    # request 2026-10-21; v1.00 had channel 20, shorts on, ADX 18, ATR stop 2.0, RR 1.0, risk 0.25).
     "DonchianTrend_EA": {
-        "InpSignalTimeframe": "16388", "InpDonchianPeriod": "20", "InpBreakoutBufferATR": "0.0",
-        "InpRequireSignalCandleDirection": "true", "InpAllowLong": "true", "InpAllowShort": "true",
-        "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200", "InpUseADXFilter": "true", "InpADXPeriod": "14", "InpMinADX": "18.0",
-        "InpATRPeriod": "14", "InpATRStopMultiplier": "2.0", "InpRewardRiskRatio": "1.0", "InpRiskPercent": "0.25",
+        "InpSignalTimeframe": "16388", "InpDonchianPeriod": "10", "InpBreakoutBufferATR": "0.0",
+        "InpRequireSignalCandleDirection": "true", "InpAllowLong": "true", "InpAllowShort": "false",
+        "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200", "InpUseADXFilter": "true", "InpADXPeriod": "14", "InpMinADX": "20.0",
+        "InpATRPeriod": "14", "InpATRStopMultiplier": "1.5", "InpRewardRiskRatio": "1.5", "InpRiskPercent": "0.3",
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
