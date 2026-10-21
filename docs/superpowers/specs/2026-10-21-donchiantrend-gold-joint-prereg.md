@@ -38,3 +38,40 @@ account is IC Markets; before deployment a candidate needs its USDJPY run on IC 
 to IC; never from a script), pre-registered separately, with the same decision check on the IC gold logs. Otherwise
 DonchianTrend stays off the gold account. Caveat for any result: the pick and the gold EAs were tuned on this window,
 so the joint gain is in-sample.
+
+## Outcome (2026-10-21, log `reports/portfolio/dtrend_joint.log`; verified by an independent recomputation and a skeptic review)
+| set | trades | PF | P(pass both) 0.3% / 0.5%, seeds 1-3 | p95 MC DD 0.3 / 0.5 | max-loss breach ph1 @0.5% |
+|---|---|---|---|---|---|
+| gold 4-EA (control) | 1773 | 1.60 | 94.1/84.2, 93.9/84.7, 93.7/84.2 | 10.9% / 17.6% | 8.8% |
+| **gold 4-EA + DonchianTrend** | 1986 | 1.59 | **95.7/87.0, 95.8/87.5, 96.0/86.6** | 10.5% / 17.2% | 6.9% |
+| DonchianTrend alone | 213 | 1.51 | 0.6/16.8, 0.6/16.7, 0.6/17.5 | 4.2% / 6.9% | 0.0% |
+2025-26 only: gold 99.5/95.2, 99.3/95.2, 99.4/95.1 vs + DonchianTrend 99.4/95.4, 99.6/95.3, 99.5/95.4 (no gain; near the ceiling).
+Daily R correlation -0.022 over 956 days; most positions open 8 -> 9 (2.7% open risk at 0.3%); worst closed-trade day
+-7.16 R -> -8.13 R (2024-10-08).
+
+**Decision check PASS (+1.6 to +2.3 points at 0.3%, +2.4 to +3.3 at 0.5%), exposure check PASS: DonchianTrend is a
+candidate under the rule. Next step is the IC Markets USDJPY run, which needs the user to switch the terminal.** The
+hypothesis held (correlation, positions); the gain at 0.3% came in at the top of the forecast range.
+
+The verification found that the rule is weak, so the gain is mostly in-sample:
+- **The rule passes almost any positive edge.** It passes whenever DonchianTrend averages more than about +0.065 R per
+  trade, a quarter of the pick's +0.253. The untuned defaults pass it too (94.6/94.4/94.3, rechecked), although they
+  failed Gate A.
+- **Zero edge would cost** 0.3-1.0 points at 0.3%.
+- **The pick's 2025-26 result is selection.**
+  - In 2025-26 the pick ranks 1st of the 400 long-only tuples, where the median tuple has PF 0.95 (rechecked).
+  - In 2022-24 it ranks 126th; every tuple was profitable there.
+  - Choosing the top 10-20 tuples on 2022-24 gives about +0.05 R per trade in 2025-26, just under the break-even edge
+    (skeptic's walk-forward proxy, not rechecked).
+- **Floating losses**, which prop_mc does not see:
+  - Closed losses plus every open position at -1 R peak at -9.1 R on one day. That is 2.7% at 0.3%, under the 5% daily
+    limit.
+  - With gap losses (down to -2.07 R) the same day stays under 5% at 0.3% but exceeds it at 0.5%.
+
+What follows:
+- **Live settings.** Run at 0.3%, not 0.5%. Live needs the .set loaded (the compiled defaults are not the pick), then
+  `InpRiskPercent` 0.3.
+- **Isolation and guards.** The EA's one-position check counts any USDJPY position on the account; none of the gold EAs
+  trade it. It has no daily-loss guard.
+- **IC Markets confirmation.** The IC run is the same pick on the same window, so it can confirm costs and swap (swap is
+  +6.6 R of the +54 R) but not the edge. The IC run's pre-registration should add an out-of-sample condition.
