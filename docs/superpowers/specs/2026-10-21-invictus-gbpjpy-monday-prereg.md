@@ -265,3 +265,10 @@ ticks, 2022-01-01..2026-10-01, 100k. Against S0b (v1.30, spread 3.0, 2.0 lots), 
 - each volume = floor(balance before entry / 1,000 x 0.006 / 0.01) x 0.01;
 - each trade's net per lot within $1 of S0b's.
 Expected: 0.6 lot at the start, rising with the balance.
+
+**Outcome: parity pass** (log `reports/invictus/v131.log`, history quality 100%).
+- 240 trades: 0 entry mismatches, 0 volume mismatches, 0 net-per-lot mismatches.
+- Lots 0.60 -> 0.69. The count of 240 rather than about 98 confirms the run used the 3.0 spread default.
+- Net +16,658.38 USD (+16.7%), PF 1.88, max equity DD 2.03%, about 0.3x S0b's +52,155.70 at 2.0 lots, as expected.
+
+v1.31 is the live build.
