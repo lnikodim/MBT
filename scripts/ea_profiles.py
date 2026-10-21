@@ -132,6 +132,13 @@ PROFILES = {
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
+    # Larry_Connors_RSI2_EA (the user's download LarryConnersRSI2.mq5, algotrading.co.za 2017, unchanged; renamed per the
+    # naming convention). Standalone, no trade log, magic 0: trades are rebuilt from the report's Deals table. Compiled defaults.
+    "Larry_Connors_RSI2_EA": {
+        "lot": "1.0", "shortSmaPeriods": "5", "longSmaPeriods": "200", "RSIPeriods": "2", "RSILongEntry": "6",
+        "RSIShortEntry": "95", "slippage": "3", "useStopLoss": "true", "stopLossPips": "30.0", "useTakeProfit": "true",
+        "takeProfitPips": "60.0",
+    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
