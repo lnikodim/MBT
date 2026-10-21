@@ -136,3 +136,65 @@ full window. Otherwise EURUSD H1 is closed for this EA, and v1.01 stays as the c
 **Hypothesis.** Commission is about 0.018 R per trade at a 30-pip stop and shrinks with a wider stop. A slower exit and
 stricter RSI levels raise R per trade. Expected: train pick PF 1.10-1.25 in 2022-24; holdout PF 0.95-1.15. The chance
 that the holdout and Gate A both pass is low, about 30%.
+
+## Stage 1 outcome (2026-10-21; history quality 99%; logs `reports/rsi2/parity.log`, `reports/rsi2/grid.log`)
+**P0 parity: pass.**
+- Trades: baseline 869, v1.01 847, common 823.
+- The 46 baseline-only entries are 39 same-bar extras plus displacements; the 24 v1.01-only entries are displacements.
+- Unexplained: 0.
+- v1.01 with the original inputs: net +1,596.59, PF 1.03, max equity DD 7.31%, R +5.3 (2022-24 -13.2 / 2025-26 +18.5),
+  Gate A fails. The fix alone is worth +8.2 R.
+
+**Grid.**
+- 2022-24: 400 passes, median PF 0.95, 113 profitable.
+- 2025-26: 400 passes, median PF 0.99, 196 profitable.
+- The 2025-26 run was cut off once, when the session ended, and was rerun in full.
+- 8 of the 400 2022-24 tuples meet the train filters, and all 8 have RSIShortEntry 96.
+
+| | RSI long / short, exit SMA, stop | PF | max equity DD | trades | net |
+|---|---|---|---|---|---|
+| train pick, 2022-24 | 2 / 96, SMA15, 80 pips | 1.28 | 1.99% | 278 | +6,804 |
+| holdout, 2025-26 | same | 1.10 | 2.35% | 139 | +1,382 |
+
+- **Holdout: pass** (PF >= 1.05 and net > 0). Rank 127 of 400 in 2025-26.
+- **Joint pick:** none. No tuple has PF >= 1.15 on a plateau in both regimes.
+
+**Confirm (full 2022-01..2026-10, v1.01, train pick; R = net / $800, 1 lot x 80 pips; log `reports/rsi2/grid.log`)**
+| | net | PF | max equity DD | trades | win | R (per trade) | R 2022-24 / 2025-26 | Gate A | prop_mc @0.3% / 0.5% |
+|---|---|---|---|---|---|---|---|---|---|
+| as written | -870.55 | 0.99 | 8.17% | 869 | 61.0% | -2.9 (-0.003) R30 | -21.5 / +18.6 | fail | 0.0 / 0.4 |
+| v1.01 train pick | +8,186.15 | 1.22 | 2.20% | 417 (125 L / 292 S) | 64.8% | +10.2 (+0.025) R80 | +8.5 / +1.7 | **pass** | 0.0 / 0.0 |
+
+- **Exits:** SMA15 388 (avg +0.066 R), stop 21 (avg -1.009 R), target 7 (avg +0.81 R).
+- **Code checks:** 0 same-bar entries, 0 failed orders, 0 array errors.
+- **Gold live set joint** (reported only, seeds 1-3, P(pass both) at 0.3% / 0.5%): gold 4-EA 93.7-94.1 / 84.2-84.7;
+  with RSI2 added, 94.4-94.8 / 84.9-85.3. That is +0.2-1.1 pts per seed, less than DonchianTrend's +1.6-2.3.
+
+**Decision: the train pick is the recommended tweak** (holdout and Gate A pass, so the rule's condition is met). On the
+hypothesis: train PF 1.28 is just above the 1.10-1.25 forecast, and the holdout PF of 1.10 is inside the forecast.
+
+**Reported, not pre-registered:**
+- **Neighbours in 2025-26:** the pick's 6 neighbours average PF 1.13 (0.96-1.40), so the plateau holds in the holdout.
+- **Edge per trade.** Gross +2.61 pips, net +1.96 pips ($19.63 at 1 lot), so commission and swap take about
+  0.65 pips. One extra pip of slippage per trade would halve the net edge. It is a thin edge on EURUSD.
+- **Longs and shorts:** both PF 1.22, but shorts are 70% of trades.
+- **Small edge in 2025-26:** +1.7 R on 139 trades (+0.012 R per trade). Almost all of the full-window R is from
+  2022-24, the training window.
+- **prop_mc alone is 0:** at +0.025 R per trade and 0.3-0.5% risk, the account never reaches the profit target in
+  time. The EA adds to a portfolio; it is not a standalone prop strategy.
+
+**Not done, for live use:** v1.01 trades a fixed 1 lot. Before any live or demo use it needs % risk sizing and a spread
+guard (the stage 0 list), each pre-registered with a parity check against this confirm run.
+
+## Verdict and removal (2026-10-21)
+The rule passed, but the edge is not distinguishable from zero.
+- **Per-trade R t-statistics:** full window t 1.45, 2022-24 t 1.49, 2025-26 holdout t 0.42.
+- **The tuning hurt the unseen period.** In 2025-26, at 1 lot, v1.01 with the original inputs made about +$5,550
+  (+18.5 R x $300); the pick made +$1,382.
+
+**Lesson for later pre-registrations:** "holdout PF >= 1.05 and net > 0" passes a near-zero edge. A holdout check also
+needs a minimum t-statistic or R per trade.
+
+**Decision:** the EA is not traded. On the user's request ("ok, remove it") it is removed from the repo, from
+`scripts/ea_profiles.py` and from the MT5 terminal (source, .ex5, compile log, tester .set). Both versions stay in git:
+as written at 311b9f2, v1.01 at 6fd3171. The H4 / D1 idea was not tested.
