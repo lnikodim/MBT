@@ -117,3 +117,7 @@ Not tested, each to be pre-registered separately:
 - **S2,** the 2019-21 out-of-sample run.
 - **A wider spread guard,** or a raw-spread broker such as IC Markets. The skips are a broker-cost effect, not part of
   the rule.
+
+**Removal (2026-10-21).** User rule: "when we decide that an EA is failing, always remove the leftovers". Removed
+`mql5/Invictus_GBPJPY_Monday_EA.mq5`, its `scripts/ea_profiles.py` entry and the MT5 tester .set; the MT5 .mq5 and .ex5
+were already gone. The file stays in git at f054c99.
