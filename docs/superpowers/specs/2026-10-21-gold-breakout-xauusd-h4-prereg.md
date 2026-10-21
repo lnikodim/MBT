@@ -78,3 +78,44 @@ and this is checked.
 - **Overlap < 80%:**
   - Gate A and the out-of-sample check both pass: a candidate, and the live-set joint is pre-registered next.
   - Otherwise: closed, and leftovers are removed.
+
+## Outcome (2026-10-21; log `reports/goldbo/base.log`)
+| as written, 1% risk | net | PF | equity DD relative | trades | win | R, mean R (t) | check |
+|---|---|---|---|---|---|---|---|
+| S0 2022-26 real ticks, hq 100% | +65,207.49 | 1.68 | 8.25% | 145 (all buys) | 49.0% | +51.9, +0.358 (t 2.92) | **Gate A fails** (trades < 150; 22-24 +23.3 R, 25-26 +28.6 R) |
+| S1 2012-2019 M1-generated, hq 34% | -12,801.03 | 0.78 | 18.65% | 83 | 34.9% | -12.9, -0.156 (t -1.03) | **inconclusive** (history quality < 90%) |
+
+**S0 replicates the claim's shape:** PF 1.68 against 1.77, and 2024-25 carry it (+24.1 R, +23.5 R).
+- **By year:** 2022 was negative (PF 0.82), 2023 flat (PF 1.13).
+- **Exits:** stop 73 at -1.08 R (the R check holds), target 66 at +1.88 R.
+- **Code checks:** 0 skips, 0 order failures, 0 stop-attach failures.
+
+**Overlap: a duplicate.**
+- 134 of its 145 entries (92%) match a Donchian_Breakout_EA live-set entry within one H4 bar.
+- 134 of Donchian's 157 entries (85%) match one of its entries.
+- Monthly R correlation +0.96.
+
+**prop_mc** (P(pass both) at 0.3% / 0.5%, seeds 1-3):
+| set | 0.3% | 0.5% |
+|---|---|---|
+| alone | 0.1-0.2 | 12.7-13.0 |
+| gold 4-EA | 93.7-94.1 | 84.2-84.7 |
+| gold 4-EA plus this EA | 93.9-94.1 | 83.0-83.5 |
+| this EA in place of Donchian | 94.1-94.5 | 84.4-85.1 |
+
+Adding it doubles the Donchian exposure and lowers the 0.5% pass rate. Swapping it in is within seed noise.
+
+**S1 has too little data.** History quality is 34%, and the first trade is in 2016: Darwinex M1 bars before about 2016
+are missing, so the run covers 2016-2019 only. Over that span it lost every year from 2017 to 2019 (PF 0.54, 0.77,
+0.93). That is the direction of a fail, but by the rule it is inconclusive.
+
+**Decision: a duplicate of Donchian_Breakout_EA (overlap 92%), so it is not added.** The hypothesis held on overlap (at
+least 85%) and on the Gate A trade count being borderline (145).
+
+**What it says about the live Donchian rule:** this is the same rule, and it has no clean out-of-sample test. This run
+is the first pre-2022 look at it: weak and negative in 2017-19, on poor data. The proposed next test uses real ticks:
+Donchian_Breakout_EA v1.02, as it runs live, on 2019-01..2022-01 with Darwinex real ticks (history quality is about 99%
+there). It would be pre-registered separately.
+
+**Removal (user rule).** Removed `mql5/Gold_Breakout_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5 .mq5,
+.ex5, compile log and tester .set (no chart had it). The file stays in git at f29b857.

@@ -132,15 +132,6 @@ PROFILES = {
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
-    # Gold_Breakout_EA (the user's download GoldBreakoutEA.mq5, mql5.com code 77691, Ali Rajput v1.00, unchanged; renamed per
-    # the naming convention). XAUUSD H4 long-only Donchian 20 fresh breakout, EMA 200, 2 x ATR(20) stop, 2R target, 1% risk:
-    # the Donchian_Breakout_EA v1.01 rules except the fresh-cross entry. Standalone: trades rebuilt from the Deals table.
-    "Gold_Breakout_EA": {
-        "InpEntryBars": "20", "InpATRPeriod": "20", "InpStopATR": "2.0", "InpUseTrend": "true", "InpTrendEMA": "200",
-        "InpAllowLong": "true", "InpAllowShort": "false", "InpExitMode": "2", "InpTargetR": "2.0", "InpTrailATR": "3.0",
-        "InpExitBars": "10", "InpRiskPercent": "1.0", "InpMaxSpreadToRisk": "0.10", "InpSlippagePoints": "50",
-        "InpCloseFriday": "false", "InpFridayHour": "20", "InpMagic": "555001",
-    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
