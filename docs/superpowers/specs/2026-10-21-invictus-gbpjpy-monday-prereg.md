@@ -80,3 +80,40 @@ A long-only hold on GBPJPY, which rose over 2022-26, is positive on most subsets
 - **Gate A passes but the out-of-sample check fails:** not a candidate. The Monday pattern holds only in the window it
   was found in.
 - **Gate A fails:** closed. The claim does not replicate on Darwinex.
+
+## Outcome (2026-10-21; stopped by the user during S2; history quality 99%; log `reports/invictus/base.log`)
+User: "ok, skip this EA test". S0 and S1 finished; S2 (2019-21) was stopped mid-run, so there is no out-of-sample
+result, and S3 was not run.
+
+| S0, Monday 2022-26 | net | PF | max equity DD | trades | win | mean R (t) | R 2022-24 / 2025-26 | Gate A |
+|---|---|---|---|---|---|---|---|---|
+| as written, 2.0 lots | +19,211.25 | 1.80 | 7.19% | 98 | 54.1% | +0.196 (t 2.24) | +13.1 / +6.1 | **fail** (trades < 150) |
+
+- **Spread skips.** The spread guard skipped 148 Mondays: the Darwinex GBPJPY spread at 11:00 server is over 1.5 pips
+  most weeks. That leaves 98 trades, under Gate A's 150. On the trades taken, the author's PF (1.86) and DD (7.05%)
+  replicate.
+- **Code checks:** all holds were exactly 12 hours; 0 missed entries, 0 order or close errors.
+- **Worst trade** -1.57 R.
+- **prop_mc alone** at 0.5x / 1.0x the author's sizing: 0.0 / 7.2-7.6%.
+
+**S1, weekday control (2022-26):**
+| day | trades | PF | net R | mean R | t |
+|---|---|---|---|---|---|
+| Mon | 98 | 1.81 | +19.2 | +0.196 | +2.24 |
+| Tue | 107 | 1.27 | +11.9 | +0.111 | +0.95 |
+| Wed | 115 | 0.96 | -1.8 | -0.016 | -0.14 |
+| Thu | 101 | 0.93 | -3.8 | -0.038 | -0.27 |
+| Fri | 98 | 1.13 | +5.5 | +0.056 | +0.45 |
+| Tue-Fri pooled | 421 | 1.06 | +11.7 | +0.028 | +0.45 |
+
+- Monday is the best day, as forecast (it was chosen on this window).
+- Monday against pooled Tuesday-Friday: Welch t +1.57.
+- Parity of S1's Mondays with S0: 98 of 98, 0 mismatches.
+
+**Decision: closed by the pre-registered rule (Gate A fails on trade count)** and by the user's stop. The Monday pattern
+is untested out of sample.
+
+Not tested, each to be pre-registered separately:
+- **S2,** the 2019-21 out-of-sample run.
+- **A wider spread guard,** or a raw-spread broker such as IC Markets. The skips are a broker-cost effect, not part of
+  the rule.
