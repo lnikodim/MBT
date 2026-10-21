@@ -131,6 +131,16 @@ PROFILES = {
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
+    # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
+    # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
+    "DonchianTrend2_EA": {
+        "InpSignalTimeframe": "16388", "InpDonchianPeriod": "10", "InpBreakoutBufferATR": "0.0",
+        "InpRequireSignalCandleDirection": "true", "InpAllowLong": "true", "InpAllowShort": "false",
+        "InpFastEMAPeriod": "50", "InpSlowEMAPeriod": "200", "InpUseADXFilter": "true", "InpADXPeriod": "14", "InpMinADX": "20.0",
+        "InpATRPeriod": "14", "InpATRStopMultiplier": "1.5", "InpRewardRiskRatio": "1.5", "InpRiskPercent": "0.25",
+        "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpSpreadWaitMin": "30", "InpDeviationPoints": "10",
+        "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
+    },
     # ORB_EA v1.00 compiled defaults (Zarattini/Barbon/Aziz 2024 base ORB on forex: New York 09:30 open, 5-min range,
     # stop 0.10 x D1 ATR(14), close 23:50 server, spread cap 3 pips, server clock UTC+2 with US DST)
     "ORB_EA": dict(_CORE_DEFAULTS, **{

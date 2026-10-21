@@ -40,14 +40,14 @@ def winpath(p):
 
 
 def run(mode, name, sets=None, ranges=None, model="real_ticks", frm=IS_FROM, to=IS_TO, timeout=3000, symbol="XAUUSD",
-        expert="MACD_Cross_EA", period="H1", leverage=None):
+        expert="MACD_Cross_EA", period="H1", leverage=None, criterion="6"):
     os.makedirs(OUTDIR, exist_ok=True)
     out = os.path.join(OUTDIR, name + ".json")
     cmd = [RUNNER, "scripts/macd_tester.py", mode, "--name", name, "--out", winpath(out), "--model", model,
            "--from", frm, "--to", to, "--timeout", str(timeout), "--symbol", symbol, "--expert", expert,
            "--period", period]
-    if mode == "opt":
-        cmd += ["--criterion", "6"]
+    if mode == "opt":                             # 6 = custom max (OnTester); EAs without OnTester need another, e.g. 0
+        cmd += ["--criterion", criterion]
     if leverage is not None:                      # default stays macd_tester's 1:20 (gold); FX grids use 1:30
         cmd += ["--leverage", str(leverage)]
     for k, v in (sets or {}).items():

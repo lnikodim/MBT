@@ -38,3 +38,37 @@ A 20-bar H4 breakout with 3 filters on one pair trades rarely (about 30-60 trade
 around 1.0-1.2 with a 1R target; a longer target (RR 2-3) improves PF in the trending 2022-24 USDJPY and loses in the
 choppier 2025-26; few tuples survive both regimes; the gain over the baseline, if any, is modest; Gate A fails on trade
 count.
+
+## Outcome, Stages 0-1 (2026-10-21, Darwinex-Demo, history quality 99%, logs `reports/dtrend/base.log`, `grid.log`)
+| full window 2022-01..2026-10 | net profit | PF | max equity DD | trades | win | R 2022-24 / 2025-26 | Gate A | prop_mc @0.3% / 0.5% |
+|---|---|---|---|---|---|---|---|---|
+| defaults (v1.00) | +4,865.71 | 1.14 | 4.96% | 274 (202 L / 72 S) | 53.6% | +31.4 / -12.1 | fail | 0.0 / 1.3-1.5 |
+| shorts-on pick (D 50, ATR 2.5, RR 3.0, ADX 15) | +8,418.93 | 1.51 | 2.73% | 96 | 33.3% | +25.2 / +7.5 | fail (trades) | 0.0-0.1 / 4.6-4.8 |
+| **pick: long-only, D 10, ATR 1.5, RR 1.5, ADX 20** | **+14,321.23** | **1.50** | **1.52%** | 213 (all long) | 49.8% | +39.3 / +14.7 | **pass** | 0.6 / 16.7-17.5 |
+
+Grid: every one of the 400 tuples was profitable in 2022-24 (both launches); 2025-26 kept 108 (shorts on) and 138
+(long-only). Joint picks: long-only PF 1.50 / 1.48, DD 1.52% / 1.36%, 154 / 59 trades in the two regimes (score 3.97);
+shorts on PF 1.57 / 1.37 (score 1.46). **The long-only pick beats the defaults on all three goals and is profitable in
+both regimes: recommended.**
+- Both picks sit on the edge of the grid (long-only: channel 10 and stop 1.5 x ATR are the minimum values; shorts on:
+  channel 50 and RR 3.0 the maximum). The plateau check passed, but the best values may lie outside the grid.
+- Long-only on USDJPY carries the 2022-26 uptrend (and the positive long swap of a high-carry pair); a sustained yen
+  rally would hit it harder than a two-sided version.
+- The 00:00 H4 bar is never traded in any run (1,145 spread skips at 00:xx: the spread check precedes the signal and the
+  Darwinex rollover spread exceeds 30 points).
+- Runs were interrupted twice by low memory (the 12 tester agents with real ticks): the job was stopped once and one
+  optimization crashed; both were rerun and finished optimizations were reused.
+
+## Stage 2, code (pre-registered 2026-10-21, before its runs)
+`mql5/DonchianTrend2_EA.mq5` v2.00, a renamed copy of the user's v1.00 (MD5 fd8d758a… before the change; the user's file
+is untouched): the signal is evaluated before the spread check, and a signal blocked by the spread is retried on later
+ticks of its bar for `InpSpreadWaitMin` minutes (30), entering at the first tick within the cap. Compiled defaults = the
+Stage 1 pick plus the retry.
+- P1 parity: v2.00 with `InpSpreadWaitMin` 0 and the pick inputs gives the same trades as the v1.00 pick run (count, open
+  times, net profit).
+- Run: v2.00 with the retry (30 min), full window, same settings. Reported: delayed signals executed and dropped, net,
+  PF, max DD, R by regime, Gate A, prop_mc alone.
+- Decision rule: the retry ships as the v2.00 default only if P1 passes and it beats the v1.00 pick on net profit and PF
+  with max DD no worse, profitable in both regimes. Otherwise v2.00 ships with `InpSpreadWaitMin` 0 (= the pick on v1.00).
+- Hypothesis: the 00:00 bar holds about a sixth of the bars; with the retry the trade count rises by 10-20%, at a similar
+  R per trade (the delay is minutes on a 1.5 x ATR stop); net rises, PF within +/-0.1, DD similar.
