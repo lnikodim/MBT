@@ -207,3 +207,32 @@ What would settle it (not run, would be pre-registered separately):
 
 **Removal (user rule).** Removed `mql5/Invictus_GBPJPY_Monday_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5
 .mq5, .ex5, compile log and tester .set (no chart had it). The file stays in git at f054c99.
+
+## Live-set joint, at the user's request after the verdict (not pre-registered)
+User: "IMO it is a good candidate to run together with the rest of live EAs". Script `reports/portfolio/monday_joint.py`
+(log `reports/portfolio/monday_joint.log`), the method of the DonchianTrend joint (spec
+2026-10-21-donchiantrend-gold-joint-prereg.md).
+- **Live set:** gold 4-EA + DonchianTrend USDJPY.
+- **This EA:** S0b, R = return on the balance at entry at 2.0 lots. At --risk 0.3 it trades at 0.3x the author's
+  sizing, i.e. 0.6 lot per 100k.
+- **Sensitivity:** the same 240 trades with the mean R cut to the 2019-21 out-of-sample +0.122, and to zero.
+
+| set (full 2022-26) | P(pass both) 0.3% / 0.5%, seeds 1-3 | p95 MC DD 0.3 / 0.5 | max-loss breach ph1 @0.5% |
+|---|---|---|---|
+| live (control) | 95.7/87.0, 95.8/87.5, 96.0/86.6 | 10.5% / 17.2% | 6.9% |
+| live + Monday, backtest edge (+0.178 R) | 97.3/89.4, 96.9/89.1, 97.3/89.3 | 10.2% / 16.5% | 5.9% |
+| live + Monday, out-of-sample edge (+0.122 R) | 97.0/88.6, 96.5/88.2, 96.9/88.4 | 10.4% / 16.8% | 6.4% |
+| live + Monday, zero edge | 96.1/87.0, 95.4/86.3, 95.7/86.5 | 10.9% / 17.6% | 7.3% |
+
+- **Gain at the backtest edge:** +1.1 to +1.5 pts at 0.3% and +1.6 to +2.7 at 0.5%.
+- **At the out-of-sample edge:** +0.5 to +1.2 and +0.7 to +2.0.
+- **At zero edge:** -0.4 to +0.1 and -1.2 to +0.4.
+- **2025-26 only:** near the ceiling (live 99.4-99.6 / 95.3-95.4; with Monday 99.6-99.7 / 96.1-96.4).
+- **Independence:** daily R correlation with the live set is +0.028. The most positions open at once stays at 9, and
+  the worst closed-trade day is unchanged (-8.13 R, 2024-10-08).
+
+Reading: the EA is uncorrelated with the live set and does not stack exposure. It helps at its out-of-sample edge, and
+being wrong about the edge costs about 1 point at most. Two limits:
+- **Floating losses are not simulated.** prop_mc sees closed trades only; the worst trade (-2.78 R, i.e. -0.83% at
+  0.3x) runs 12 hours with no stop.
+- **The live account is IC Markets,** and these are Darwinex runs.
