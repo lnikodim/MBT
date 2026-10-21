@@ -6,7 +6,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2017, algotrading.co.za"
 #property link      "http://algotrading.co.za"
-#property version   "1.00"
+#property version   "1.01"
 
 #include <Trade\Trade.mqh> // Get code from other places
 
@@ -26,6 +26,7 @@ input bool     useStopLoss=true;       //Use Stop Loss
 input double   stopLossPips=30;        //Stop Loss (pips)
 input bool     useTakeProfit=true;     //Use Take Profit
 input double   takeProfitPips=60;      //Take Profit (pips)
+input ulong    InpMagic=261022;        //Magic number
 
 //--- Service Variables 
 
@@ -40,6 +41,7 @@ double currentBid,currentAsk;
 double stopLossPipsFinal,takeProfitPipsFinal,stopLevelPips;
 double stopLossLevel,takeProfitLevel;
 double shortSma1,shortSma2,longSma1,longSma2,RSI1;
+datetime g_lastEntryBar=0,g_loadBar=0; // v1.01: one entry attempt per bar; live: no entry on the bar the EA was loaded in
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
 //+------------------------------------------------------------------+
@@ -54,6 +56,9 @@ int OnInit()
    shortSmaControlPanel= iMA(_Symbol,_Period,shortSmaPeriods,0,MODE_SMA,PRICE_CLOSE);
    longSmaControlPanel = iMA(_Symbol,_Period,longSmaPeriods,0,MODE_SMA,PRICE_CLOSE);
    RSIControlPanel=iRSI(_Symbol,_Period,RSIPeriods,PRICE_CLOSE);
+   if(shortSmaControlPanel==INVALID_HANDLE || longSmaControlPanel==INVALID_HANDLE || RSIControlPanel==INVALID_HANDLE) return(INIT_FAILED);
+   myTradingControlPanel.SetExpertMagicNumber(InpMagic);
+   g_loadBar=iTime(_Symbol,_Period,0);
 
    if(_Digits==5 || _Digits==3 || _Digits==1) P=10;else P=1;
 
@@ -83,6 +88,7 @@ void OnTick()
    numberOfShortSmaData= CopyBuffer(shortSmaControlPanel,0,0,3,shortSmaData);
    numberOfLongSmaData = CopyBuffer(longSmaControlPanel,0,0,3,longSmaData);
    numberOfRSIData=CopyBuffer(RSIControlPanel,0,0,3,RSIData);
+   if(numberOfPriceDataPoints<2 || numberOfShortSmaData<3 || numberOfLongSmaData<3 || numberOfRSIData<3) return; // v1.01: data not ready
 
    shortSma1 = shortSmaData[1];
    shortSma2 = shortSmaData[2];
@@ -114,7 +120,7 @@ void OnTick()
 
 // -------------------- EXITS --------------------
 
-   if(PositionSelect(_Symbol)==true) // We have an open position
+   if(SelectOwnPosition()) // We have an open position (v1.01: this EA's magic only)
      {
 
       // --- Exit Rules (Long Trades) ---
@@ -129,7 +135,7 @@ void OnTick()
          if(PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY) // If it is Buy position
            {
 
-            myTradingControlPanel.PositionClose(_Symbol); // Closes position related to this symbol
+            myTradingControlPanel.PositionClose(PositionGetInteger(POSITION_TICKET)); // Closes this EA's position
 
             if(myTradingControlPanel.ResultRetcode()==10008 || myTradingControlPanel.ResultRetcode()==10009) //Request is completed or order placed
               {
@@ -137,7 +143,7 @@ void OnTick()
               }
             else
               {
-               Print("Exit rules: The close order request could not be completed.Error: ",GetLastError());
+               Print("Exit rules: The close order request could not be completed.Error: ",myTradingControlPanel.ResultRetcode());
                ResetLastError();
                return;
               }
@@ -155,7 +161,7 @@ void OnTick()
          if(PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_SELL) // If it is Sell position
            {
 
-            myTradingControlPanel.PositionClose(_Symbol); // Closes position related to this symbol
+            myTradingControlPanel.PositionClose(PositionGetInteger(POSITION_TICKET)); // Closes this EA's position
 
             if(myTradingControlPanel.ResultRetcode()==10008 || myTradingControlPanel.ResultRetcode()==10009) //Request is completed or order placed
               {
@@ -163,7 +169,7 @@ void OnTick()
               }
             else
               {
-               Print("Exit rules: The close order request could not be completed. Error: ",GetLastError());
+               Print("Exit rules: The close order request could not be completed. Error: ",myTradingControlPanel.ResultRetcode());
                ResetLastError();
                return;
               }
@@ -174,7 +180,7 @@ void OnTick()
 
 // -------------------- ENTRIES --------------------  
 
-   if(PositionSelect(_Symbol)==false) // We have no open position
+   if(!SelectOwnPosition() && PriceDataTable[0].time!=g_lastEntryBar && (MQLInfoInteger(MQL_TESTER) || PriceDataTable[0].time!=g_loadBar)) // We have no open position (v1.01: one entry attempt per bar)
      {
 
       // --- Entry Rules (Long Trades) ---
@@ -190,6 +196,7 @@ void OnTick()
          if(useStopLoss) stopLossLevel=currentAsk-stopLossPipsFinal*_Point*P; else stopLossLevel=0.0;
          if(useTakeProfit) takeProfitLevel=currentAsk+takeProfitPipsFinal*_Point*P; else takeProfitLevel=0.0;
 
+         g_lastEntryBar=PriceDataTable[0].time;
          myTradingControlPanel.PositionOpen(_Symbol,ORDER_TYPE_BUY,lot,currentAsk,stopLossLevel,takeProfitLevel,"Buy Trade. Magic Number #"+(string) myTradingControlPanel.RequestMagic()); // Open a Buy position
 
          if(myTradingControlPanel.ResultRetcode()==10008 || myTradingControlPanel.ResultRetcode()==10009) //Request is completed or order placed
@@ -198,7 +205,7 @@ void OnTick()
            }
          else
            {
-            Print("Entry rules: The Buy order request could not be completed. Error: ",GetLastError());
+            Print("Entry rules: The Buy order request could not be completed. Error: ",myTradingControlPanel.ResultRetcode());
             ResetLastError();
             return;
            }
@@ -218,7 +225,8 @@ void OnTick()
          if(useStopLoss) stopLossLevel=currentBid+stopLossPipsFinal*_Point*P; else stopLossLevel=0.0;
          if(useTakeProfit) takeProfitLevel=currentBid-takeProfitPipsFinal*_Point*P; else takeProfitLevel=0.0;
 
-         myTradingControlPanel.PositionOpen(_Symbol,ORDER_TYPE_SELL,lot,currentAsk,stopLossLevel,takeProfitLevel,"Sell Trade. Magic Number #"+(string) myTradingControlPanel.RequestMagic()); // Open a Sell position
+         g_lastEntryBar=PriceDataTable[0].time;
+         myTradingControlPanel.PositionOpen(_Symbol,ORDER_TYPE_SELL,lot,currentBid,stopLossLevel,takeProfitLevel,"Sell Trade. Magic Number #"+(string) myTradingControlPanel.RequestMagic()); // Open a Sell position
 
          if(myTradingControlPanel.ResultRetcode()==10008 || myTradingControlPanel.ResultRetcode()==10009) //Request is completed or order placed
            {
@@ -226,7 +234,7 @@ void OnTick()
            }
          else
            {
-            Print("Entry rules: The Sell order request could not be completed.Error: ",GetLastError());
+            Print("Entry rules: The Sell order request could not be completed.Error: ",myTradingControlPanel.ResultRetcode());
             ResetLastError();
             return;
            }
@@ -237,4 +245,19 @@ void OnTick()
 
   }
 
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//| v1.01: select this EA's position on the symbol (by magic)        |
+//+------------------------------------------------------------------+
+bool SelectOwnPosition()
+  {
+   for(int i=PositionsTotal()-1;i>=0;i--)
+     {
+      ulong ticket=PositionGetTicket(i);
+      if(ticket>0 && PositionGetString(POSITION_SYMBOL)==_Symbol && PositionGetInteger(POSITION_MAGIC)==(long)InpMagic)
+         return(true);
+     }
+   return(false);
+  }
 //+------------------------------------------------------------------+

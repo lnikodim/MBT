@@ -89,3 +89,50 @@ What a new version would have to change, each pre-registered separately:
 - **Cost per trade against edge per trade.** A higher timeframe (H4, D1, as Connors used it) gives larger reversion
   moves; a lower-commission symbol or broker cuts the cost.
 - **The once-per-bar fix.**
+
+## Stage 1, tweak (pre-registered 2026-10-21, before its runs)
+User: "Can you tweak it and run again backtest?" EURUSD H1, Darwinex-Demo, real ticks, 100k, 1:100, as above.
+
+**Code, v1.01** (`mql5/Larry_Connors_RSI2_EA.mq5`; the as-written file stays in git at 311b9f2). These are correctness
+fixes, not edge changes:
+- one entry attempt per bar;
+- magic 261022, with position selection and closes by magic;
+- sells sent at the Bid;
+- indicator handles and copies checked;
+- live only: no entry on the bar the EA was loaded in;
+- the error logs print the trade server's return code.
+
+- **P0 parity.** v1.01 with the original inputs against the as-written run.
+  - Every v1.01 entry must be in the baseline (same open time and side), or must directly follow a removed same-bar
+    re-entry (a displacement).
+  - Every baseline-only entry must be a same-bar extra or displaced.
+  - Unexplained entries: 0. Otherwise the fix is wrong and the grid does not start.
+
+**Input grid, two regimes** (MT5 complete grid, criterion 0 because the EA has no OnTester), 400 passes per regime:
+- `RSILongEntry` 2:2:10
+- `RSIShortEntry` 90:2:98
+- `shortSmaPeriods` (exit SMA) 5:5:20
+- `stopLossPips` 20:20:80
+
+The rest stays at the defaults (SMA200 trend filter, target 60 pips). Regimes: 2022-01-01..2025-01-01 (train) and
+2025-01-01..2026-10-01.
+
+**Selection, with a holdout** (lesson of the DonchianTrend joint test: a two-regime pick on the same window is
+in-sample):
+- **Train pick.** Rank 2022-24 tuples with >= 100 trades, equity DD <= 10% and PF >= 1.15 by PF x recovery factor.
+  The pick is the first one whose grid neighbours average PF >= 1.05.
+- **Holdout.** The train pick's 2025-26 pass, never used to choose it, must have PF >= 1.05 and net > 0. Reported with
+  its rank among the 400 2025-26 tuples.
+- **Joint pick** (the DonchianTrend method: both regimes, PF >= 1.15, plateau in both): reported for comparison only.
+
+**Confirm.** The train pick (and the joint pick, if different) on the full 2022-01..2026-10 window with v1.01.
+- Reported: net, PF, max DD, trades, R by regime, Gate A, and prop_mc alone (R = net / (lot x stop pips x $10)), next to
+  the as-written baseline.
+- If Gate A passes: also the joint with the gold live set (reported).
+
+**Decision rule.** The train pick is the recommended tweak only if the holdout check passes and it passes Gate A on the
+full window. Otherwise EURUSD H1 is closed for this EA, and v1.01 stays as the corrected base for other candidates.
+
+**Hypothesis.** Commission is about 0.018 R per trade at a 30-pip stop and shrinks with a wider stop. A slower exit and
+stricter RSI levels raise R per trade. Expected: train pick PF 1.10-1.25 in 2022-24; holdout PF 0.95-1.15. The chance
+that the holdout and Gate A both pass is low, about 30%.
