@@ -132,13 +132,6 @@ PROFILES = {
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
-    # Stoch_Daily_Breakout_EA (the user's download StochDailyBreakout.mq5, mql5.com code 77900, Bruno Myrrha v1.00, unchanged;
-    # renamed per the naming convention). XAUUSD H1: stochastic turn + Bollinger filter -> stop order at yesterday's high /
-    # low, stop and target 1.9% of entry. Standalone, no trade log: trades are rebuilt from the report's Deals table.
-    "Stoch_Daily_Breakout_EA": {
-        "InpLots": "0.01", "InpMagic": "260931", "InpBandPeriod": "9", "InpKPeriod": "23", "InpDPeriod": "3",
-        "InpSlowing": "7", "InpStopPct": "1.9", "InpTargetPct": "1.9", "InpExpiryBars": "9",
-    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

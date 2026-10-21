@@ -73,3 +73,32 @@ trade. A stop exit should be about -1 R, and this is checked.
 - **Gate A passes but the out-of-sample check fails:** not a candidate. The edge is the fit to the search window.
   Leftovers are removed (user rule).
 - **Gate A fails:** closed, and leftovers are removed.
+
+## Outcome (2026-10-21; agent log: "generating based on real ticks"; log `reports/stoch/base.log`)
+| as written, 1.0 lot | net | PF ($) | equity DD relative | trades | win | R, mean R (t) | Gate A / out-of-sample check |
+|---|---|---|---|---|---|---|---|
+| S0 2022-26, hq 100% | +241,729.89 | 1.57 | 22.97% | 195 (104 L / 91 S) | 60.5% | +36.0, +0.185 (t 2.62) | **Gate A pass** (22-24 +12.4 R, 25-26 +23.7 R) |
+| S1 2019-01..2021-07, hq 99% | -70,993.38 | 0.60 | 80.76% | 90 (49 L / 41 S) | 40.0% | -22.5, -0.250 (t -2.45) | **out-of-sample check fails** |
+
+**S0 replicates the claim:** +242% against +245%, PF 1.57 against 1.54, relative DD 22.97% against 23.9%, 195 trades
+against 213 (a shorter window). PF in R is 1.46, because later trades risk more dollars.
+- **By side:** buys PF 1.77 (t 2.93, 67.3% wins); sells PF 1.17 (t 0.76).
+- **By year:** 2023 was negative (PF 0.90); 2024-26 PF 1.63-1.90.
+- **Exits:** stop 73 at -1.04 R (the R check holds), target 102 at +1.00 R, and 19 others between -0.9 and +0.9 R.
+- **Code checks:** max open positions 2, so a long and a short did coexist. Orders: 390 filled, 713 cancelled, 0
+  expired (GTC works). 0 tester order failures.
+- **prop_mc alone,** P(pass both) at 0.3% / 0.5%: 0.0 / 1.7-2.0.
+- **Gold live set joint** (reported only): gold 4-EA 93.7-94.1 / 84.2-84.7; with Stoch added, 94.5-94.7 / 84.5-85.3.
+  That is +0.4-0.9 / -0.2 to +1.1 pts.
+
+**S1 loses money, significantly so, outside the search window.**
+- **By side:** sells PF 0.44 (29.3% wins); buys PF 0.73.
+- **By year:** 2019 PF 0.33, 2020 PF 0.63, 2021 (to July) PF 0.86.
+- **Exits:** 46 stops against 24 targets.
+
+**Decision: not a candidate.** Gate A passes, but the out-of-sample check fails: PF 0.60 and t -2.45, worse than the
+forecast PF 0.85-1.15. The 2022-26 edge is the genetic search's fit to its own window. The hypothesis held on S0 (PF
+inside 1.3-1.6) and on the S1 direction; S1 was weaker than forecast.
+
+**Removal (user rule).** Removed `mql5/Stoch_Daily_Breakout_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5
+.mq5, .ex5, compile log and tester .set (no chart had it). The file stays in git at ed60ad0.
