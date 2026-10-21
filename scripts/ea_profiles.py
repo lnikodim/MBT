@@ -134,11 +134,12 @@ PROFILES = {
     },
     # Invictus_GBPJPY_Monday_EA (the user's download InvictusGBPJPYMon.mq5, mql5.com code 77835, v1.30, unchanged; renamed per
     # the naming convention). Buys GBPJPY Monday 11:00 server, closes 23:00 server, no stop. Standalone, no trade log: trades
-    # are rebuilt from the report's Deals table. Compiled defaults (live: InpMaxSpreadPips 3.0, see spec stage 2).
+    # are rebuilt from the report's Deals table. v1.31 (MBT) defaults = the live inputs of spec stage 2: spread guard 3.0,
+    # InpDemoOnly false, 0.006 lot per $1,000 of balance (InpLotsPer1k; 0 = fixed InpLots).
     "Invictus_GBPJPY_Monday_EA": {
-        "InpLots": "0.05", "InpEntryHour": "11", "InpEntryMin": "0", "InpExitHour": "23", "InpExitMin": "0",
-        "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "1.5", "InpMinMarginLevel": "300.0",
-        "InpMagic": "770531", "InpDemoOnly": "true", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
+        "InpLots": "0.05", "InpLotsPer1k": "0.006", "InpEntryHour": "11", "InpEntryMin": "0", "InpExitHour": "23",
+        "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
+        "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
     },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)

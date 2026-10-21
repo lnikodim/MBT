@@ -247,3 +247,21 @@ Live inputs implied by the tests:
 - `InpMaxSpreadPips` 3.0;
 - `InpLots` about 0.006 per $1k of balance (0.3x the author's sizing, the joint's 0.3% level);
 - `InpDemoOnly` false on a real account.
+
+## v1.31: live inputs as defaults (pre-registered 2026-10-21, before its run)
+User: "set the recommended inputs as default settings". `mql5/Invictus_GBPJPY_Monday_EA.mq5` v1.31 (MBT), MD5 fa15c6ab…,
+compiles with 0 errors and 0 warnings. Changes:
+- `InpMaxSpreadPips` 1.5 -> 3.0;
+- `InpDemoOnly` true -> false;
+- new `InpLotsPer1k` = 0.006: lots = balance / 1,000 x 0.006, floored to the volume step by the EA's `CheckedVolume`.
+  0 means the fixed `InpLots`, unchanged at 0.05. A fixed-lot default would fit only one balance, and the recommendation
+  was per $1k.
+- The start-up line prints the sizing mode.
+Trade logic is unchanged.
+
+**Parity check** (`reports/invictus/invictus_eval.py v131`): v1.31 compiled defaults, Darwinex-Demo, GBPJPY H1, real
+ticks, 2022-01-01..2026-10-01, 100k. Against S0b (v1.30, spread 3.0, 2.0 lots), all must hold:
+- the same 240 entries, by open minute;
+- each volume = floor(balance before entry / 1,000 x 0.006 / 0.01) x 0.01;
+- each trade's net per lot within $1 of S0b's.
+Expected: 0.6 lot at the start, rising with the balance.

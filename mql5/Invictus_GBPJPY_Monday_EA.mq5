@@ -8,7 +8,9 @@
 //|  Closes it at 23:00 SERVER time the same day.                    |
 //|  Monday only. One trade a week. Long only. No stop loss.         |
 //|                                                                  |
-//|  Execution only. No panel, no statistics, no dynamic sizing.     |
+//|  Execution only. No panel, no statistics.                        |
+//|  MBT v1.31: live defaults (spread guard 3.0 pips, InpDemoOnly    |
+//|  false) and lots sized per $1,000 of balance (InpLotsPer1k).     |
 //+------------------------------------------------------------------+
 //
 //  WHICH CHART
@@ -66,7 +68,7 @@
 //    position during the 12 hours is taken in full. Size accordingly.
 //
 #property copyright "Orangutang Trading"
-#property version   "1.30"
+#property version   "1.31"
 #property strict
 #property description "Attach to GBPJPY, M1. Buys Monday 11:00 server time, closes 23:00 server time."
 #property description "Tested on a GMT+3 summer / GMT+2 winter server: 04:00 to 16:00 New York time."
@@ -78,7 +80,8 @@
 //======================================================================================
 //  SIZE
 //======================================================================================
-input double InpLots             = 0.05;   // Lot size (base 0.05)
+input double InpLots             = 0.05;   // Fixed lot size, used when InpLotsPer1k = 0
+input double InpLotsPer1k        = 0.006;  // Lots per $1,000 of balance at entry (0 = fixed InpLots)
 
 //======================================================================================
 //  THE WINDOW -- SERVER time. Defaults assume a GMT+3 summer / GMT+2 winter server,
@@ -99,7 +102,7 @@ input int    InpDayMask          = 1;      // Days to trade: 1=Mon only (default
 //======================================================================================
 //  Spread. A guard against broken quotes, not a tuning parameter. Normal GBPJPY spreads sit
 //  well under 1.5 pips; the filter exists to refuse the rare quote that does not.
-input double InpMaxSpreadPips    = 1.5;    // Skip the trade above this spread, in pips
+input double InpMaxSpreadPips    = 3.0;    // Skip the trade above this spread, in pips (MBT: 3.0 passes Darwinex/IC normal spreads)
 
 //--- Margin. One check: would opening this position leave the account below this level?
 input double InpMinMarginLevel   = 300.0;  // Do not open if margin level would fall under this
@@ -108,7 +111,7 @@ input double InpMinMarginLevel   = 300.0;  // Do not open if margin level would 
 //  IDENTITY
 //======================================================================================
 input long   InpMagic            = 770531; // Magic number
-input bool   InpDemoOnly         = true;   // Refuse to start on a live account
+input bool   InpDemoOnly         = false;  // Refuse to start on a live account
 
 input int    InpMaxSlippagePts   = 20;     // Maximum slippage, in points
 input int    InpMaxRetries       = 3;      // Order attempts before giving up
@@ -234,7 +237,7 @@ void TryOpen()
   {
    gDoneToday = true;          // one attempt a day, whatever happens below
 
-   double lots = CheckedVolume(InpLots);
+   double lots = CheckedVolume(InpLotsPer1k > 0 ? AccountInfoDouble(ACCOUNT_BALANCE) / 1000.0 * InpLotsPer1k : InpLots);
    if(lots <= 0)
      { Print("no trade -- no valid volume for ", gSym); return; }
 
@@ -361,7 +364,8 @@ int OnInit()
                      "InpExitHour so the trade runs 04:00 to 16:00 New York time.", gmtOffset);
      }
 
-   PrintFormat("GBPJPY Monday ready. %.3f lots, magic %d.", InpLots, (int)InpMagic);
+   PrintFormat("GBPJPY Monday ready. %s, magic %d.", InpLotsPer1k > 0 ? StringFormat("%.3f lots per $1,000 of balance", InpLotsPer1k)
+               : StringFormat("%.3f lots", InpLots), (int)InpMagic);
    EventSetTimer(1);
    return(INIT_SUCCEEDED);
   }
