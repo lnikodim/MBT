@@ -236,3 +236,14 @@ being wrong about the edge costs about 1 point at most. Two limits:
 - **Floating losses are not simulated.** prop_mc sees closed trades only; the worst trade (-2.78 R, i.e. -0.83% at
   0.3x) runs 12 hours with no stop.
 - **The live account is IC Markets,** and these are Darwinex runs.
+
+**User decision (2026-10-21): run it live on IC Markets.** User: "Restore this EA in the Advisors folder and compile it.
+I'll add it to my ICMarkets account."
+- The removal is reversed: `mql5/Invictus_GBPJPY_Monday_EA.mq5` (unchanged, MD5 f95e8067…) and its profile are back.
+- It is compiled in the Mac terminal's Advisors folder with 0 errors and 0 warnings.
+- No IC Markets backtest was run first; the user deploys on the Darwinex evidence above.
+
+Live inputs implied by the tests:
+- `InpMaxSpreadPips` 3.0;
+- `InpLots` about 0.006 per $1k of balance (0.3x the author's sizing, the joint's 0.3% level);
+- `InpDemoOnly` false on a real account.
