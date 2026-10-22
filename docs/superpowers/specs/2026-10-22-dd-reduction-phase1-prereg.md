@@ -188,3 +188,35 @@ deal sequences match, but costs differ.
 **Decision:** if P0 and P1 pass, phase 3 checks the throttle on the IC Markets gold logs (offline, the phase 1 method).
 Then the live settings are written up as `.set` files for the user to deploy: headline 0.5% (Monday GBPJPY 0.010 lot
 per $1k) plus throttle 3% / 0.5.
+
+### Phase 2 outcome (2026-10-22; logs `reports/portfolio/dd_phase2.log`, `dd_phase2_control.log`)
+**P0 as written: failed on costs only.** All six EAs reproduce every deal's time, side, volume and price against their
+10-19 and 10-21 baselines, but swap and commission differ (see amendment 1).
+
+**P0', same-day controls: pass for all six.** The pre-throttle build run today matches the throttle-off build exactly:
+
+| EA | deals identical | net today (100k, 2022-26) | cost drift vs the old baseline |
+|---|---|---|---|
+| MACD_Cross | 1,914 / 1,914 | +1,579,755.52 USD | 407 deals |
+| Donchian_Breakout | 314 / 314 | +68,512.14 | 138 |
+| RSI_Reversal | 724 / 724 | +151,250.15 | 195 |
+| MA_Channel | 598 / 598 | +126,380.90 | 192 |
+| Donchian_Trend | 426 / 426 | +14,220.01 | 164 |
+| Invictus Monday GBPJPY | 480 / 480 | +16,658.25 | 1 (its baseline was a day old) |
+
+The current sources were restored to MT5 and recompiled; MD5 matches the repo.
+
+**P1, mechanism: pass.** MACD_Cross at 1% with the throttle at 3%: 959 trades, 790 flagged. Risk taken matches the
+expected 1% / 0.5% within 20% on 959 of 959 (100%).
+| MACD_Cross, 100k, 1% risk | net | PF | max equity DD | trades |
+|---|---|---|---|---|
+| throttle 3% | +371,116.14 USD | 1.71 | 19.85% | 961 |
+| baseline | +1,579,222.49 USD | 1.79 | 29.55% | 957 |
+
+**Why 82% of trades were throttled:** the threshold is a % of the initial deposit, as FTMO's limits are. This
+single-EA run compounds to about 15x the initial $100k, so a $3,000 dip below the high is almost always present.
+- In a challenge phase the balance stays near the initial, so the simulated behaviour holds.
+- **On a funded account that grows**, a fixed threshold throttles more and more often. Measuring the drawdown relative
+  to the high balance is an option to decide before the funded stage. It is not in scope here.
+
+**Phase 2: pass.** The throttle code is neutral when off and sizes exactly as specified when on.
