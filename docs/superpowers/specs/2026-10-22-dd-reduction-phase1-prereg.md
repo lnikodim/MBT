@@ -171,6 +171,20 @@ User: "go ahead with phase 2".
   trade is flagged.
 - **Reported:** net, max DD and trade count against the baseline.
 
+**Amendment 1 (2026-10-22, after P0 and before P1).** P0 failed its "net within $0.01" rule for every EA. All
+deal sequences match, but costs differ.
+- **MACD_Cross:** 1,914 of 1,914 deals have the same time, side, volume and price. Swap differs on 319 deals (total
+  -88,134.82 vs -87,936.29), commission on 120 (-38,688.66 vs -38,700.18), and gross profit on 60 out-deals closing at
+  identical prices, i.e. positions matched to closes differently. The other EAs show the same pattern: Donchian 138 of
+  314, RSI 195 of 724, MA_Channel 192 of 598, Donchian_Trend 164 of 426.
+- **Most likely cause:** the tester applies the broker's current swap and commission settings, so a run made today does
+  not reproduce one made on 10-19 or 10-21.
+- **P0 is therefore re-based:** each EA's pre-throttle build (the sources at f8abfba for Donchian_Trend, ca2840e~1 for
+  the others, with that EACore) runs today with the same inputs. The throttle-off build must match it deal for deal:
+  time, side, volume, price, and net within $0.01.
+- **This decides whether the code is neutral.** The difference against the old baselines is reported as cost drift.
+- The pre-throttle builds are restored to the current ones afterwards, checked by MD5.
+
 **Decision:** if P0 and P1 pass, phase 3 checks the throttle on the IC Markets gold logs (offline, the phase 1 method).
 Then the live settings are written up as `.set` files for the user to deploy: headline 0.5% (Monday GBPJPY 0.010 lot
 per $1k) plus throttle 3% / 0.5.
