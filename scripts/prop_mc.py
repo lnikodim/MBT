@@ -178,18 +178,20 @@ def shuffle_dd(R, risk, n, rng, chunk=2000):
     return np.concatenate(out)
 
 
-def challenge(day_R, risk, target, daily, max_loss, min_days, horizon, trailing, n, rng):
+def challenge(day_R, risk, target, daily, max_loss, min_days, horizon, trailing, n, rng, throttle=None):
     """Replay randomly drawn historical trading days until pass, breach, or `horizon` active days.
 
     Balances are in units of the initial balance. Daily breach: equity after a close falls more than
     `daily` % of initial below the day's starting balance. Max-loss floor: initial (or the highest
-    closed balance with `trailing`) minus `max_loss` %. Pass: target reached on/after min_days."""
+    closed balance with `trailing`) minus `max_loss` %. Pass: target reached on/after min_days.
+    throttle = (dd_pct, factor): a trade is sized at `factor` while the closed balance is at least
+    dd_pct % (of initial) below the phase's highest closed balance; None = off (draws no extra randoms)."""
     k = max(len(d) for d in day_R)
     D, M = np.zeros((len(day_R), k)), np.zeros((len(day_R), k), bool)
     for i, d in enumerate(day_R):
         D[i, :len(d)], M[i, :len(d)] = d, True
     f = risk / 100
-    eq, peak = np.ones(n), np.ones(n)
+    eq, peak, tpk = np.ones(n), np.ones(n), np.ones(n)
     state = np.zeros(n, np.int8)  # 0 running, 1 passed, 2 daily breach, 3 max-loss breach
     days = np.zeros(n, int)
     for day in range(1, horizon + 1):
@@ -199,7 +201,12 @@ def challenge(day_R, risk, target, daily, max_loss, min_days, horizon, trailing,
         start = eq.copy()
         for j in range(k):
             on = (state == 0) & M[idx, j]
-            eq[on] *= 1 + D[idx[on], j] * f
+            if throttle:
+                scale = np.where(tpk[on] - eq[on] >= throttle[0] / 100, throttle[1], 1.0)
+                eq[on] *= 1 + D[idx[on], j] * f * scale
+                np.maximum(tpk, eq, out=tpk)
+            else:
+                eq[on] *= 1 + D[idx[on], j] * f
             state[on & (eq <= start - daily / 100)] = 2
             state[on & (state == 0) & (eq <= (peak if trailing else 1.0) - max_loss / 100)] = 3
             if trailing:
@@ -235,6 +242,9 @@ def main():
     ap.add_argument("--min-days", type=int, default=4, help="minimum trading days per phase")
     ap.add_argument("--horizon", type=int, default=365, help="calendar days to give each phase before 'no result'")
     ap.add_argument("--dd-cap", type=float, default=7.0, help="p95 MC drawdown %% to stay under when suggesting a risk")
+    ap.add_argument("--throttle", type=_floats, default=None,
+                    help="DD,FACTOR: size trades at FACTOR while the balance is DD %% of initial below the phase high "
+                         "(challenge simulation only; the reshuffle drawdowns stay unthrottled)")
     ap.add_argument("--sims", type=int, default=10000)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--json", help="also write all results to this JSON file")
@@ -292,7 +302,7 @@ def main():
     for row in risk_rows:
         for p, target in enumerate(a.targets, 1):
             c = challenge(day_R, row["risk_pct"], target, a.daily_loss, a.max_loss, a.min_days, horizon,
-                          a.trailing, a.sims, rng)
+                          a.trailing, a.sims, rng, throttle=a.throttle)
             for q in ("p50", "p90"):  # active trading days -> calendar days
                 v = c.pop(f"active_days_{q}")
                 c[f"calendar_days_{q}"] = v / active_ratio if v is not None else None
@@ -318,7 +328,8 @@ def main():
         with open(a.json, "w") as f:
             json.dump({"summary": summary, "by_year": years, "risk": risk_rows,
                        "rules": {"targets": a.targets, "daily_loss": a.daily_loss, "max_loss": a.max_loss,
-                                 "trailing": a.trailing, "min_days": a.min_days, "horizon_days": a.horizon}},
+                                 "trailing": a.trailing, "min_days": a.min_days, "horizon_days": a.horizon,
+                                 "throttle": a.throttle}},
                       f, indent=2, default=str)
         print(f"wrote {a.json}")
 
