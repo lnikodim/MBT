@@ -11,6 +11,7 @@
 //|  Execution only. No panel, no statistics.                        |
 //|  MBT v1.31: live defaults (spread guard 3.0 pips, InpDemoOnly    |
 //|  false) and lots sized per $1,000 of balance (InpLotsPer1k).     |
+//|  MBT v1.32: account drawdown throttle (AccountThrottle.mqh, off). |
 //+------------------------------------------------------------------+
 //
 //  WHICH CHART
@@ -68,7 +69,7 @@
 //    position during the 12 hours is taken in full. Size accordingly.
 //
 #property copyright "Orangutang Trading"
-#property version   "1.31"
+#property version   "1.32"
 #property strict
 #property description "Attach to GBPJPY, M1. Buys Monday 11:00 server time, closes 23:00 server time."
 #property description "Tested on a GMT+3 summer / GMT+2 winter server: 04:00 to 16:00 New York time."
@@ -76,6 +77,7 @@
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
+#include "AccountThrottle.mqh"
 
 //======================================================================================
 //  SIZE
@@ -237,7 +239,7 @@ void TryOpen()
   {
    gDoneToday = true;          // one attempt a day, whatever happens below
 
-   double lots = CheckedVolume(InpLotsPer1k > 0 ? AccountInfoDouble(ACCOUNT_BALANCE) / 1000.0 * InpLotsPer1k : InpLots);
+   double lots = CheckedVolume((InpLotsPer1k > 0 ? AccountInfoDouble(ACCOUNT_BALANCE) / 1000.0 * InpLotsPer1k : InpLots) * ThrottleFactor());
    if(lots <= 0)
      { Print("no trade -- no valid volume for ", gSym); return; }
 

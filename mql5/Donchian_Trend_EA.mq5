@@ -2,13 +2,16 @@
 //| MajorFX_DonchianTrend_EA.mq5                                     |
 //| Research baseline: Donchian breakout + EMA trend + ADX + ATR risk  |
 //| Intended for local MT5 Strategy Tester experiments.               |
+//| MBT v1.02: account drawdown throttle (AccountThrottle.mqh, off by|
+//| default; spec 2026-10-22-dd-reduction); logic same.              |
 //+------------------------------------------------------------------+
 #property copyright "OpenAI"
-#property version   "1.01"
+#property version   "1.02"
 #property description "Donchian breakout EA with EMA trend filter, ADX confirmation and ATR-based SL/TP."
 #property description "Designed as a backtest baseline, not a claim of profitability."
 
 #include <Trade/Trade.mqh>
+#include "AccountThrottle.mqh"
 
 CTrade trade;
 
@@ -262,7 +265,7 @@ double CalculatePositionVolume(const ENUM_ORDER_TYPE orderType,
    if(equity <= 0.0)
       return 0.0;
 
-   double riskMoney = equity * InpRiskPercent / 100.0;
+   double riskMoney = equity * InpRiskPercent / 100.0 * ThrottleFactor();   // AccountThrottle.mqh (spec 2026-10-22-dd-reduction)
    double lossForOneLot = 0.0;
    ResetLastError();
    if(!OrderCalcProfit(orderType, _Symbol, 1.0, entryPrice, stopLossPrice, lossForOneLot))

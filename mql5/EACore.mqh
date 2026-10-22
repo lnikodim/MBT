@@ -21,6 +21,7 @@
 
 #include <Trade\Trade.mqh>
 #include <Trade\SymbolInfo.mqh>
+#include "AccountThrottle.mqh"
 
 #ifndef EA_TIMEFRAME
 #define EA_TIMEFRAME PERIOD_H1        // an EA may #define a different compiled default before including
@@ -358,6 +359,10 @@ double CalculateLots(const double slDistance, const ENUM_ORDER_TYPE orderType, c
       return(0.0);
    double riskMoney = (InpRiskMode == RISK_MONEY) ? InpRiskValue
                       : AccountInfoDouble(ACCOUNT_BALANCE) * InpRiskValue / 100.0;
+   const double throttle = ThrottleFactor();                         // AccountThrottle.mqh (spec 2026-10-22-dd-reduction)
+   if(throttle < 1.0)
+      PrintFormat("AccountThrottle: account drawdown >= %.1f%% of the initial deposit - risk x %.2f", InpThrottleDDPct, throttle);
+   riskMoney *= throttle;
    if(riskMoney <= 0.0)
       return(0.0);
    double tickSize  = g_symbol.TickSize();

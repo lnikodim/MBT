@@ -1,11 +1,11 @@
 #!/bin/sh
-# Copy an EACore-based EA + EACore.mqh into MT5's Advisors folder and compile with MetaEditor. Exit 1 on errors or warnings.
+# Copy an EA + EACore.mqh + AccountThrottle.mqh into MT5's Advisors folder and compile with MetaEditor. Exit 1 on errors or warnings.
 #   scripts/install_ea.sh VWAP_RSI_EA
 set -e
 EA=${1:?usage: install_ea.sh <EA_NAME>}
 cd "$(dirname "$0")/.."
 ADV="$HOME/Library/Application Support/net.metaquotes.wine.metatrader5/drive_c/Program Files/MetaTrader 5/MQL5/Experts/Advisors"
-cp mql5/EACore.mqh "mql5/$EA.mq5" "$ADV/"
+cp mql5/EACore.mqh mql5/AccountThrottle.mqh "mql5/$EA.mq5" "$ADV/"
 "$HOME/.local/bin/mbt-wine-py" -c "
 import sys; sys.path.insert(0, '.')
 from core.compiler import compile_mql5

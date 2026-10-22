@@ -8,6 +8,8 @@
 //|  cross, or fast/slow SMA cross against the position, or R x stop |
 //|  target. Protective stop k x ATR in every mode. One position at a|
 //|  time. Execution, guards and trade log from EACore.mqh.          |
+//|  v1.03: account drawdown throttle via EACore (off by default);   |
+//|        logic same.                                               |
 //|  v1.02: pullback state rebuilt on every init (a failed rebuild    |
 //|        retries next tick) + EACore 2026-10-18 fixes; logic same. |
 //|  v1.01 defaults: H1, PULLBACK entry, CHANNEL exit, long-only     |
@@ -15,12 +17,12 @@
 //|  v1.00: the PDF's breakout system (BREAKOUT, CHANNEL, both sides)|
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#property version   "1.02"
+#property version   "1.03"
 #property strict
 #property description "MA price channel (SMA of highs/lows + fast SMA of closes): breakout or pullback entry, channel / MA-cross / target exit; MACD_Cross_EA v1.42 safety core"
 
 #define EA_NAME    "MA_Channel_EA"
-#define EA_VERSION "1.02"
+#define EA_VERSION "1.03"
 #define EA_MAGIC   261016
 #define EA_COMMENT "MA_CH"
 #define EA_TIMEFRAME PERIOD_H1

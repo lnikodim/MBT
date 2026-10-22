@@ -130,3 +130,47 @@ least 3% of the initial balance below its highest closed balance.
 - The four gold EAs get it from EACore.
 - Donchian_Trend_EA and Invictus_GBPJPY_Monday_EA are standalone, so each needs the same small function.
 - Parity with the throttle off must be exact.
+
+## Phase 2: the account-level throttle in code (pre-registered 2026-10-22, before its runs)
+User: "go ahead with phase 2".
+
+**Code:**
+- **`mql5/AccountThrottle.mqh`** (new, one implementation for all six EAs): `ThrottleFactor()`.
+  - It reads the whole account deal history (every EA on the account) and returns `InpThrottleFactor` (0.5) while the
+    closed trading P/L (profit + swap + commission + fee of buy and sell deals) is at least `InpThrottleDDPct` % of the
+    initial deposit (the first balance deal) below its running high. Otherwise it returns 1.0.
+  - Deposits and withdrawals do not move it. `InpThrottleDDPct` 0 (default) = off.
+  - If the history cannot be read, it returns the factor (the safer side).
+- **`EACore.mqh`:** `CalculateLots` multiplies the risk money by `ThrottleFactor()` and logs a line when throttled.
+  This covers Donchian_Breakout_EA, RSI_Reversal_EA and MA_Channel_EA (versions 1.03, 1.22, 1.03).
+- **`MACD_Cross_EA.mq5` v1.47:** it has its own `CalculateLots` (no EACore), and gets the same multiply and log line.
+- **`Donchian_Trend_EA.mq5`:** the live v1.01 is now tracked (f8abfba). v1.02 multiplies its equity risk money by
+  `ThrottleFactor()`.
+- **`Invictus_GBPJPY_Monday_EA.mq5` v1.32:** lots x `ThrottleFactor()`.
+- `scripts/install_ea.sh` also copies `AccountThrottle.mqh`, and the profiles get the two new inputs (off).
+
+**P0, parity with the throttle off** (defaults). Each EA re-runs its baseline exactly (Darwinex-Demo, real ticks,
+2022-01..2026-10, the baseline's own inputs and leverage):
+
+| EA | baseline run |
+|---|---|
+| MACD_Cross H1 | `macdtf_h1_20261019_210429` |
+| Donchian_Breakout H4 | `lowtf_donch_h4_20261019_212257` |
+| RSI_Reversal H6 | `lowtf_rsi_h6_20261019_213004` |
+| MA_Channel H1 | `lowtf_mach_h1_20261019_214347` |
+| Donchian_Trend USDJPY H4 | `dtrend_pick_20261021_073858`, run under the old name DonchianTrend_EA, same inputs |
+| Monday GBPJPY | `inv131_s0_mon_20261021_131936` |
+
+- **Pass:** the same deals (open and close time to the minute, side, volume, net within $0.01) and 0 mismatches.
+
+**P1, the mechanism with the throttle on** (`InpThrottleDDPct` 3): MACD_Cross with its baseline settings at 1% risk.
+- For each entry, rebuild from the run's own trades the closed P/L at the entry time and its high so far. The trade
+  is "flagged" if P/L is at least $3,000 below the high.
+- The risk taken at entry is |open - stop| x volume x 100 oz / the balance before entry.
+- **Pass:** at least 95% of trades have risk within +/-20% of 0.5% when flagged and of 1.0% when not, and at least one
+  trade is flagged.
+- **Reported:** net, max DD and trade count against the baseline.
+
+**Decision:** if P0 and P1 pass, phase 3 checks the throttle on the IC Markets gold logs (offline, the phase 1 method).
+Then the live settings are written up as `.set` files for the user to deploy: headline 0.5% (Monday GBPJPY 0.010 lot
+per $1k) plus throttle 3% / 0.5.

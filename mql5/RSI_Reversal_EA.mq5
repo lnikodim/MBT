@@ -11,6 +11,8 @@
 //| cannot duplicate a trade. Only positions with InpMagic on        |
 //| _Symbol are touched.                                             |
 //|                                                                  |
+//| v1.22: account drawdown throttle via EACore (off by default);    |
+//|        logic same.                                               |
 //| v1.21: EACore 2026-10-18 fixes (session-aware bars, spread retry |
 //|        window from the delay, late-signal guard, daily-stop      |
 //|        latch, trade log per login); signal logic unchanged.      |
@@ -30,7 +32,7 @@
 //| profitable on its own), held out 2025-26: PF 1.77 real ticks.    |
 //+------------------------------------------------------------------+
 #property copyright   "MBT"
-#define EA_VERSION    "1.21"
+#define EA_VERSION    "1.22"
 #property version     EA_VERSION
 #property strict
 #property description "RSI threshold entries with a re-arm at 50, optional MA filter, % SL / TP,"

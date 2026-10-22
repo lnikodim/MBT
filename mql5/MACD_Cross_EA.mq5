@@ -3,6 +3,8 @@
 //|  MACD line / signal line crossover Expert Advisor                |
 //|  Designed for XAUUSD, works on any symbol.                       |
 //|                                                                  |
+//|  v1.47: account drawdown throttle (AccountThrottle.mqh, off by   |
+//|        default; spec 2026-10-22-dd-reduction); logic same.       |
 //|  v1.46                                                           |
 //|  Changelog 1.46 (correctness, signal/exit logic unchanged; spec  |
 //|  2026-10-18-eacore-correctness-prereg.md): a bar is processed   |
@@ -61,13 +63,14 @@
 //|  - OnTester custom criterion for optimization ("Custom max")     |
 //+------------------------------------------------------------------+
 #property copyright "2026"
-#define EA_VERSION "1.46"
+#define EA_VERSION "1.47"
 #property version   EA_VERSION
 #property strict
 #property description "MACD crossover EA with trend/strength filters, % SL/TP, trailing and risk-based lots"
 
 #include <Trade\Trade.mqh>
 #include <Trade\SymbolInfo.mqh>
+#include "AccountThrottle.mqh"
 
 //--- enumerations
 enum ENUM_RISK_MODE
@@ -647,6 +650,10 @@ double CalculateLots(const double slDistance, const ENUM_ORDER_TYPE orderType, c
    double riskMoney = (InpRiskMode == RISK_MONEY)
                       ? InpRiskValue
                       : AccountInfoDouble(ACCOUNT_BALANCE) * InpRiskValue / 100.0;
+   const double throttle = ThrottleFactor();                         // AccountThrottle.mqh (spec 2026-10-22-dd-reduction)
+   if(throttle < 1.0)
+      PrintFormat("AccountThrottle: account drawdown >= %.1f%% of the initial deposit - risk x %.2f", InpThrottleDDPct, throttle);
+   riskMoney *= throttle;
    if(riskMoney <= 0.0)
       return(0.0);
 
