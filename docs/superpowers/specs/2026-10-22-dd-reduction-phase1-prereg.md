@@ -232,3 +232,20 @@ Darwinex logs.
 **Pass (full window):** the throttle beats B05 in P(pass both) on all 3 seeds, its mean is within 1 point of B03's, and
 its max-loss breach rate is at or below B05's. The closed-trade history (total, max DD, worst day) is reported.
 **If it fails,** the IC data does not support the throttle, and the live settings stay at 0.3% (B03).
+
+### Phase 3a outcome (2026-10-22; log `reports/portfolio/dd_phase3a.log`; 2,194 trades)
+| config | full P(pass both), seeds 1-3 | phase-1 days (median) | max-loss breach | train / holdout P | history: total, max DD, worst day |
+|---|---|---|---|---|---|
+| B03 | 99.2, 99.1, 99.0 | 73 | 0.5% | 96.5 / 99.9 | +209.1%, 10.0%, -2.43% |
+| B05 | 93.3, 92.4, 93.0 | 42 | 3.9% | 84.7 / 98.0 | +348.6%, 16.7%, -4.06% |
+| **L2 throttle 3%** | **99.0, 99.1, 99.2** | **48** | **0.4%** | 96.8 / 99.9 | **+298.3%, 10.3%, -2.53%** |
+
+**Pass:** the throttle beats B05 on all seeds, is within 1 point of B03 (mean 99.1 vs 99.1), and has the lower max-loss
+rate. The IC data repeats the Darwinex result: at a 0.5% headline the throttle passes as often as 0.3%, about 35% faster
+(48 vs 73 days).
+
+**Next:** phase 3b, the live `.set` files.
+- **FTMO:** 0.5% + throttle 3% / 0.5.
+- **Darwinex Zero:** 0.5% constant, throttle off.
+- **Open question for the user:** the EA daily stop of -4% of closed balance against FTMO's 5% equity limit; the
+  historical worst throttled day was -2.53% (IC) and -2.81% (Darwinex).
