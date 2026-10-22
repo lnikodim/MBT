@@ -116,7 +116,7 @@
 //|  interactive call, so it runs unchanged in the Strategy Tester.   |
 //+------------------------------------------------------------------+
 #property copyright "RBOT.CC | Free Forex EA & MT5 Indicators"
-#property version   "1.02"
+#property version   "1.03"
 #property description "Weekly daily-bar dip pattern, long only: enter after a down Monday, exit at the Wednesday close."
 #property description "Decisions are taken on closed D1 bars only; weekday logic uses the server time of the bar."
 #property link "https://rbot.cc"
@@ -131,6 +131,12 @@ input double InpStopLossPercent   = 10.0;          // Stop loss, in percent of t
 input ulong  InpMagic             = 20260922;      // Magic number identifying this EA's positions
 input int    InpMaxSlippagePoints = 30;            // Maximum slippage, in points
 input string InpTradeComment      = "MonDip long"; // Order comment attached to entries
+
+input group "=== Risk-based sizing (MBT v1.03) ==="
+input double InpRiskPercent       = 0.0;           // Risk per trade, % of balance at the ATR risk unit (0 = fixed InpLots)
+input double InpRiskATRMult       = 2.0;           // Risk unit = this x the daily ATR of the bar before the entry
+input int    InpATRPeriod         = 14;            // Daily ATR period
+input bool   InpStopAtRiskUnit    = false;         // Stop at the risk unit instead of InpStopLossPercent
 
 input group "=== Optional filter 1: IBS ==="
 input bool   InpUseIBS            = true;          // Enable the IBS filter
@@ -165,6 +171,7 @@ int      g_slRetryCount      = 0;    // consecutive failed attempts to attach or
 int      g_barsProcessed     = 0;    // statistics reported in OnDeinit
 int      g_entryCount        = 0;
 int      g_exitCount         = 0;
+int      g_atr               = INVALID_HANDLE;   // MBT v1.03: daily ATR for the risk unit
 
 //+------------------------------------------------------------------+
 //| Small helpers                                                    |
@@ -393,13 +400,46 @@ bool NormaliseLots(const double requested, double &volume)
   }
 
 //+------------------------------------------------------------------+
+//| MBT v1.03: the risk unit of a position entered at `entryTime`:    |
+//| InpRiskATRMult x the ATR of the daily bar before the entry bar.   |
+//| Fixed per position, so a restart or a new day never moves it.     |
+//+------------------------------------------------------------------+
+bool RiskUnit(const datetime entryTime, double &dist)
+  {
+   dist = 0.0;
+   if(g_atr == INVALID_HANDLE)
+      return(false);
+   const int shift = iBarShift(_Symbol, PERIOD_D1, entryTime, false) + 1;
+   double a[1];
+   if(shift < 1 || CopyBuffer(g_atr, 0, shift, 1, a) != 1 || a[0] <= 0.0)
+      return(false);
+   dist = InpRiskATRMult * a[0];
+   return(true);
+  }
+
+//+------------------------------------------------------------------+
+//| MBT v1.03: lots that lose InpRiskPercent of balance over `dist`.  |
+//+------------------------------------------------------------------+
+bool LotsForRisk(const double entryPrice, const double dist, double &lots)
+  {
+   double profit = 0.0;
+   if(entryPrice <= 0.0 || dist <= 0.0 ||
+      !OrderCalcProfit(ORDER_TYPE_BUY, _Symbol, 1.0, entryPrice, entryPrice - dist, profit) || profit >= 0.0)
+      return(false);
+   lots = AccountInfoDouble(ACCOUNT_BALANCE) * InpRiskPercent / 100.0 / (-profit);
+   return(lots > 0.0);
+  }
+
+//+------------------------------------------------------------------+
 //| Stop-loss price for a long position entered at `entryPrice`.      |
 //+------------------------------------------------------------------+
-bool ComputeStopLossPrice(const double entryPrice, double &slPrice)
+bool ComputeStopLossPrice(const double entryPrice, const datetime entryTime, double &slPrice)
   {
    slPrice = 0.0;
 
-   const double pctDistance = entryPrice * InpStopLossPercent / 100.0;
+   double pctDistance = entryPrice * InpStopLossPercent / 100.0;
+   if(InpStopAtRiskUnit && !RiskUnit(entryTime, pctDistance))      // MBT v1.03: the stop at the risk unit
+      return(false);
    const long   stopsLevel  = SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL);
    const double minDistance = (double)stopsLevel * _Point;
 
@@ -446,7 +486,7 @@ bool EnsureStopLoss()
    const double currentTP  = PositionGetDouble(POSITION_TP);
 
    double wantedSL = 0.0;
-   if(!ComputeStopLossPrice(entryPrice, wantedSL))
+   if(!ComputeStopLossPrice(entryPrice, (datetime)PositionGetInteger(POSITION_TIME), wantedSL))
      {
       // FIX 1 (v1.02): this failure means no valid stop price can be computed right
       // now - the market is already at or below the level the stop would need. The
@@ -643,8 +683,23 @@ void TryEnterLong()
      }
 
    double volume = 0.0;
-   if(!NormaliseLots(InpLots, volume))
+   double requested = InpLots;
+   if(InpRiskPercent > 0.0)                                         // MBT v1.03: % risk at the ATR risk unit
+     {
+      double unit = 0.0;
+      if(!RiskUnit(TimeCurrent(), unit) || !LotsForRisk(SymbolInfoDouble(_Symbol, SYMBOL_ASK), unit, requested))
+        {
+         Print("[MonDip] ENTRY ABORTED - the risk-based lot size could not be computed (no daily ATR or tick value). No trade this week.");
+         g_pendingEntryBar = 0;
+         return;
+        }
+     }
+   if(!NormaliseLots(requested, volume))
+     {
+      if(InpRiskPercent > 0.0)
+         g_pendingEntryBar = 0;     // MBT v1.03: a sized lot below the minimum is final for the week, no per-tick retry
       return;
+     }
 
    const double ask = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);
    if(ask <= 0.0)
@@ -654,7 +709,7 @@ void TryEnterLong()
      }
 
    double slPrice = 0.0;
-   if(!ComputeStopLossPrice(ask, slPrice))
+   if(!ComputeStopLossPrice(ask, TimeCurrent(), slPrice))
       return;
 
 // DECISION D1: market order, sent on the first tick after the Monday bar closed.
@@ -946,6 +1001,12 @@ bool ValidateInputs()
       ok = false;
      }
 
+   if(InpRiskPercent < 0.0 || InpRiskPercent > 5.0 || InpRiskATRMult <= 0.0 || InpATRPeriod < 1)
+     {
+      Print("[MonDip] InpRiskPercent must be 0-5, InpRiskATRMult above 0 and InpATRPeriod at least 1.");
+      ok = false;
+     }
+
    if(InpMaxSlippagePoints < 0)
      {
       Print("[MonDip] InpMaxSlippagePoints cannot be negative.");
@@ -1008,8 +1069,21 @@ int OnInit()
    g_lastCloseErrBar  = 0;
    g_slRetryCount     = 0;
 
+//--- MBT v1.03: daily ATR for the risk unit, only when sizing or the stop needs it
+   if(InpRiskPercent > 0.0 || InpStopAtRiskUnit)
+     {
+      g_atr = iATR(_Symbol, PERIOD_D1, InpATRPeriod);
+      if(g_atr == INVALID_HANDLE)
+        {
+         Print("[MonDip] could not create the daily ATR handle.");
+         return(INIT_FAILED);
+        }
+     }
+
 //--- report settings and symbol facts ----------------------------
-   PrintFormat("[MonDip v1.02] %s | lots %.2f | stop loss %.2f%% | IBS %s (max %.2f) | MA %s (%d) | magic %s | deviation %d points | comment '%s'",
+   PrintFormat("[MonDip v1.03] sizing %s | stop at %s", (InpRiskPercent > 0.0 ? StringFormat("%.2f%% risk at %.1f x ATR(%d) D1", InpRiskPercent, InpRiskATRMult, InpATRPeriod) : "fixed lots"),
+               (InpStopAtRiskUnit ? "the risk unit" : StringFormat("%.2f%% of entry", InpStopLossPercent)));
+   PrintFormat("[MonDip v1.03] %s | lots %.2f | stop loss %.2f%% | IBS %s (max %.2f) | MA %s (%d) | magic %s | deviation %d points | comment '%s'",
                _Symbol, InpLots, InpStopLossPercent,
                (InpUseIBS ? "on" : "off"), InpIBSMax,
                (InpUseMA ? "on" : "off"), InpMAPeriod,
@@ -1048,7 +1122,9 @@ int OnInit()
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
   {
-   PrintFormat("[MonDip v1.02] stopped on %s (reason %d). Closed daily bars processed: %d, entries: %d, exits: %d.",
+   if(g_atr != INVALID_HANDLE)
+      IndicatorRelease(g_atr);
+   PrintFormat("[MonDip v1.03] stopped on %s (reason %d). Closed daily bars processed: %d, entries: %d, exits: %d.",
                _Symbol, reason, g_barsProcessed, g_entryCount, g_exitCount);
 
 // DECISION D20: the position is left alone, but the operator is told.

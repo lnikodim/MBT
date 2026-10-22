@@ -144,9 +144,11 @@ PROFILES = {
     # Monday_Dip_EA (mql5.com code 78343, Monday_Dip_Weekly_Exit_EA.mq5 v1.02, unchanged; renamed per the naming convention).
     # Index D1: buy after a Monday close below the previous close (IBS <= 0.25 filter on, MA filter off in the code), exit at
     # the Wednesday close, 10% stop. Standalone: trades rebuilt from the report's Deals table. Compiled defaults.
+    # v1.03 (MBT): optional % risk sizing at 2 x ATR(14) D1 and an optional stop at that unit; defaults = v1.02 behaviour.
     "Monday_Dip_EA": {
         "InpLots": "0.10", "InpStopLossPercent": "10.0", "InpMagic": "20260922", "InpMaxSlippagePoints": "30",
-        "InpTradeComment": "MonDip long", "InpUseIBS": "true", "InpIBSMax": "0.25", "InpUseMA": "false", "InpMAPeriod": "180",
+        "InpTradeComment": "MonDip long", "InpRiskPercent": "0.0", "InpRiskATRMult": "2.0", "InpATRPeriod": "14",
+        "InpStopAtRiskUnit": "false", "InpUseIBS": "true", "InpIBSMax": "0.25", "InpUseMA": "false", "InpMAPeriod": "180",
         "InpVerboseLog": "false",
     },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the

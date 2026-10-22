@@ -169,3 +169,55 @@ is a candidate under the rule.**
 1. Volatility-based sizing (R at the 10% stop is about 0.45% of price per trade, which is tiny at 0.3% risk).
 2. The live-set joint (gold 4-EA + DonchianTrend + Monday GBPJPY + the US sleeve).
 3. An IC Markets check of the US index symbols.
+
+## Stage 2: sizing, then the live-set joint (pre-registered 2026-10-22, before its runs)
+User: "continue with next step".
+
+**Code, v1.03 (MBT)**, `mql5/Monday_Dip_EA.mq5`, MD5 bcce44f3…, 0 errors and 0 warnings. Four new inputs, defaults =
+v1.02 behaviour:
+- `InpRiskPercent` (0 = the fixed `InpLots`): lots = balance x risk% / the loss of 1 lot over the risk unit
+  (OrderCalcProfit).
+- `InpRiskATRMult` 2.0 and `InpATRPeriod` 14: the risk unit is 2 x ATR(14) of the daily bar before the entry. It is
+  fixed per position, so a restart or a new day never moves it.
+- `InpStopAtRiskUnit` (false): if true, the stop is placed at the risk unit instead of the 10% stop.
+- With risk sizing on, an entry whose sized lot is below the minimum is abandoned for the week rather than retried on
+  every tick.
+
+**Runs** (`reports/mondip/mondip_eval.py stage2`; NDX and WS30 on real ticks 2019-01..2026-10; SP500 M1-generated
+2019-01..2023-04 plus real ticks 2023-04..2026-10; D1, 100k, 1:100):
+- **P0 parity:** v1.03 defaults on NDX must equal the v1.02 run `mondip_A_NDX`: same entries and exits (minute), same
+  volume, net within $0.01, 0 mismatches. Otherwise the code is wrong and nothing else counts.
+- **V1, sizing only:** `InpRiskPercent` 0.3, risk unit 2 x ATR, 10% stop unchanged. Its trades must be the configuration
+  A trades of the earlier runs (same entry and exit times). Missing trades (a lot below the minimum) are reported.
+- **V2, ATR stop:** V1 plus `InpStopAtRiskUnit` true. This changes exits, since a 2 x ATR stop can be hit.
+- **R per trade** for V1 and V2 = net / (0.3% of the balance before entry).
+
+**Which version goes forward (fixed now):** V2 if its sleeve net R (NDX + WS30 + SP500, 2019-26) is at least 90% of
+V1's, because the hard stop caps the tail. Otherwise V1.
+- V1's real loss per trade is bounded only by the 10% stop: a 10% gap is about 3-5 risk units, i.e. 1-1.5% of the
+  account per index.
+
+**Live-set joint** (`reports/portfolio/us_sleeve_joint.py`; the method of spec 2026-10-21-donchiantrend-gold-joint):
+- **Live set:** gold 4-EA (Darwinex logs) + DonchianTrend USDJPY + Monday GBPJPY (`inv2_s0_mon`, bt 1.0, as in
+  `monday_joint.py`).
+- **Sleeve:** the chosen version's three symbol runs at bt 0.3.
+- **Window:** 2022-01..2026-10, the live set's.
+- **Simulation:** prop_mc --risk 0.3,0.5, 10k sims, seeds 1-3, P(pass both).
+- **Decision check:** live + sleeve >= live at 0.3% on all 3 seeds.
+- **Exposure check:** the most positions open at once x 0.3% < 5%. The worst closed-trade day is reported for both.
+- **Reported:**
+  - the sleeve at zero edge (mean R removed) and at half edge (the cost if the edge is smaller);
+  - the 2025-26 subset;
+  - daily R correlation with the live set.
+
+**Hypothesis:**
+- **P0:** passes.
+- **V1:** keeps all 189 trades.
+- **V2:** loses some winners to the tighter stop, so its net R is 70-100% of V1's (about a 50% chance V2 is chosen).
+- **Joint:** low correlation, and +0.5-1.5 points at 0.3%.
+- **Caveat:** the verification of the DonchianTrend joint found the decision rule passes almost any positive edge.
+  So the zero-edge cost is the number that matters.
+
+**Decision rule:** if P0, the decision check and the exposure check pass, the US sleeve is a live candidate, and the
+IC Markets check of its symbols is pre-registered next (the user switches the terminal). Otherwise the sleeve stays off
+the live account.
