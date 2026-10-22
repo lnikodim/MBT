@@ -141,15 +141,6 @@ PROFILES = {
         "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
     },
-    # GER40_Evening_Coil_EA (mql5.com code 78380, Ger40_eveningcoil.mq5, "Orangutang Trading" v1.00, unchanged; renamed per
-    # the naming convention). DE40 H1 long only: 4 conditions (vol ratio, volume z, avg tick volume < 2125, recent NR7) on
-    # signal bars 17:00-20:59 server, 3.5 ATR stop, 4.5 ATR target, flat 23:00. Standalone: trades rebuilt from the report.
-    "GER40_Evening_Coil_EA": {
-        "InpAllowTrading": "true", "InpLots": "0.01", "InpRvRatioMax": "1.6", "InpVolZMin": "-0.1", "InpAvgVolumeMax": "2125",
-        "InpNr7WithinBars": "13", "InpSignalHourStart": "17", "InpSignalHourEnd": "20", "InpDayMask": "31",
-        "InpStopATR": "3.5", "InpTargetATR": "4.5", "InpMaxHoldBars": "150", "InpFlatHour": "23", "InpMaxSpreadPts": "0",
-        "InpMagic": "873801",
-    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

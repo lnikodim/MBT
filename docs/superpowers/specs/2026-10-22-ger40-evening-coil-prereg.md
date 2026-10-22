@@ -80,3 +80,39 @@ The first S0A launch failed with "symbol DE40 not exist". The `DE40` history fol
 Darwinex-Demo lists 846 symbols and no DE40. A 2-day probe found **GDAXI** (GER40, DAX40, DE40m and others were not
 tried after it). The EA counts GDAXI as its intended chart (`IsGermanIndex()` matches "GDAXI"), so its behaviour is the
 same as on GER40. All runs above use GDAXI; nothing else changes.
+
+## Outcome (2026-10-22; GDAXI, agent log "generating based on real ticks" in all four runs; history quality 99%; log `reports/ger40/base.log`)
+| run, 1.0 lot (value per point 10.9-11.3 USD/lot, i.e. EUR 10) | net USD | PF | max equity DD | trades | win | R, mean R (t) |
+|---|---|---|---|---|---|---|
+| S0A as written, 2022-26 | +42,776.42 | 1.50 | 7.39% | 265 | 56.6% | +15.3, +0.058 (t 1.75) |
+| S0B condition 3 off, 2022-26 | +80,322.75 | 1.25 | 19.92% | 846 | 56.7% | +32.6, +0.039 (t 2.25) |
+| S1A as written, 2019-21 | +218.82 | 1.77 | 0.64% | 3 | 66.7% | +0.1, +0.041 (t 0.24) |
+| S1B condition 3 off, 2019-21 | +12,980.13 | 1.07 | 28.29% | 553 | 54.1% | +3.5, +0.006 (t 0.32) |
+
+**On Darwinex, condition 3 works as a date filter, not a regime filter.**
+- Darwinex's 252-bar average tick volume was 5182 at the start of 2019 and 3838 at the start of 2022, against the
+  rule's 2125.
+- S0A therefore traded only from 2024 (114 / 131 / 20 trades in 2024 / 2025 / 2026), when the feed's volume fell below
+  the level. S1A made 3 trades in three years.
+
+**Evaluated version: A** (S0A 265 trades >= 230, as fixed in advance).
+- **Gate A passes:** 265 trades, PF 1.50, R +2.8 in 2022-24 (all from 2024) and +12.5 in 2025-26.
+- **Out-of-sample check fails:** 3 trades, t 0.24. On Darwinex data, version A cannot be tested out of sample; it
+  hardly trades there.
+
+**Version B** (condition 3 off, the author's own advice for other feeds) is the test of the other three conditions:
+- **2022-26:** a thin edge, +0.039 R per trade (t 2.25), negative in 2022 (PF 0.83) and 2026 (PF 0.81).
+- **2019-21:** no edge: +0.006 R per trade, t 0.32, PF 1.04 in R, max DD 28%.
+
+**Costs and exits** (both versions):
+- 90% of trades exit at the 23:00 flat close (average +0.05 to +0.08 R).
+- Stop exits average -1.11 to -1.27 R: fills past the stop.
+
+**Decision: not a candidate.** Version A fails the out-of-sample check (rule), and version B's out-of-sample result
+shows no edge either. On the hypothesis:
+- condition 3 did mismatch, but S0A still reached 265 trades because Darwinex's volume fell in 2024-26;
+- the 2022-26 PF of 1.50 / 1.25 was inside or just below the 1.2-1.7 forecast;
+- the out-of-sample check failed as forecast.
+
+**Removal (user rule).** Removed `mql5/GER40_Evening_Coil_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5
+.mq5, .ex5, compile log and tester .set (no chart had it). The file stays in git at d6be668.
