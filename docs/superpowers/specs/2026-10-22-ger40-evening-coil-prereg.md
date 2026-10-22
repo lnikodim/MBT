@@ -74,3 +74,9 @@ span), otherwise B. A mismatched broker level would show up as far fewer trades.
   and an IC Markets check before any deployment.
 - **Otherwise:** closed, and leftovers are removed (user rule).
 - If DE40 real ticks are missing (history quality below 90%) for part of S0, results are provisional and say so.
+
+## Amendment 1 (2026-10-22, before any result): the Darwinex symbol is GDAXI
+The first S0A launch failed with "symbol DE40 not exist". The `DE40` history folder in the local cache is a leftover;
+Darwinex-Demo lists 846 symbols and no DE40. A 2-day probe found **GDAXI** (GER40, DAX40, DE40m and others were not
+tried after it). The EA counts GDAXI as its intended chart (`IsGermanIndex()` matches "GDAXI"), so its behaviour is the
+same as on GER40. All runs above use GDAXI; nothing else changes.
