@@ -74,3 +74,59 @@ Date: 2026-10-22. User: "suggest a plan for reducing the drawdowns at 0.5% risk"
   shared EACore code with a parity check that it is off by default. The IC Markets logs (spec 2026-10-18) confirm in
   phase 3.
 - **Otherwise:** no lever is adopted. Staying at 0.3% stays the recommendation.
+
+## Outcome (2026-10-22; log `reports/portfolio/dd_phase1.log`)
+2,226 trades: MACD 955, RSI 362, MA_Channel 299, Monday 240, DonchianTrend 213, Donchian 157. The position cap kept
+1,955 trades at N = 4 and 2,185 at N = 6.
+
+| config (headline risk) | train P(pass both), max-loss breach | holdout P(pass both), seeds 1-3 (max-loss) |
+|---|---|---|
+| B03, all 0.3% | 93.8%, 3.3% | 99.8, 99.8, 99.7 (0.1%) |
+| B05, all 0.5% | 79.8%, 11.7% | 96.5, 96.2, 96.1 (2.0%) |
+| L1 MACD 0.5 / RSI 0.7 | 93.9%, 3.3% | 99.7, 99.5, 99.5 (0.2%) |
+| L1 MACD 0.5 / RSI 1.0 | 92.1%, 4.3% | 99.4, 99.2, 99.2 (0.4%) |
+| L1 MACD 0.7 / RSI 0.7 | 89.5%, 5.7% | 98.9, 98.7, 98.8 (0.6%) |
+| L1 MACD 0.7 / RSI 1.0 | 87.9%, 6.7% | 98.5, 98.4, 98.5 (0.8%) |
+| L1 MACD 1.0 / RSI 0.7 | 81.3%, 10.8% | 96.7, 96.8, 96.5 (1.8%) |
+| **L2 throttle 3%** | **94.5%, 2.9%** | **99.8, 99.7, 99.8 (0.1%)** |
+| L2 throttle 4% | 93.2%, 3.4% | 99.6, 99.6, 99.6 (0.2%) |
+| L2 throttle 5% | 92.1%, 4.1% | 99.5, 99.5, 99.4 (0.2%) |
+| L3 cap 4 | 74.3%, 15.2% | 97.3, 97.1, 97.2 (1.4%) |
+| L3 cap 6 | 77.7%, 13.3% | 96.5, 96.0, 95.7 (2.0%) |
+
+No daily-loss breaches in any configuration; the 5% daily limit on closed trades is not the binding constraint.
+
+**Selection:**
+- **Family bests:** L1 MACD 0.5 / RSI 0.7 (93.9%) and L2 throttle 3% (94.5%). Neither L3 setting stays at or below
+  B05's max-loss rate.
+- **Pick: L2 throttle 3%.** L1 is 0.6 points behind, outside the 0.5-point simplicity margin.
+- **Holdout check: pass.** It beats B05 on all 3 seeds (99.7-99.8 vs 96.1-96.5), with max-loss 0.1% vs 2.0%.
+
+**Full window 2022-26 and the closed-trade history:**
+| config | P(pass both), seeds 1-3 | phase-1 days (median) | max-loss breach | history: total, max DD, worst day |
+|---|---|---|---|---|
+| B03 | 98.2, 98.0, 98.0 | 79 | 1.0% | +191.5%, 9.4%, -2.44% |
+| B05 | 89.1, 89.4, 89.1 | 44 | 6.0% | +319.2%, 15.6%, -4.06% |
+| **L2 throttle 3%** | **98.3, 98.1, 98.2** | **53** | **0.9%** | **+277.4%, 9.6%, -2.81%** |
+
+**Decision: adopt the 3% drawdown throttle (phase 2).** At a 0.5% headline it passes as often as 0.3% (98.1-98.3 vs
+98.0-98.2), with the same max-loss rate, in a third less time (53 vs 79 days to pass phase 1). Its historical max
+drawdown is 9.6% against 15.6% unthrottled.
+
+**On the hypothesis:**
+- The pick was the throttle, not the MACD weight, but L1 MACD 0.5 / RSI 0.7 came within 0.6 points with no code.
+- Caps: cap 6 changed little and cap 4 cut winners, as forecast; both were worse than B05.
+- The throttle slowed passing (53 vs 44 days), as forecast.
+- The gain over B05 was +9 points, far above the 1-3 forecast.
+- B03 vs the pick: the same pass rate, with B03 1.5 times slower, as forecast.
+
+**Limits:**
+- Closed trades only: the live limit is on equity.
+- In the simulation the throttle resets at each phase start; live, it needs an account-level peak.
+- A fallback with no code: L1 (MACD 0.25%, RSI 0.35%, the others 0.5%) gives 93.9% train and 99.5-99.7% holdout.
+
+**Phase 2, to pre-register:** an account-level throttle. Every live EA halves its risk while the account balance is at
+least 3% of the initial balance below its highest closed balance.
+- The four gold EAs get it from EACore.
+- Donchian_Trend_EA and Invictus_GBPJPY_Monday_EA are standalone, so each needs the same small function.
+- Parity with the throttle off must be exact.
