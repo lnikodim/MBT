@@ -221,3 +221,50 @@ V1's, because the hard stop caps the tail. Otherwise V1.
 **Decision rule:** if P0, the decision check and the exposure check pass, the US sleeve is a live candidate, and the
 IC Markets check of its symbols is pre-registered next (the user switches the terminal). Otherwise the sleeve stays off
 the live account.
+
+### Stage 2 outcome (2026-10-22; logs `reports/mondip/stage2.log`, `reports/portfolio/us_sleeve_joint.log`)
+**P0 parity: pass.** v1.03 defaults reproduce the v1.02 NDX run: 61 of 61 trades, 0 mismatches.
+
+| 0.3% risk at 2 x ATR (100k per run) | V1: 10% stop | V2: stop at 2 x ATR |
+|---|---|---|
+| NDX 2019-26 | 61 tr, +1,815.08 USD, +6.0 R, PF 1.80 | 61 tr (3 stops), +1,360.95 USD, +4.5 R, PF 1.52 |
+| WS30 2019-26 | 67 tr, -50.95 USD, -0.1 R, PF 0.99 | 67 tr (5 stops), +599.93 USD, +2.0 R, PF 1.16 |
+| SP500 2019-23 (M1-generated) | 40 tr, +1,341.10 USD, +4.5 R, PF 1.67 | 40 tr (3 stops), +1,420.72 USD, +4.7 R, PF 1.73 |
+| SP500 2023-26 (real ticks) | 21 tr, +211.98 USD, +0.7 R, PF 1.20 | 21 tr (1 stop), -13.45 USD, -0.0 R, PF 0.99 |
+| **US sleeve total** | **189 tr, +3,317.21 USD, +11.1 R, PF 1.34**; per-trade t 1.53 | **189 tr, +3,368.15 USD, +11.2 R, PF 1.35**; per-trade t 1.67 |
+
+- **V1 traded exactly as the original:** 189 of 189 same entries and exits, 0 aborted entries.
+- **Version: V2** (+11.2 R >= 0.9 x V1 = +9.9 R).
+- **WS30 was +1.9 R at a fixed lot and about flat at volatility sizing** (V1): its gains came from high-volatility weeks,
+  which risk sizing trades smaller.
+
+**The weekly evidence is weak.**
+- Trades in the same week move together: in 52 of 59 multi-index weeks all indices won or all lost.
+- The account-relevant measure is each week's sum (each index risks 0.3%): V2 averages +0.116 R a week over 97 weeks,
+  **t 1.14**.
+- The per-week mean is +0.027 R (t 0.55), because weeks where all three indices trigger earn more per trade than
+  single-trigger weeks.
+- So at volatility sizing the sleeve's edge is weaker than the fixed-lot result (basket t 1.88) suggested.
+
+**Live-set joint** (V2, 2022-01..2026-10, P(pass both) at 0.3% / 0.5%, seeds 1-3):
+| set | P(pass both) | p95 MC DD 0.3 / 0.5 | max-loss breach @0.5% |
+|---|---|---|---|
+| live (gold 4-EA + DonchianTrend + Monday GBPJPY) | 97.3/89.4, 96.9/89.1, 97.3/89.3 | 10.2% / 16.5% | 5.9% |
+| live + US sleeve | 97.1/88.9, 97.3/89.8, 97.2/89.1 | 10.1% / 16.4% | 6.1% |
+| live + sleeve, half edge | 97.0/88.5, 97.2/89.6, 97.1/88.9 | | 6.3% |
+| live + sleeve, zero edge | 96.9/88.3, 97.1/89.4, 97.0/88.7 | | 6.5% |
+
+- **Sleeve, 2022-26:** 114 trades, +8.5 R, PF 1.46.
+- **Independence:** daily R correlation with the live set -0.029. The most positions open at once stays at 9 (2.7% at
+  0.3%), and the worst closed-trade day is unchanged (-8.13 R, 2024-10-08).
+- **2025-26:** live 99.6-99.7 / 96.1-96.4; with the sleeve 99.7-99.8 / 96.3-96.6.
+
+**Decision check fails** (seed 1: 97.1 < 97.3; seed 3: 97.2 < 97.3). **Exposure check passes.** **Not a candidate: the
+sleeve stays off the live account.**
+- Its effect on the pass rate is noise: -0.2 to +0.4 points at 0.3%. The live set is already near the ceiling (about
+  97%), and the sleeve adds about 1.8 R a year.
+- On the hypothesis: P0 passed and V1 kept all 189 trades, as forecast. V2 kept 100% of V1's R, the top of the
+  forecast range. Correlation was as low as forecast, but the forecast gain of +0.5-1.5 points did not appear.
+
+**Removal (user rule).** Removed `mql5/Monday_Dip_EA.mq5` (v1.03), its `scripts/ea_profiles.py` entry, and the MT5 .mq5,
+.ex5, compile log and tester .set. v1.02 is in git at d98e357, v1.03 at 0b5dd70.
