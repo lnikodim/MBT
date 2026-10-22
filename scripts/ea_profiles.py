@@ -156,13 +156,6 @@ PROFILES = {
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpSpreadWaitMin": "0", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
     },
-    # ORB_EA v1.00 compiled defaults (Zarattini/Barbon/Aziz 2024 base ORB on forex: New York 09:30 open, 5-min range,
-    # stop 0.10 x D1 ATR(14), close 23:50 server, spread cap 3 pips, server clock UTC+2 with US DST)
-    "ORB_EA": dict(_CORE_DEFAULTS, **{
-        "InpMagic": "261021", "InpComment": "ORB", "InpTimeframe": "5", "InpMaxSpreadPoints": "30", "InpSpreadWaitMin": "0",
-        "InpSession": "1", "InpStopATR": "0.10", "InpATRPeriod": "14", "InpEodHour": "23", "InpEodMinute": "50",
-        "InpSrvStdOffsetHours": "2", "InpSrvDstRule": "2",
-    }),
     # RSI8020_EA v1.00 compiled defaults (TradingStrategyGuides RSI 80-20: RSI 8 at 80/20, 50-bar low/high extreme,
     # divergence, close beyond A, swing stop + 0.1 ATR, 3R; spec 2026-10-18-rsi8020-prereg.md)
     "RSI8020_EA": dict(_CORE_DEFAULTS, **{

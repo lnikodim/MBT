@@ -77,3 +77,7 @@ User: "leave this experiment, it seems that leaves to a deadend". Done: EURUSD a
   71% at 1% risk, the only Gate A pass. Not followed up (no plateau, prop_mc or joint check) because the batch was stopped.
 **Closed: the base ORB on the forex majors is left as a dead end.** Run outputs and the batch script were deleted at the
 user's request ("remove all leftovers"); the EA and this record stay.
+
+**Removal (2026-10-22, user rule "when we decide that an EA is failing, always remove the leftovers").** Removed
+`mql5/ORB_EA.mq5`, its `scripts/ea_profiles.py` entry and test reference, and the MT5 .mq5, .ex5 and tester .set (no
+chart had it). The file stays in git at 099082a.
