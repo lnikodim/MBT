@@ -141,14 +141,6 @@ PROFILES = {
         "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
     },
-    # JPN225_Quiet_Drift_EA (mql5.com code 78027, Jpn225_quietdrift.mq5 v1.01, "Orangutang Trading", unchanged; renamed per
-    # the naming convention). Nikkei M15 long only: z-score(34) > 0.5, MACD hist / ATR < 0.2, tick volume < 60% of the same
-    # time of day; signal bars 11:00-14:59 server, 4 ATR stop, 3.5 ATR target, flat 17:00. Standalone: trades from the report.
-    "JPN225_Quiet_Drift_EA": {
-        "InpAllowTrading": "true", "InpLots": "0.01", "InpZScoreMin": "0.5", "InpMacdMax": "0.2", "InpRelVolumeMax": "0.6",
-        "InpSignalHourStart": "11", "InpSignalHourEnd": "14", "InpDayMask": "31", "InpStopATR": "4.0", "InpTargetATR": "3.5",
-        "InpMaxHoldBars": "50", "InpFlatHour": "17", "InpMaxSpreadPts": "0", "InpMagic": "602674",
-    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

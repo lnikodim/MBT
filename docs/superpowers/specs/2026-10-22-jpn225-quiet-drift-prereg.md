@@ -73,3 +73,31 @@ volume there is modelled, not Darwinex's real count. So a modelling check comes 
 - **M0 fails:** out-of-sample inconclusive. Not a candidate, since there is no testable out-of-sample evidence on this
   broker. The user decides whether to look for older Nikkei ticks elsewhere.
 - **Otherwise:** closed, and leftovers are removed (user rule).
+
+## Outcome (2026-10-22; log `reports/jpn225/base.log`)
+| run, 1.0 lot (100k) | trades | net USD | net R | PF (R) | mean R (t) | exits time / target / stop | history quality |
+|---|---|---|---|---|---|---|---|
+| M0 real ticks 2023-04..2026-10 | 262 | +3,244.01 | +21.8 | 1.35 | +0.083 (+2.08) | 171 / 59 / 32 | 100% |
+| M0 M1-generated, same window | 262 | +3,392.39 | +22.7 | 1.36 | +0.087 (+2.18) | 172 / 60 / 30 | 99% |
+| S0 2022-01..2023-04, generated | 111 | +954.55 | +7.4 | 1.27 | +0.066 (+1.04) | 63 / 26 / 22 | 99% |
+| **S0 2022-26 combined** | **373** | **+4,198.56** | **+29.2** | **1.32** | **+0.078 (+2.31)** | | |
+| **S1 2019-01..2022-01, generated** | **323** | **-1,620.57** | **-21.5** | **0.74** | **-0.066 (-2.15)** | 245 / 36 / 42 | 99% |
+
+- **M0: pass.** 100% of the real-tick entries matched within 15 minutes, with 262 trades each, so the generated-tick
+  years are valid for this EA.
+- **Gate A: pass.** 2022-24 +22.8 R, 2025-26 +6.4 R.
+- **S0 by year:** 2022 +0.8 R (+388.82 USD), 2023 +12.2 R (+883.14), 2024 +9.7 R (+1,294.83), 2025 +1.0 R (+85.80),
+  2026 +5.4 R (+1,545.97). Below the author's PF 1.68 but positive.
+- **S1 by year:** 2019 -11.2 R (-576.01 USD), 2020 -3.2 R (-3.66), 2021 -7.0 R (-1,040.90).
+- 0 order failures in all runs.
+
+**Decision: not a candidate.** The out-of-sample check fails: the strategy loses significantly before the author's
+window (t -2.15, every year negative). On the hypothesis:
+- M0 was forecast to fail; it passed.
+- S0's PF of 1.32 was inside the 1.2-1.6 forecast.
+- S1 failed as forecast, and worse (PF 0.74).
+
+This is the same pattern as Stoch_Daily_Breakout_EA: the automated search fits its own window and reverses before it.
+
+**Removal (user rule).** Removed `mql5/JPN225_Quiet_Drift_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5 .mq5,
+.ex5, compile log and tester .set (no chart had it). The file stays in git at 8d75eba.
