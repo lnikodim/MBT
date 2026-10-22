@@ -220,3 +220,15 @@ single-EA run compounds to about 15x the initial $100k, so a $3,000 dip below th
   to the high balance is an option to decide before the funded stage. It is not in scope here.
 
 **Phase 2: pass.** The throttle code is neutral when off and sizes exactly as specified when on.
+
+## Phase 3a: the IC Markets cross-check (pre-registered 2026-10-22, before its run)
+The phase 1 comparison is rerun with the four gold EAs' IC Markets logs (spec 2026-10-18-icmarkets-4ea:
+`icm_macd/donch/rsi/mach_2026101 8_*_trades.csv`, builds v1.45 / 1.01 / 1.20 / 1.01, 1% risk). IC data is generated
+ticks for 2022-25 and real ticks for 2026. Donchian_Trend and Monday GBPJPY have no IC logs, so they keep their
+Darwinex logs.
+- **Configurations:** B03, B05 and L2 throttle 3%.
+- **Windows and model:** train, holdout and full; FTMO 2-Step $50k rules as in phase 1; seeds 1-3.
+
+**Pass (full window):** the throttle beats B05 in P(pass both) on all 3 seeds, its mean is within 1 point of B03's, and
+its max-loss breach rate is at or below B05's. The closed-trade history (total, max DD, worst day) is reported.
+**If it fails,** the IC data does not support the throttle, and the live settings stay at 0.3% (B03).
