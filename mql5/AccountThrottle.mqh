@@ -12,8 +12,12 @@
 #ifndef ACCOUNT_THROTTLE_MQH
 #define ACCOUNT_THROTTLE_MQH
 
+#ifndef ACCOUNT_THROTTLE_DD_PCT
+#define ACCOUNT_THROTTLE_DD_PCT 0.0     // an EA may #define a different compiled default before including
+#endif
+
 input group "=== Account drawdown throttle ==="
-input double InpThrottleDDPct  = 0.0;   // Cut risk when closed P/L is this % of the initial deposit below its high (0 = off)
+input double InpThrottleDDPct  = ACCOUNT_THROTTLE_DD_PCT;   // Cut risk when closed P/L is this % of the initial deposit below its high (0 = off)
 input double InpThrottleFactor = 0.5;   // Risk multiplier while the account is in that drawdown
 
 double ThrottleFactor()

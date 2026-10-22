@@ -8,8 +8,9 @@
 //|  cross, or fast/slow SMA cross against the position, or R x stop |
 //|  target. Protective stop k x ATR in every mode. One position at a|
 //|  time. Execution, guards and trade log from EACore.mqh.          |
-//|  v1.03: account drawdown throttle via EACore (off by default);   |
-//|        logic same.                                               |
+//|  v1.03: account drawdown throttle via EACore;                    |
+//|        live defaults = FTMO 2-Step: 0.5% risk, daily stop 3%,    |
+//|        throttle 3%; logic same.                                  |
 //|  v1.02: pullback state rebuilt on every init (a failed rebuild    |
 //|        retries next tick) + EACore 2026-10-18 fixes; logic same. |
 //|  v1.01 defaults: H1, PULLBACK entry, CHANNEL exit, long-only     |
@@ -27,6 +28,9 @@
 #define EA_COMMENT "MA_CH"
 #define EA_TIMEFRAME PERIOD_H1
 #define EA_SPREAD_WAIT_MIN 0   // a target is R x stop from the signal price: a retried entry would break that ratio
+#define EA_RISK_VALUE 0.5             // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#define EA_DAILY_LOSS_PCT 3.0
+#define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"
 
 enum ENUM_ENTRY_MODE { ENTRY_BREAKOUT = 0,  // Signal line crosses the channel

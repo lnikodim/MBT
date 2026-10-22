@@ -6,8 +6,9 @@
 //|  mirrored). Stop k x ATR, target R x stop, one break-even step,  |
 //|  no trailing, one position at a time, opposite signals ignored.  |
 //|  Execution, guards and trade log from EACore.mqh.                |
-//|  v1.03: account drawdown throttle via EACore (off by default);   |
-//|        logic same.                                               |
+//|  v1.03: account drawdown throttle via EACore;                    |
+//|        live defaults = FTMO 2-Step: 0.5% risk, daily stop 3%,    |
+//|        throttle 3%; logic same.                                  |
 //|  v1.02: EACore 2026-10-18 fixes (session-aware bars, late-signal |
 //|        guard, close retry, daily-stop latch, log); logic same.   |
 //|  v1.01 defaults: H4, N 20, 2 x ATR(20), 2R, long-only, BE off    |
@@ -25,6 +26,9 @@
 #define EA_COMMENT "DONCH"
 #define EA_TIMEFRAME PERIOD_H4   // v1.01 defaults = the published, Gate-A-passing cell (spec 2026-10-13 amendment 1)
 #define EA_SPREAD_WAIT_MIN 0   // the target is R x stop from the signal price: a retried entry would break that ratio
+#define EA_RISK_VALUE 0.5             // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#define EA_DAILY_LOSS_PCT 3.0
+#define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"
 
 input group "=== Strategy ==="

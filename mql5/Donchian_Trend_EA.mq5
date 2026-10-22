@@ -2,8 +2,8 @@
 //| MajorFX_DonchianTrend_EA.mq5                                     |
 //| Research baseline: Donchian breakout + EMA trend + ADX + ATR risk  |
 //| Intended for local MT5 Strategy Tester experiments.               |
-//| MBT v1.02: account drawdown throttle (AccountThrottle.mqh, off by|
-//| default; spec 2026-10-22-dd-reduction); logic same.              |
+//| MBT v1.02: account drawdown throttle (AccountThrottle.mqh); live |
+//| defaults = FTMO 2-Step: 0.5% risk, throttle 3%; logic same.      |
 //+------------------------------------------------------------------+
 #property copyright "OpenAI"
 #property version   "1.02"
@@ -11,6 +11,7 @@
 #property description "Designed as a backtest baseline, not a claim of profitability."
 
 #include <Trade/Trade.mqh>
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
 #include "AccountThrottle.mqh"
 
 CTrade trade;
@@ -34,7 +35,7 @@ input group "03. Stop loss, target and risk"
 input int             InpATRPeriod        = 14;       // ATR period
 input double          InpATRStopMultiplier = 1.5;     // Stop distance = ATR x multiplier
 input double          InpRewardRiskRatio  = 1.5;      // TP distance / SL distance
-input double          InpRiskPercent      = 0.3;      // Equity risk per trade in percent
+input double          InpRiskPercent      = 0.5;      // Equity risk per trade in percent
 input bool            InpSkipIfMinLotTooRisky = true; // Skip if minimum volume exceeds target risk
 
 input group "04. Execution and safety"

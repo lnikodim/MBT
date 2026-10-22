@@ -3,8 +3,9 @@
 //|  MACD line / signal line crossover Expert Advisor                |
 //|  Designed for XAUUSD, works on any symbol.                       |
 //|                                                                  |
-//|  v1.47: account drawdown throttle (AccountThrottle.mqh, off by   |
-//|        default; spec 2026-10-22-dd-reduction); logic same.       |
+//|  v1.47: account drawdown throttle (AccountThrottle.mqh, spec     |
+//|        2026-10-22-dd-reduction); live defaults = FTMO 2-Step:    |
+//|        0.5% risk, daily stop 3%, throttle 3%; logic same.        |
 //|  v1.46                                                           |
 //|  Changelog 1.46 (correctness, signal/exit logic unchanged; spec  |
 //|  2026-10-18-eacore-correctness-prereg.md): a bar is processed   |
@@ -70,6 +71,7 @@
 
 #include <Trade\Trade.mqh>
 #include <Trade\SymbolInfo.mqh>
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
 #include "AccountThrottle.mqh"
 
 //--- enumerations
@@ -117,11 +119,11 @@ input double              InpTrailATRMult    = 4.0;         // Trailing distance
 
 input group "=== Risk ==="
 input ENUM_RISK_MODE      InpRiskMode        = RISK_PERCENT;// Risk mode
-input double              InpRiskValue       = 1.0;         // Risk value (money or %)
+input double              InpRiskValue       = 0.5;         // Risk value (money or %)
 
 input group "=== Safety guards ==="
 input int                 InpSpreadWaitMin   = 30;          // Retry a spread-blocked signal for N minutes (0 = drop it)
-input double              InpDailyLossPct    = 4.0;         // Daily loss stop, % of day-start balance (0 = off)
+input double              InpDailyLossPct    = 3.0;         // Daily loss stop, % of day-start balance (0 = off)
 input double              InpMonthlyLossPct  = 12.0;        // Monthly loss stop, % of month-start balance (0 = off)
 input bool                InpTradeLog        = true;        // Write closed trades to a CSV in MQL5\Files
 

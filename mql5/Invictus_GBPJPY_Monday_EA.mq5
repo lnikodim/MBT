@@ -11,7 +11,8 @@
 //|  Execution only. No panel, no statistics.                        |
 //|  MBT v1.31: live defaults (spread guard 3.0 pips, InpDemoOnly    |
 //|  false) and lots sized per $1,000 of balance (InpLotsPer1k).     |
-//|  MBT v1.32: account drawdown throttle (AccountThrottle.mqh, off). |
+//|  MBT v1.32: account drawdown throttle; live defaults = FTMO 2-Step:|
+//|  0.010 lot per $1,000 (0.5x the author's sizing), throttle 3%.    |
 //+------------------------------------------------------------------+
 //
 //  WHICH CHART
@@ -77,13 +78,14 @@
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
 #include "AccountThrottle.mqh"
 
 //======================================================================================
 //  SIZE
 //======================================================================================
 input double InpLots             = 0.05;   // Fixed lot size, used when InpLotsPer1k = 0
-input double InpLotsPer1k        = 0.006;  // Lots per $1,000 of balance at entry (0 = fixed InpLots)
+input double InpLotsPer1k        = 0.010;  // Lots per $1,000 of balance at entry (0 = fixed InpLots)
 
 //======================================================================================
 //  THE WINDOW -- SERVER time. Defaults assume a GMT+3 summer / GMT+2 winter server,

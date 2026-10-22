@@ -32,6 +32,9 @@
 #ifndef EA_SPREAD_WAIT_MIN
 #define EA_SPREAD_WAIT_MIN 30          // an EA may #define a different compiled default before including
 #endif
+#ifndef EA_RISK_VALUE
+#define EA_RISK_VALUE 1.0              // an EA may #define a different compiled default before including
+#endif
 #ifndef EA_DAILY_LOSS_PCT
 #define EA_DAILY_LOSS_PCT 4.0          // an EA may #define a different compiled default before including
 #endif
@@ -54,7 +57,7 @@ input int                 InpMaxSpreadPoints = EA_MAX_SPREAD_POINTS; // Max spre
 
 input group "=== Risk ==="
 input ENUM_RISK_MODE      InpRiskMode        = RISK_PERCENT;// Risk mode
-input double              InpRiskValue       = 1.0;         // Risk value (money or %)
+input double              InpRiskValue       = EA_RISK_VALUE; // Risk value (money or %)
 
 input group "=== Safety guards ==="
 input int                 InpSpreadWaitMin   = EA_SPREAD_WAIT_MIN; // Retry a spread-blocked signal for N minutes (0 = drop it)

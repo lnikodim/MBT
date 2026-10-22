@@ -270,3 +270,17 @@ User: "use -3% daily stop".
   1.02 and Invictus Monday 1.32. They are compiled in the Mac terminal's Advisors folder (sources match the repo by MD5).
 - **Day boundary:** the EA daily stops reset at 00:00 server; FTMO resets at 00:00 CE(S)T, which is 01:00 server.
 - Donchian_Trend and Monday GBPJPY have no daily stop input.
+
+**Compiled defaults = the FTMO settings** (user: "yes, do that"), so attaching an EA without its `.set` can never take
+more risk than intended:
+- **Gold EAs:** risk 0.5, daily stop 3.0, throttle 3.0 / 0.5 (the EACore EAs through `EA_RISK_VALUE`,
+  `EA_DAILY_LOSS_PCT` and `ACCOUNT_THROTTLE_DD_PCT` defines).
+- **Donchian_Trend:** `InpRiskPercent` 0.5. **Monday GBPJPY:** `InpLotsPer1k` 0.010. Both throttle 3%.
+- **Darwinex Zero:** a missing `.set` there is only more conservative (throttle on, -3% stop).
+- **Other EACore EAs** keep 1% / -4% / off. The tester profiles pass the research values explicitly.
+
+Check: Donchian_Breakout re-run through the tester profile with the new build matches its throttle-off run deal for
+deal (314 / 314, net +68,512.14), and ORB_EA (an EACore research EA) compiles clean.
+
+| new `.ex5` MD5 (first 8) | MACD_Cross 7792ae3e | Donchian_Breakout 85e130bf | RSI_Reversal 91777698 | MA_Channel 0e94ae4f | Donchian_Trend 9644d390 | Invictus 1.32 be68eff8 |
+|---|---|---|---|---|---|---|
