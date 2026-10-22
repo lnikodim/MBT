@@ -142,3 +142,30 @@ be modest. The chance the check passes is about 30%.
 - **The check passes:** "US index sleeve" (NDX, WS30, SP500) becomes a candidate. Volatility-based sizing, then the
   live-set joint, are pre-registered next.
 - **Otherwise:** closed, and leftovers are removed (user rule) unless the user decides otherwise.
+
+### SP500 outcome (2026-10-22; log `reports/mondip/sp500.log`)
+| SP500, configuration A | trades | PF (R) | mean R (t) | history quality |
+|---|---|---|---|---|
+| 2019-01..2023-04, M1-generated ticks | 40 | 2.23 | +0.062 (+1.68) | 99% |
+| 2023-04..2026-10, real ticks | 21 | 1.39 | +0.014 (+0.55) | 100% |
+| **combined 2019-01..2026-10** | **61** | **2.00** | **+0.045 (+1.76)** | |
+
+- **By year (R):** 2019 +0.2, 2020 +1.4, 2021 -0.3, 2022 +1.1, 2023 -0.0, 2024 -0.1, 2025 +0.2, 2026 +0.4.
+- **Execution:** all exits on the Wednesday time exit; 0 overlapping positions; 61 entries in the log.
+
+**Confirmation check: pass** (net +2.8 R > 0, PF 2.00 >= 1.05, t 1.76 >= 1.65). **US index sleeve (NDX, WS30, SP500)
+is a candidate under the rule.**
+- **Reported:** the US basket over 2019-26 has 189 trades, PF 1.93, 97 weeks, mean +0.0381 R per week, t +1.88.
+- **Hypothesis:** positive as forecast; the pass beat the 30% estimate.
+
+**Limits:**
+- **A narrow pass.** t is 1.76 against a 1.65 bar.
+- **Most of the evidence is generated-tick years.** The real-tick span (2023-26, 21 trades) is weak on its own:
+  +0.014 R, t 0.55.
+- **SP500, NDX and WS30 move together.** SP500 confirms on a different symbol, not a different market.
+- **A small sleeve:** about 25 basket weeks a year.
+
+**Next, pre-registered separately before any live use:**
+1. Volatility-based sizing (R at the 10% stop is about 0.45% of price per trade, which is tiny at 0.3% risk).
+2. The live-set joint (gold 4-EA + DonchianTrend + Monday GBPJPY + the US sleeve).
+3. An IC Markets check of the US index symbols.
