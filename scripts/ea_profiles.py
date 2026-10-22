@@ -141,18 +141,6 @@ PROFILES = {
         "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
     },
-    # Crabel_ORB_EA (mql5.com code 78259, Crabel_ORB_Gold.mq5 v1.06 by P. Nambala, unchanged; renamed per the naming
-    # convention). Toby Crabel (1990) opening range breakout: buy/sell stops at the session open +/- the stretch, stop = the
-    # opposite level, NR4/NR7/IDnr4/3-bar NR day filters or none (control), % risk, flat N minutes after the start.
-    # Compiled defaults (gold, GMT+0 server); the GDAXI test sets the server zone, exit and magic (spec 2026-10-22-crabel-orb).
-    "Crabel_ORB_EA": {
-        "InpSessionMode": "0", "InpServerTimeZone": "0", "InpServerFixedOffset": "2", "InpStartHour": "8", "InpStartMinute": "0",
-        "InpEntryWindowMinutes": "180", "InpExitAfterMinutes": "780", "InpOffsetMode": "0", "InpStretchLookback": "10",
-        "InpAtrPeriod": "14", "InpAtrMultiple": "0.25", "InpDayFilter": "0", "InpWideSkip": "0", "InpTakeProfitMultiple": "0.0",
-        "InpRiskPercent": "0.5", "InpDailyLossPercent": "3.0", "InpMaxTradesPerSession": "1", "InpAllowMinLot": "false",
-        "InpMaxRiskAtMinLot": "1.5", "InpMagic": "260101", "InpMaxSpreadPctOffset": "10.0", "InpSpreadCapPoints": "0",
-        "InpSkipFriday": "false", "InpDrawLevels": "true",
-    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

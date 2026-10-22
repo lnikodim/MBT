@@ -67,3 +67,42 @@ That is 12 runs.
 - **The pick passes the holdout check:** a candidate. The live-set joint, then an IC Markets check, are pre-registered
   before any deployment.
 - **Otherwise:** closed, and leftovers are removed (user rule).
+
+## Outcome (2026-10-22; history quality 99% train / 100% holdout; session start 10:00 server in every run; log `reports/crabel/base.log`)
+| day filter | train 2019-21: trades, PF (R), mean R (t) | holdout 2022-26: trades, PF (R), mean R (t) |
+|---|---|---|
+| none (control) | 669, 1.15, +0.078 (+1.36) | 1,073, 1.03, +0.018 (+0.44) |
+| NR4 | 162, 0.86, -0.071 (-0.77) | 275, 0.92, -0.043 (-0.53) |
+| NR7 | 99, 0.51, -0.250 (-2.87) | 160, 0.99, -0.008 (-0.07) |
+| inside day + NR4 | 50, 0.48, -0.312 (-2.20) | 68, 0.87, -0.069 (-0.40) |
+| 3-bar NR | 48, 0.76, -0.125 (-0.73) | 80, 1.15, +0.073 (+0.50) |
+| any | 198, 0.85, -0.074 (-0.87) | 329, 0.90, -0.055 (-0.76) |
+
+**Train pick: the control** (the only filter with t > 0 and >= 60 trades). **Holdout check fails:**
+- Gate A fails: R -0.9 in 2022-24 and +20.0 in 2025-26 (PF 1.03, 1,073 trades).
+- t +0.44 < 1.65.
+
+**Crabel's hypothesis fails on the DAX.** Every contraction filter is below the control in train. In the holdout only
+3-bar NR is above it, on 80 trades with t 0.50. NR7 and IDnr4 are significantly negative in train.
+
+**Code checks:**
+- Stops average -1.01 to -1.02 R, so the R check holds.
+- No overlapping positions, 0 order failures, 0 "breakout already happened", 0-5 spread skips.
+
+**Holds over 14 hours: the DST gap weeks.**
+- There were 13 in train and 18 in the holdout, all in mid-March and late October to early November, when the US
+  and EU clocks differ.
+- In those weeks the session starts at 11:00 server, so the 770-minute exit falls at 23:50, after GDAXI's 23:00
+  close. With no tick there, the position runs for days, until its stop or a later normal-week exit (for example
+  2023-03-13 to 2023-03-27).
+- Those trades sum to +9.1 R (train) and +14.3 R (holdout). Without them the control's holdout is +4.8 R over about
+  1,055 trades, so its small positive holdout comes mostly from these unintended multi-day holds.
+- The review's fix (770 min) covered normal weeks but not the gap weeks. A live version would need an exit at a fixed
+  server time (22:50), or the session table's end, as the GER40 EA does.
+
+**Decision: closed** (rule: the train pick fails the holdout check). On the hypothesis: the control's PF of 1.03-1.15
+was as forecast. The filters did not add mean R; they lowered it, which is against the forecast. The pick was the
+control, not NR4 or "any". The holdout failed as forecast.
+
+**Removal (user rule).** Removed `mql5/Crabel_ORB_EA.mq5`, its `scripts/ea_profiles.py` entry, and the MT5 .mq5, .ex5,
+compile log and tester .set (no chart had it). The file stays in git at 95742e9.
