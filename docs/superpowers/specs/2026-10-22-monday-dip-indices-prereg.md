@@ -63,3 +63,82 @@ weaker.
 - **Both checks pass:** a candidate. Sizing to a volatility-based risk unit (R at a 10% stop is tiny), then the
   live-set joint, are pre-registered next.
 - **Otherwise:** closed, and leftovers are removed (user rule).
+
+## Outcome (2026-10-22; history quality 99% in all 10 runs; log `reports/mondip/base.log`)
+**Configuration A (as written), per index, 2019-01..2026-10** (R = return / 10% stop, so +0.066 R = +0.66% per trade):
+| index | trades | PF (R) | mean R (t) | R 2019-21 / 2022-26 |
+|---|---|---|---|---|
+| NDX | 61 | 2.33 | +0.066 (+2.53) | +0.83 / +3.17 |
+| WS30 | 67 | 1.53 | +0.028 (+1.04) | +1.18 / +0.69 |
+| GDAXI | 74 | 0.77 | -0.017 (-0.79) | -1.08 / -0.17 |
+| UK100 | 68 | 0.84 | -0.007 (-0.54) | -0.11 / -0.39 |
+| STOXX50E | 83 | 0.96 | -0.002 (-0.13) | -0.01 / -0.16 |
+
+**Baskets** (t on basket weeks):
+| | 2019-21 | 2022-26 |
+|---|---|---|
+| A (IBS <= 0.25) | 137 trades, PF 1.09, +0.80 R, 54 weeks, t +0.87; US PF 1.73 (51), EU PF 0.81 (86) | 216 trades, PF 1.30, +3.14 R, 100 weeks, t +1.48; US PF 2.03 (77), EU PF 0.89 (139) |
+| B (no IBS) | 313 trades, PF 1.09, +1.71 R, t +0.76; US PF 1.50, EU PF 0.88 | 499 trades, PF 1.10, +2.65 R, t +0.96; US PF 1.25, EU PF 1.00 |
+
+- **Gate A passes:** 216 trades, PF 1.30, +0.43 R in 2022-24 and +2.71 R in 2025-26.
+- **The earlier-window check fails:** 2019-21 basket t +0.87 < 1.65 (net > 0 and PF 1.09 >= 1.05 pass).
+- **Code checks:** every trade exited on the Wednesday time exit (no stop exits), with a 2-day median hold. There were
+  0 rejected, 0 abandoned and 0 stop-attach problems, and 0-2 holds over 4 days per run (holiday weeks).
+- **Costs:** spread, commission and swap are small next to the US gross edge. They exceed the EU gross P/L, which is
+  near zero.
+
+**Decision: closed** (rule: the 2019-21 check fails). On the hypothesis:
+- the basket PF was 1.09-1.30, inside or near the low end of 1.1-1.4;
+- US was stronger than EU, as forecast;
+- the 2019-21 t was below the 1.0-2.0 forecast;
+- B made more trades at a lower mean R, as forecast.
+
+**Reported, not decided:**
+- **The US indices hold it.** NDX is positive in both windows (t 2.53 over 61 trades), and WS30 is positive in both but
+  not significant. The European indices are flat to negative throughout.
+- **A US-only version was chosen after seeing this data,** so it is not evidence. To test it, pre-register it
+  separately on a symbol this run did not use: SP500 (no Darwinex ticks before 2019, so its later years only), or US
+  index data before 2019 from another broker.
+- **It would be a small sleeve:** about 8 trades a year per US index. It needs volatility-based sizing (a 10% stop makes
+  R tiny) before it could matter in the live set.
+
+**Kept (user decision).** The removal was stopped. User: "keep it and test US-only on SP500". The EA, its profile and
+the MT5 files stay for the follow-up pre-registered below.
+
+## Follow-up: US-only on SP500 (pre-registered 2026-10-22, before its runs)
+The US-only idea came from this run's data (NDX and WS30 positive, EU not), so this run cannot confirm it. SP500 was
+not used here, so a SP500 run is out of sample for the idea. The S&P is also the index the weak-Monday literature is
+about.
+
+**Data** (2-week probes, history quality only):
+- **Real ticks:** 0% in every fortnight to 2023-03-15, 25% for 2023-03-15..31, and 100% from 2023-04 (also 2023-07,
+  2023-10, 2024-01, 2025-01).
+- **M1-generated ticks:** 100% in 2019-01, 2021-01 and 2023-01, so SP500 M1 bars go back to at least 2019.
+- **Disclosure:** the 2023-02-15..03-01 probe happened to contain 1 trade (-67.70 USD). It played no part in the
+  design.
+
+**Amendment, before any SP500 run.** Real ticks alone (2023-04..2026-10) give about 28 trades, too few to detect an
+NDX-sized edge (NDX: t 2.53 on 61 trades). The window is therefore 2019-01..2026-10 in two runs:
+- 2019-01-01..2023-04-01 on M1-generated ticks (`every_tick`);
+- 2023-04-01..2026-10-01 on real ticks.
+
+The trades are combined. For a D1 entry and exit at the session's first tick, generated ticks are adequate; the same
+fallback was used for gold 2012-19 (spec 2026-10-21-gold-breakout) and for IC Markets 2022-25 (spec
+2026-10-18-icmarkets-4ea). Each span is also reported on its own.
+
+**Runs** (`reports/mondip/mondip_eval.py sp500`): configuration A, as written (IBS <= 0.25, MA off, 10% stop, 0.10
+lots), SP500, D1, 100k, 1:100. R as above.
+
+**Confirmation check (fixed now, on the combined 2019-01..2026-10 SP500 trades):** net R > 0, PF >= 1.05, and
+per-trade mean-R t >= 1.65 (one symbol, so trades are independent).
+- Gate A's 150 trades cannot apply to one index trading about 8-12 times a year, so it is not used here.
+- **Reported:** trades, PF, mean R, t, by year; the US basket (NDX, WS30, SP500) over the common window, t on basket
+  weeks; costs.
+
+**Hypothesis:** SP500 behaves like WS30 and NDX, with a positive mean R. With roughly 40-60 trades the t-statistic will
+be modest. The chance the check passes is about 30%.
+
+**Decision rule:**
+- **The check passes:** "US index sleeve" (NDX, WS30, SP500) becomes a candidate. Volatility-based sizing, then the
+  live-set joint, are pre-registered next.
+- **Otherwise:** closed, and leftovers are removed (user rule) unless the user decides otherwise.
