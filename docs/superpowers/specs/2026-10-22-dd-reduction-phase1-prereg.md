@@ -249,3 +249,24 @@ rate. The IC data repeats the Darwinex result: at a 0.5% headline the throttle p
 - **Darwinex Zero:** 0.5% constant, throttle off.
 - **Open question for the user:** the EA daily stop of -4% of closed balance against FTMO's 5% equity limit; the
   historical worst throttled day was -2.53% (IC) and -2.81% (Darwinex).
+
+## Phase 3b: live settings (2026-10-22)
+User: "use -3% daily stop".
+
+`scripts/make_live_sets.py` writes `mql5/sets/<account>/<EA>.set`. Each file is MT5's native format (UTF-16 LE, CRLF,
+`Name=Value||start||step||stop||N`), built from the inputs of each EA's validated run plus the account overrides:
+
+| setting | `ftmo_2step_50k/` | `darwinex_zero/` |
+|---|---|---|
+| Gold EAs `InpRiskValue` (percent mode) | 0.5 | 0.5 |
+| Gold EAs `InpDailyLossPct` / `InpMonthlyLossPct` | **3.0** / 12.0 | 4.0 / 12.0 |
+| Donchian_Trend `InpRiskPercent` | 0.5 | 0.5 |
+| Monday GBPJPY `InpLotsPer1k` | 0.010 | 0.010 |
+| `InpThrottleDDPct` / `InpThrottleFactor` (all six) | **3.0** / 0.5 | 0.0 (off) / 0.5 |
+| `InpTradeLog` / `InpLogEveryBar` (gold EAs) | true / true | true / true |
+
+- Magic numbers are unchanged: 240817, 261015, 261004, 261016, 20261020, 770531.
+- **Builds to deploy:** MACD_Cross 1.47, Donchian_Breakout 1.03, RSI_Reversal 1.22, MA_Channel 1.03, Donchian_Trend
+  1.02 and Invictus Monday 1.32. They are compiled in the Mac terminal's Advisors folder (sources match the repo by MD5).
+- **Day boundary:** the EA daily stops reset at 00:00 server; FTMO resets at 00:00 CE(S)T, which is 01:00 server.
+- Donchian_Trend and Monday GBPJPY have no daily stop input.
