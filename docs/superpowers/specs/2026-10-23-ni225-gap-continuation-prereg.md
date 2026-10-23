@@ -61,3 +61,35 @@ stop| x volume x value per point), with the stop from the Orders table.
   the author's 501 trades in 9 years. 2022-26 should give about 200-280.
 - **Edge:** gap continuation on index opens is a known effect. PF 1.15-1.40 on our data, below the author's 1.50.
 - **Most likely verdict:** Gate A passes, and the neighbour check is the main risk.
+
+## Outcome (2026-10-23; log `reports/ni225gap/base.log`): **candidate**
+| run (NI225 M5, 100k, defaults = 0.5% risk) | net USD | PF | max DD | trades | win | net R | mean R (t) | R by year |
+|---|---|---|---|---|---|---|---|---|
+| M0r real ticks 2023-04..2026-10, hq 100% | +11,918.82 | 1.38 | 2.9% | 154 | 60.2% | +27.0 | +0.175 (+1.99) | 23 +3.1, 24 +10.9, 25 +15.6, 26 -2.7 |
+| M0g generated 2023-04..2026-10, hq 99% | +10,751.79 | 1.33 | 3.7% | 156 | 60.2% | +26.2 | +0.168 (+1.92) | 23 +2.6, 24 +11.0, 25 +14.1, 26 -1.5 |
+| S0 part 2022-01..2023-04, generated | +3,553.81 | 1.34 | 4.4% | 63 | 55.2% | +4.7 | +0.074 (+0.58) | 22 +5.9, 23 -1.2 |
+| **S0 2022-26** (generated + M0r) | **+15,472.63** | 1.36 (R) | | **217** | | **+31.6** | +0.146 (+2.01) | 22-24 +18.7, 25-26 +13.0 |
+| **S1 2019-21**, generated, hq 99% | **+13,652.84** | 1.83 | 4.3% | 97 | 64.4% | **+27.0** | +0.278 (+2.57) | 19 +3.8, 20 +9.3, 21 +14.0 |
+| N1 gap 0.75%, real ticks 2023-04..2026-10 | +11,109.76 | 1.26 | 3.7% | 210 | 58.0% | +21.2 | +0.101 (+1.35) | |
+| N2 gap 1.25% | +6,055.32 | 1.31 | 3.1% | 92 | 58.9% | +12.1 | +0.132 (+1.19) | |
+| N3 opening range 5 min | +5,048.90 | 1.13 | 3.8% | 170 | 54.8% | +14.5 | +0.085 (+0.99) | |
+| N4 opening range 15 min | +4,992.16 | 1.18 | 3.6% | 147 | 57.8% | +11.4 | +0.078 (+0.95) | |
+
+- **M0 passes:** 153 of 154 real-tick entries are matched by generated ticks within 15 minutes (99%), with 154 vs
+  156 trades. Generated ticks are valid for this EA.
+- **Gate A passes:** 217 trades, PF 1.36 in R, both regimes positive.
+- **S1 consistency passes**, and the overall 2019-2026 t is **3.10** (314 trades, +58.6 R). Seven of eight years are
+  positive; 2026 to date is -2.7 R. Both sides earn: BUY +19.1 R and SELL +12.5 R in 2022-26.
+- **Neighbours pass** (PF 1.13-1.31). The 10-minute range and 1% gap sit on a plateau: a smaller gap or a shorter
+  range adds trades with weaker mean R.
+- **Trade count check:** in M0r, 154 entries in the report = 154 parsed trades (the EA log has 155 entry lines).
+  Exit averages match the rules: full target +1.64 R (40% at 1R + 60% at 2R), break-even +0.38 R.
+- **Expectation check:** PF in R 1.36-1.80 against the expected 1.15-1.40, slightly better. Trades about 46 a year,
+  inside the expected 50-60 a year after allowing for the cancellations.
+- **Caveats:**
+  - Every tested year lies inside the author's 2017-2026 design window.
+  - Years before 2023-04 use generated ticks (validated by M0).
+  - About 46 trades a year at 0.5% is about +3-4% a year on its own.
+- **Deployment note** (user, 2026-10-23): the FTMO broker has no NI225. The EA is a **Darwinex Zero** candidate.
+  Next: a joint simulation with the six live EAs on Darwinex Zero settings, then the Darwinex Zero .set file.
+- **Kept** in the repo as a candidate (`mql5/NI225_Gap_Continuation_EA.mq5`, profile, MT5 copy).
