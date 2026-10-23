@@ -36,7 +36,7 @@ input bool     SendEmail=false;
 input string   TradeLog="MasterMind";
 //---
 int            mm=-1;                        // -1: Fractional lots, 0: Single Lots, 1 :Full lots
-double         Risk=1;
+double         Risk=0.2;                     // MBT amendment 1 (was 1): ~1% of equity per trade, fits a 1:30 margin
 int            Crepeat=0;
 datetime       AlertTime=0;
 long           AheadTradeSec= 0;

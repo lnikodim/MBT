@@ -43,3 +43,15 @@ ticks a different test.
 - **PF:** 0.80-1.00 in R.
 - **Net USD:** a deep loss at 5% compounding sizing.
 - **Most likely verdict:** closed.
+
+## Amendment 1 (2026-10-23, after a run with 0 trades; no trade results seen)
+- **What happened:** the S0 run made **0 trades**. 10,429 of its 10,431 orders were refused `[not enough money]`
+  (one was `[invalid stops]`).
+- **Why:** the hard-coded sizing asks for 33.5 lots on 100k, about $3.8M of EURUSD. Darwinex's EURUSD margin needs
+  more than the whole balance for that, so the effective leverage is under 1:38 (EU retail caps FX majors at 1:30).
+- **Any deposit fails:** the formula scales with equity (about 3.35 lots per $10k), so as written the EA can never
+  trade on Darwinex.
+- **Change:** one constant in `mql5/The_MasterMind_EA.mq5`, `double Risk=1;` -> `double Risk=0.2;`. Lots become
+  ceil(equity x 0.2 / 298) / 10 - 0.1: 6.7 lots on 100k, about 1% of equity at the 15-pip stop (our research size),
+  within 1:30 margin.
+- **Unchanged:** the signal, exits and gates. R per trade does not depend on the size.
