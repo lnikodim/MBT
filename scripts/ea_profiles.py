@@ -8,7 +8,7 @@ v||v||1||v||N. Unknown input names are refused instead of silently ignored.
 import os
 
 BLESSING_STRINGS = {"AlertSound", "DDorLevel", "GridSetArray", "HedgeSymbol", "Holidays", "LabelAcc", "LabelAdv", "LabelBBS", "LabelCCI", "LabelDisplay", "LabelEDD", "LabelEE", "LabelEH", "LabelES", "LabelEST", "LabelEST0", "LabelGS", "LabelGrid", "LabelGridOpt", "LabelHS", "LabelHS0", "LabelIchi", "LabelLS", "LabelMA", "LabelMACD", "LabelOS", "LabelOS0", "LabelOpt", "LabelSG", "LabelSto", "LabelTS", "LabelTST", "LabelUE", "Notes", "SetCountArray", "TP_SetArray", "TradeComment", "Version_3_9_6_23", "displayFont", "eopb", "eopb1", "s1", "s2", "s3"}
-STRING_INPUTS = {"InpComment"} | BLESSING_STRINGS
+STRING_INPUTS = {"InpComment", "g_section_risk", "g_section_trade", "g_section_ind"} | BLESSING_STRINGS   # g_*: EXSR_EA headers
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
 # stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.
@@ -134,7 +134,7 @@ PROFILES = {
         "InpATRPeriod": "14", "InpATRStopMultiplier": "1.5", "InpRewardRiskRatio": "1.5", "InpRiskPercent": "0.3",
         "InpSkipIfMinLotTooRisky": "true", "InpMaxSpreadPoints": "30", "InpDeviationPoints": "10",
         "InpOnePositionPerSymbol": "true", "InpMagicNumber": "20261020", "InpTradeComment": "MajorFX DonchianTrend",
-        "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5",
+        "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5", "InpDailyLossPct": "0.0",   # DailyStop.mqh: off
     },
     # Invictus_GBPJPY_Monday_EA (the user's download InvictusGBPJPYMon.mq5, mql5.com code 77835, v1.30, unchanged; renamed per
     # the naming convention). Buys GBPJPY Monday 11:00 server, closes 23:00 server, no stop. Standalone, no trade log: trades
@@ -144,7 +144,15 @@ PROFILES = {
         "InpLots": "0.05", "InpLotsPer1k": "0.006", "InpEntryHour": "11", "InpEntryMin": "0", "InpExitHour": "23",
         "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
-        "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5",
+        "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5", "InpDailyLossPct": "0.0",   # DailyStop.mqh: off
+    },
+    # EXSR_EA = EXSR_42g.mq5 v1.0 (mql5.com 60413), unchanged; source defaults (spec 2026-10-23-exsr-eurusd-prereg.md):
+    # RSI(14) 20/80 + Bollinger (20, 2) pierce + reversal candle, stop / target 150 / 300 points, 1% equity risk
+    "EXSR_EA": {
+        "g_section_risk": "#### Risk Management ####", "Risk_Percent": "1.0",
+        "g_section_trade": "#### Trade Settings ####", "MagicNumber": "697988", "StopLoss_pips": "150", "TakeProfit_pips": "300",
+        "g_section_ind": "#### Indicator Settings ####", "BB_Period": "20", "BB_Deviation": "2.0", "RSI_Period": "14",
+        "RSI_Overbought": "80.0", "RSI_Oversold": "20.0",
     },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
