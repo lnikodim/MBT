@@ -48,25 +48,25 @@
 #define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"
 
-input group "=== RSI signal ==="
+//--- "5. Strategy" continues from EACore (signal timeframe = RSI timeframe)
 input int              InpRsiPeriod        = 4;            // RSI period
 input double           InpRsiBuyLevel      = 40.0;         // Buy when RSI closes below
 input double           InpRsiSellLevel     = 55.0;         // Sell when RSI closes above
 
-input group "=== Moving average filter ==="
+input group "6. Filters"
 input bool             InpUseMaFilter      = true;         // Use MA filter (buy above MA, sell below)
-input ENUM_TIMEFRAMES  InpMaTimeframe      = PERIOD_H12;   // MA timeframe
-input int              InpMaPeriod         = 250;          // MA period
-input ENUM_MA_METHOD   InpMaMethod         = MODE_SMA;     // MA type
+input ENUM_TIMEFRAMES  InpMaTimeframe      = PERIOD_H12;   // MA filter: timeframe
+input int              InpMaPeriod         = 250;          // MA filter: period
+input ENUM_MA_METHOD   InpMaMethod         = MODE_SMA;     // MA filter: type
 
-input group "=== Exits, % of position open price (0 = off) ==="
-input double           InpStopLossPct      = 1.0;          // Stop loss %
-input double           InpTakeProfitPct    = 5.0;          // Take profit %
-input double           InpBreakEvenPct     = 0.0;          // Move SL after profit of % (0 = off)
-input double           InpBreakEvenLockPct = 0.1;          // Break-even lock-in, % of open price
-input double           InpTrailTriggerPct  = 1.0;          // Trailing stop trigger % (0 = no trailing)
-input double           InpTrailDistancePct = 1.0;          // Trailing stop distance %
-input double           InpTrailStepPct     = 0.05;         // Trailing stop step %
+input group "7. Exits"
+input double           InpStopLossPct      = 1.0;          // Stop loss, % of open price
+input double           InpTakeProfitPct    = 5.0;          // Take profit, % of open price (0 = off)
+input double           InpBreakEvenPct     = 0.0;          // Break-even: start at profit, % (0 = off)
+input double           InpBreakEvenLockPct = 0.1;          // Break-even: lock in profit, %
+input double           InpTrailTriggerPct  = 1.0;          // Trailing stop: start at profit, % (0 = off)
+input double           InpTrailDistancePct = 1.0;          // Trailing stop: distance, %
+input double           InpTrailStepPct     = 0.05;         // Trailing stop: step, %
 
 #define REARM_LEVEL 50.0  // RSI must close beyond this before the same direction trades again
 

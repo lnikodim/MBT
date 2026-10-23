@@ -31,16 +31,21 @@
 #define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"
 
-input group "=== Strategy ==="
-input int             InpChannelBars = 20;         // Channel length N (highest high / lowest low of bars 2..N+1)
-input ENUM_TIMEFRAMES InpTrendTF     = PERIOD_H4;  // Trend filter timeframe
-input int             InpTrendEMA    = 200;        // Trend EMA period on that timeframe (0 = off)
-input bool            InpAllowShort  = false;       // Allow sells
-input int             InpATRPeriod   = 20;         // ATR period (signal timeframe)
-input double          InpStopATR     = 2.0;        // Stop distance, x ATR
-input double          InpTargetR     = 2.0;        // Target, x stop distance (0 = none)
-input double          InpBreakEvenR  = 0.0;        // Break-even trigger, x stop distance (0 = off)
-input double          InpBELockR     = 0.2;        // Break-even lock, x stop distance
+//--- "5. Strategy" continues from EACore (signal timeframe). The channel is the highest high /
+//--- lowest low of bars 2..N+1.
+input int             InpChannelBars = 20;         // Channel length, bars
+input bool            InpAllowShort  = false;      // Allow sells
+
+input group "6. Filters"
+input ENUM_TIMEFRAMES InpTrendTF     = PERIOD_H4;  // Trend filter: timeframe
+input int             InpTrendEMA    = 200;        // Trend filter: EMA period (0 = off)
+
+input group "7. Exits"
+input int             InpATRPeriod   = 20;         // Stop loss: ATR period
+input double          InpStopATR     = 2.0;        // Stop loss: distance, x ATR
+input double          InpTargetR     = 2.0;        // Take profit, x stop distance (0 = off)
+input double          InpBreakEvenR  = 0.0;        // Break-even: start at, x stop distance (0 = off)
+input double          InpBELockR     = 0.2;        // Break-even: lock in, x stop distance
 
 int g_atr = INVALID_HANDLE, g_trend = INVALID_HANDLE;
 

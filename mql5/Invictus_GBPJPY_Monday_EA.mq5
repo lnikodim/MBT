@@ -78,47 +78,45 @@
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
-#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
-#include "AccountThrottle.mqh"
 
 //======================================================================================
-//  SIZE
+//  INPUTS -- groups per docs/ea-inputs.md
 //======================================================================================
-input double InpLots             = 0.05;   // Fixed lot size, used when InpLotsPer1k = 0
-input double InpLotsPer1k        = 0.010;  // Lots per $1,000 of balance at entry (0 = fixed InpLots)
-
-//======================================================================================
-//  THE WINDOW -- SERVER time. Defaults assume a GMT+3 summer / GMT+2 winter server,
-//  where 11:00 -> 23:00 server is 04:00 -> 16:00 New York.
-//======================================================================================
-input int    InpEntryHour        = 11;     // Entry hour, SERVER time (11 = 04:00 New York, tested 09-13)
-input int    InpEntryMin         = 0;      // Entry minute
-input int    InpExitHour         = 23;     // Exit hour, SERVER time (23 = 16:00 New York)
-input int    InpExitMin          = 0;      // Exit minute
-input int    InpEntryGraceMin    = 5;      // Still enter up to this many minutes late
-
-//--- Mon=1 Tue=2 Wed=4 Thu=8 Fri=16, added together. 1 is Monday alone, which is the whole
-//--- trade.
-input int    InpDayMask          = 1;      // Days to trade: 1=Mon only (default) 2=Tue 4=Wed 8=Thu 16=Fri
-
-//======================================================================================
-//  THE TWO GUARDS, and only these two
-//======================================================================================
-//  Spread. A guard against broken quotes, not a tuning parameter. Normal GBPJPY spreads sit
-//  well under 1.5 pips; the filter exists to refuse the rare quote that does not.
-input double InpMaxSpreadPips    = 3.0;    // Skip the trade above this spread, in pips (MBT: 3.0 passes Darwinex/IC normal spreads)
+input group "1. Trade size"
+input double InpLotsPer1k        = 0.010;  // Lots per $1,000 of balance (0 = fixed lots)
+input double InpLots             = 0.05;   // Fixed lots, used when lots per $1,000 = 0
 
 //--- Margin. One check: would opening this position leave the account below this level?
-input double InpMinMarginLevel   = 300.0;  // Do not open if margin level would fall under this
+input group "2. Account protection"
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#include "AccountThrottle.mqh"
+input double InpMinMarginLevel   = 300.0;  // Min margin level after entry, %
+input bool   InpDemoOnly         = false;  // Demo accounts only
 
-//======================================================================================
-//  IDENTITY
-//======================================================================================
-input long   InpMagic            = 770531; // Magic number
-input bool   InpDemoOnly         = false;  // Refuse to start on a live account
-
-input int    InpMaxSlippagePts   = 20;     // Maximum slippage, in points
+//--- Spread. A guard against broken quotes, not a tuning parameter. Normal GBPJPY spreads sit
+//--- well under 1.5 pips; the filter exists to refuse the rare quote that does not.
+//--- MBT: 3.0 passes the normal Darwinex / IC Markets spreads.
+input group "3. Orders"
+input double InpMaxSpreadPips    = 3.0;    // Max spread, pips
+input int    InpMaxSlippagePts   = 20;     // Max slippage, points
 input int    InpMaxRetries       = 3;      // Order attempts before giving up
+
+input group "4. Identity and logs"
+input long   InpMagic            = 770531; // Magic number (unique per EA)
+
+//--- The window is SERVER time. Defaults assume a GMT+3 summer / GMT+2 winter server, where
+//--- 11:00 -> 23:00 server is 04:00 -> 16:00 New York (entry hour tested 09-13).
+//--- Days: Mon=1 Tue=2 Wed=4 Thu=8 Fri=16, added together. 1 is Monday alone, which is the
+//--- whole trade.
+input group "5. Strategy"
+input int    InpDayMask          = 1;      // Trade days: 1 Mon 2 Tue 4 Wed 8 Thu 16 Fri, add up
+input int    InpEntryHour        = 11;     // Entry hour, server time (11 = 04:00 New York)
+input int    InpEntryMin         = 0;      // Entry minute
+input int    InpEntryGraceMin    = 5;      // Late entry allowed, minutes
+
+input group "7. Exits"
+input int    InpExitHour         = 23;     // Exit hour, server time (23 = 16:00 New York)
+input int    InpExitMin          = 0;      // Exit minute
 
 //--- defined in the VALIDATION section at the bottom of the file
 double CheckedVolume(double lots);

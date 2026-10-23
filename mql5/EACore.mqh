@@ -16,12 +16,14 @@
 //|   #define EA_VERSION "1.00"                                      |
 //|   #define EA_MAGIC   240819                                      |
 //|   #define EA_COMMENT "MREV"                                      |
+//| EACore declares input groups 1-4 and opens "5. Strategy" with    |
+//| InpTimeframe; the EA's own inputs follow the include and carry   |
+//| on in group 5 (docs/ea-inputs.md).                               |
 //+------------------------------------------------------------------+
 #property strict
 
 #include <Trade\Trade.mqh>
 #include <Trade\SymbolInfo.mqh>
-#include "AccountThrottle.mqh"
 
 #ifndef EA_TIMEFRAME
 #define EA_TIMEFRAME PERIOD_H1        // an EA may #define a different compiled default before including
@@ -44,29 +46,34 @@
 
 enum ENUM_RISK_MODE
   {
-   RISK_MONEY   = 0,  // Fixed money per trade (account currency)
-   RISK_PERCENT = 1   // Percent of account balance per trade
+   RISK_MONEY   = 0,  // Fixed amount (account currency)
+   RISK_PERCENT = 1   // % of balance
   };
 
-input group "=== General ==="
-input ulong               InpMagic           = EA_MAGIC;    // Magic number
-input ENUM_TIMEFRAMES     InpTimeframe       = EA_TIMEFRAME; // Signal timeframe
+input group "1. Trade size"
+input ENUM_RISK_MODE      InpRiskMode        = RISK_PERCENT;  // Risk type
+input double              InpRiskValue       = EA_RISK_VALUE; // Risk per trade (amount or %)
+
+//--- Daily: account equity at the floor closes this EA's trades, no entries until the next
+//--- server day. Monthly: no new entries for the rest of the month.
+input group "2. Account protection"
+input double              InpDailyLossPct    = EA_DAILY_LOSS_PCT;   // Daily loss limit, % of day start (0 = off)
+input double              InpMonthlyLossPct  = EA_MONTHLY_LOSS_PCT; // Monthly loss limit, % of month start (0 = off)
+#include "AccountThrottle.mqh"
+
+input group "3. Orders"
+input int                 InpMaxSpreadPoints = EA_MAX_SPREAD_POINTS; // Max spread, points (0 = off)
+input int                 InpSpreadWaitMin   = EA_SPREAD_WAIT_MIN;   // Wait for spread to drop, minutes (0 = skip)
+input int                 InpSlippagePoints  = 30;                   // Max slippage, points
+
+input group "4. Identity and logs"
+input ulong               InpMagic           = EA_MAGIC;    // Magic number (unique per EA)
 input string              InpComment         = EA_COMMENT;  // Order comment
-input int                 InpSlippagePoints  = 30;          // Max deviation (points)
-input int                 InpMaxSpreadPoints = EA_MAX_SPREAD_POINTS; // Max spread to trade (points, 0 = off)
+input bool                InpTradeLog        = true;        // Save closed trades to CSV (MQL5\Files)
+input bool                InpLogEveryBar     = true;        // Log a status line every bar
 
-input group "=== Risk ==="
-input ENUM_RISK_MODE      InpRiskMode        = RISK_PERCENT;// Risk mode
-input double              InpRiskValue       = EA_RISK_VALUE; // Risk value (money or %)
-
-input group "=== Safety guards ==="
-input int                 InpSpreadWaitMin   = EA_SPREAD_WAIT_MIN; // Retry a spread-blocked signal for N minutes (0 = drop it)
-input double              InpDailyLossPct    = EA_DAILY_LOSS_PCT;   // Daily loss stop, % of day-start balance (0 = off)
-input double              InpMonthlyLossPct  = EA_MONTHLY_LOSS_PCT; // Monthly loss stop, % of month-start balance (0 = off)
-input bool                InpTradeLog        = true;        // Write closed trades to a CSV in MQL5\Files
-
-input group "=== Diagnostics ==="
-input bool                InpLogEveryBar     = true;        // Log a status line on every new signal bar
+input group "5. Strategy"
+input ENUM_TIMEFRAMES     InpTimeframe       = EA_TIMEFRAME; // Signal timeframe
 
 #define TRADE_LOG_HEADER "close_time,open_time,symbol,side,volume,open_price,close_price,sl,tp,gross,commission,swap,profit,balance,r_multiple,exit_reason,spread_pts,slippage_pts,deal,position,magic\n"
 

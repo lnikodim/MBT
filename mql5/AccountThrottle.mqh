@@ -8,6 +8,9 @@
 //| high, otherwise 1.0. It reads the whole account deal history, so  |
 //| every EA on the account sees the same drawdown. Deposits and      |
 //| withdrawals (balance deals) do not move it. 0 = off.              |
+//|                                                                  |
+//| Include it inside the EA's "2. Account protection" input group   |
+//| (docs/ea-inputs.md): its inputs have no group of their own.       |
 //+------------------------------------------------------------------+
 #ifndef ACCOUNT_THROTTLE_MQH
 #define ACCOUNT_THROTTLE_MQH
@@ -16,9 +19,8 @@
 #define ACCOUNT_THROTTLE_DD_PCT 0.0     // an EA may #define a different compiled default before including
 #endif
 
-input group "=== Account drawdown throttle ==="
-input double InpThrottleDDPct  = ACCOUNT_THROTTLE_DD_PCT;   // Cut risk when closed P/L is this % of the initial deposit below its high (0 = off)
-input double InpThrottleFactor = 0.5;   // Risk multiplier while the account is in that drawdown
+input double InpThrottleDDPct  = ACCOUNT_THROTTLE_DD_PCT;   // Cut risk at drawdown, % of first deposit (0 = off)
+input double InpThrottleFactor = 0.5;   // Risk multiplier while cut (0.5 = half)
 
 double ThrottleFactor()
   {

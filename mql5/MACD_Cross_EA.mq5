@@ -71,64 +71,66 @@
 
 #include <Trade\Trade.mqh>
 #include <Trade\SymbolInfo.mqh>
-#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
-#include "AccountThrottle.mqh"
 
 //--- enumerations
 enum ENUM_RISK_MODE
   {
-   RISK_MONEY   = 0,  // Fixed money per trade (account currency)
-   RISK_PERCENT = 1   // Percent of account balance per trade
+   RISK_MONEY   = 0,  // Fixed amount (account currency)
+   RISK_PERCENT = 1   // % of balance
   };
 
-//--- inputs
-input group "=== General ==="
-input ulong               InpMagic           = 240817;      // Magic number
-input ENUM_TIMEFRAMES     InpTimeframe       = PERIOD_H1;   // Signal timeframe
+//--- inputs: groups per docs/ea-inputs.md
+input group "1. Trade size"
+input ENUM_RISK_MODE      InpRiskMode        = RISK_PERCENT;// Risk type
+input double              InpRiskValue       = 0.5;         // Risk per trade (amount or %)
+
+//--- Daily: account equity at the floor closes this EA's trades, no entries until the next
+//--- server day. Monthly: no new entries for the rest of the month.
+input group "2. Account protection"
+input double              InpDailyLossPct    = 3.0;         // Daily loss limit, % of day start (0 = off)
+input double              InpMonthlyLossPct  = 12.0;        // Monthly loss limit, % of month start (0 = off)
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#include "AccountThrottle.mqh"
+
+input group "3. Orders"
+input int                 InpMaxSpreadPoints = 150;         // Max spread, points (0 = off)
+input int                 InpSpreadWaitMin   = 30;          // Wait for spread to drop, minutes (0 = skip)
+input int                 InpSlippagePoints  = 30;          // Max slippage, points
+
+input group "4. Identity and logs"
+input ulong               InpMagic           = 240817;      // Magic number (unique per EA)
 input string              InpComment         = "MACD_X";    // Order comment
-input int                 InpSlippagePoints  = 30;          // Max deviation (points)
-input int                 InpMaxSpreadPoints = 150;         // Max spread to trade (points, 0 = off)
+input bool                InpTradeLog        = true;        // Save closed trades to CSV (MQL5\Files)
+input bool                InpLogEveryBar     = true;        // Log a status line every bar
 
-input group "=== MACD ==="
-input int                 InpFastEMA         = 16;          // Fast EMA period
-input int                 InpSlowEMA         = 26;          // Slow EMA period
-input int                 InpSignalSMA       = 9;           // Signal SMA period
-input ENUM_APPLIED_PRICE  InpAppliedPrice    = PRICE_CLOSE; // Applied price
-input bool                InpZeroLineFilter  = false;       // Buy only below 0 / Sell only above 0
+input group "5. Strategy"
+input ENUM_TIMEFRAMES     InpTimeframe       = PERIOD_H1;   // Signal timeframe
+input int                 InpFastEMA         = 16;          // MACD: fast EMA period
+input int                 InpSlowEMA         = 26;          // MACD: slow EMA period
+input int                 InpSignalSMA       = 9;           // MACD: signal SMA period
+input ENUM_APPLIED_PRICE  InpAppliedPrice    = PRICE_CLOSE; // MACD: price
+input int                 InpMaxPositions    = 3;           // Max open trades, same direction
 
-input group "=== Filters ==="
-input bool                InpUseTrendFilter  = true;        // Use EMA trend filter
-input ENUM_TIMEFRAMES     InpTrendTF         = PERIOD_H4;   // Trend EMA timeframe
-input int                 InpTrendPeriod     = 200;         // Trend EMA period
-input double              InpMinGapATR       = 0.0;         // Min MACD-signal gap at cross (x ATR, 0 = off)
-input int                 InpATRPeriod       = 14;          // ATR period for gap filter
-input bool                InpUseTimeFilter   = false;       // Use trading hours filter
-input int                 InpStartHour       = 7;           // Start hour (server time, inclusive)
-input int                 InpEndHour         = 20;          // End hour (server time, exclusive)
+input group "6. Filters"
+input bool                InpZeroLineFilter  = false;       // Use zero-line filter (buy below 0, sell above)
+input bool                InpUseTrendFilter  = true;        // Use trend filter (trade with the EMA)
+input ENUM_TIMEFRAMES     InpTrendTF         = PERIOD_H4;   // Trend filter: timeframe
+input int                 InpTrendPeriod     = 200;         // Trend filter: EMA period
+input double              InpMinGapATR       = 0.0;         // Min MACD gap at the cross, x ATR (0 = off)
+input int                 InpATRPeriod       = 14;          // ATR period (gap filter, trailing stop)
+input bool                InpUseTimeFilter   = false;       // Use trading hours
+input int                 InpStartHour       = 7;           // Trading hours: start, server time
+input int                 InpEndHour         = 20;          // Trading hours: end, server time (excluded)
 
-input group "=== Trade management ==="
-input double              InpStopLossPct     = 0.5;         // Stop loss  (% of open price)
-input double              InpTakeProfitPct   = 3.75;        // Take profit (% of open price)
-input bool                InpCloseOnOpposite = false;       // Close open position on opposite signal
-input int                 InpMaxPositions    = 3;           // Same-direction positions open at once (1 = one at a time)
-input double              InpBreakEvenPct    = 0.5;         // Move SL to BE after profit of % (0 = off)
-input double              InpBreakEvenLockPct= 0.1;         // BE lock-in (% of open price)
-input double              InpTrailStartPct   = 0.0;         // Start trailing after profit of % (0 = off; 1.0 = v1.44)
-input double              InpTrailDistPct    = 1.0;         // Trailing distance (% of price) if ATR mult = 0
-input double              InpTrailATRMult    = 4.0;         // Trailing distance in ATR multiples (0 = use %)
-
-input group "=== Risk ==="
-input ENUM_RISK_MODE      InpRiskMode        = RISK_PERCENT;// Risk mode
-input double              InpRiskValue       = 0.5;         // Risk value (money or %)
-
-input group "=== Safety guards ==="
-input int                 InpSpreadWaitMin   = 30;          // Retry a spread-blocked signal for N minutes (0 = drop it)
-input double              InpDailyLossPct    = 3.0;         // Daily loss stop, % of day-start balance (0 = off)
-input double              InpMonthlyLossPct  = 12.0;        // Monthly loss stop, % of month-start balance (0 = off)
-input bool                InpTradeLog        = true;        // Write closed trades to a CSV in MQL5\Files
-
-input group "=== Diagnostics ==="
-input bool                InpLogEveryBar     = true;        // Log a status line on every new signal bar
+input group "7. Exits"
+input double              InpStopLossPct     = 0.5;         // Stop loss, % of open price
+input double              InpTakeProfitPct   = 3.75;        // Take profit, % of open price
+input bool                InpCloseOnOpposite = false;       // Close on opposite signal
+input double              InpBreakEvenPct    = 0.5;         // Break-even: start at profit, % (0 = off)
+input double              InpBreakEvenLockPct= 0.1;         // Break-even: lock in profit, %
+input double              InpTrailStartPct   = 0.0;         // Trailing stop: start at profit, % (0 = off)
+input double              InpTrailDistPct    = 1.0;         // Trailing stop: distance, % (if x ATR = 0)
+input double              InpTrailATRMult    = 4.0;         // Trailing stop: distance, x ATR (0 = use %)
 
 //--- globals
 CTrade        g_trade;

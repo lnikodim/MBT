@@ -33,24 +33,28 @@
 #define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"
 
-enum ENUM_ENTRY_MODE { ENTRY_BREAKOUT = 0,  // Signal line crosses the channel
-                       ENTRY_PULLBACK = 1 };// Dip into the channel that turns back (after a channel break)
-enum ENUM_EXIT_MODE  { EXIT_CHANNEL = 0,    // Opposite channel cross (stop-and-reverse)
-                       EXIT_CROSS   = 1,    // Fast/slow SMA cross against the position
-                       EXIT_TARGET  = 2 };  // Target R x stop, no bar exit
+enum ENUM_ENTRY_MODE { ENTRY_BREAKOUT = 0,  // Breakout: signal line crosses the channel
+                       ENTRY_PULLBACK = 1 };// Pullback: dips into the channel, turns back
+enum ENUM_EXIT_MODE  { EXIT_CHANNEL = 0,    // Channel: opposite channel cross
+                       EXIT_CROSS   = 1,    // MA cross: fast/slow SMA cross against the trade
+                       EXIT_TARGET  = 2 };  // Target: take profit only
 
-input group "=== Strategy ==="
-input int             InpFastMA     = 5;              // Fast SMA of closes (signal line)
-input int             InpSlowMA     = 10;             // Slow SMA of closes (EXIT_CROSS)
-input int             InpChannelMA  = 20;             // Channel: SMA of highs / SMA of lows
-input ENUM_ENTRY_MODE InpEntryMode  = ENTRY_PULLBACK; // Entry
-input ENUM_EXIT_MODE  InpExitMode   = EXIT_CHANNEL;   // Exit
-input double          InpTargetR    = 2.0;            // Target, x stop distance (EXIT_TARGET)
+//--- "5. Strategy" continues from EACore (signal timeframe)
+input int             InpFastMA     = 5;              // Signal line: SMA of closes, period
+input int             InpChannelMA  = 20;             // Channel: SMA of highs and lows, period
+input ENUM_ENTRY_MODE InpEntryMode  = ENTRY_PULLBACK; // Entry type
 input bool            InpAllowShort = false;          // Allow sells
-input int             InpATRPeriod  = 20;             // ATR period (signal timeframe)
-input double          InpStopATR    = 2.0;            // Protective stop, x ATR
-input ENUM_TIMEFRAMES InpTrendTF    = PERIOD_H4;      // Trend filter timeframe
-input int             InpTrendEMA   = 0;              // Trend EMA period on that timeframe (0 = off)
+
+input group "6. Filters"
+input ENUM_TIMEFRAMES InpTrendTF    = PERIOD_H4;      // Trend filter: timeframe
+input int             InpTrendEMA   = 0;              // Trend filter: EMA period (0 = off)
+
+input group "7. Exits"
+input ENUM_EXIT_MODE  InpExitMode   = EXIT_CHANNEL;   // Exit type
+input int             InpSlowMA     = 10;             // MA cross exit: slow SMA period
+input double          InpTargetR    = 2.0;            // Target exit: take profit, x stop distance
+input int             InpATRPeriod  = 20;             // Stop loss: ATR period
+input double          InpStopATR    = 2.0;            // Stop loss: distance, x ATR
 
 int g_fast = INVALID_HANDLE, g_slow = INVALID_HANDLE, g_up = INVALID_HANDLE, g_lo = INVALID_HANDLE,
     g_atr = INVALID_HANDLE, g_trend = INVALID_HANDLE;

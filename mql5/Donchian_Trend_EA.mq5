@@ -11,39 +11,46 @@
 #property description "Designed as a backtest baseline, not a claim of profitability."
 
 #include <Trade/Trade.mqh>
-#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
-#include "AccountThrottle.mqh"
 
 CTrade trade;
 
-input group "01. Signal timeframe and breakout"
-input ENUM_TIMEFRAMES InpSignalTimeframe = PERIOD_H4; // Timeframe used for signals
-input int             InpDonchianPeriod  = 10;        // Previous closed bars used for channel
-input double          InpBreakoutBufferATR = 0.00;    // Extra breakout distance in ATR (0 = none)
-input bool            InpRequireSignalCandleDirection = true; // Buy needs bullish candle; sell bearish
-input bool            InpAllowLong  = true;           // Allow buy entries
-input bool            InpAllowShort = false;          // Allow sell entries
+//--- inputs: groups per docs/ea-inputs.md
+input group "1. Trade size"
+input double          InpRiskPercent      = 0.5;      // Risk per trade, % of equity
+input bool            InpSkipIfMinLotTooRisky = true; // Skip if the minimum lot risks more
 
-input group "02. Trend and momentum filters"
-input int             InpFastEMAPeriod = 50;          // Fast EMA period
-input int             InpSlowEMAPeriod = 200;         // Slow EMA period
-input bool            InpUseADXFilter  = true;        // Require minimum ADX
-input int             InpADXPeriod     = 14;          // ADX period
-input double          InpMinADX        = 20.0;        // Minimum ADX value
+input group "2. Account protection"
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#include "AccountThrottle.mqh"
 
-input group "03. Stop loss, target and risk"
-input int             InpATRPeriod        = 14;       // ATR period
-input double          InpATRStopMultiplier = 1.5;     // Stop distance = ATR x multiplier
-input double          InpRewardRiskRatio  = 1.5;      // TP distance / SL distance
-input double          InpRiskPercent      = 0.5;      // Equity risk per trade in percent
-input bool            InpSkipIfMinLotTooRisky = true; // Skip if minimum volume exceeds target risk
+input group "3. Orders"
+input int             InpMaxSpreadPoints  = 30;       // Max spread, points (0 = off)
+input int             InpDeviationPoints  = 10;       // Max slippage, points
 
-input group "04. Execution and safety"
-input int             InpMaxSpreadPoints  = 30;       // Maximum spread in points (not pips)
-input int             InpDeviationPoints  = 10;       // Maximum price deviation in points
-input bool            InpOnePositionPerSymbol = true; // Do not enter if a position already exists on this symbol
-input ulong           InpMagicNumber      = 20261020; // EA identifier
-input string          InpTradeComment     = "MajorFX DonchianTrend";
+input group "4. Identity and logs"
+input ulong           InpMagicNumber      = 20261020; // Magic number (unique per EA)
+input string          InpTradeComment     = "MajorFX DonchianTrend"; // Order comment
+
+input group "5. Strategy"
+input ENUM_TIMEFRAMES InpSignalTimeframe = PERIOD_H4; // Signal timeframe
+input int             InpDonchianPeriod  = 10;        // Channel length, bars
+input double          InpBreakoutBufferATR = 0.00;    // Breakout buffer, x ATR (0 = off)
+input bool            InpRequireSignalCandleDirection = true; // Buy only on an up candle, sell on a down one
+input bool            InpAllowLong  = true;           // Allow buys
+input bool            InpAllowShort = false;          // Allow sells
+input bool            InpOnePositionPerSymbol = true; // One trade at a time on this symbol
+
+input group "6. Filters"
+input int             InpFastEMAPeriod = 50;          // Trend filter: fast EMA period
+input int             InpSlowEMAPeriod = 200;         // Trend filter: slow EMA period
+input bool            InpUseADXFilter  = true;        // Use ADX filter
+input int             InpADXPeriod     = 14;          // ADX filter: period
+input double          InpMinADX        = 20.0;        // ADX filter: minimum value
+
+input group "7. Exits"
+input int             InpATRPeriod        = 14;       // Stop loss: ATR period (also breakout buffer)
+input double          InpATRStopMultiplier = 1.5;     // Stop loss: distance, x ATR
+input double          InpRewardRiskRatio  = 1.5;      // Take profit, x stop distance
 
 int      g_fastMAHandle = INVALID_HANDLE;
 int      g_slowMAHandle = INVALID_HANDLE;
