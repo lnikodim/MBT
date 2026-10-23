@@ -93,3 +93,33 @@ stop| x volume x value per point), with the stop from the Orders table.
 - **Deployment note** (user, 2026-10-23): the FTMO broker has no NI225. The EA is a **Darwinex Zero** candidate.
   Next: a joint simulation with the six live EAs on Darwinex Zero settings, then the Darwinex Zero .set file.
 - **Kept** in the repo as a candidate (`mql5/NI225_Gap_Continuation_EA.mq5`, profile, MT5 copy).
+
+## Darwinex Zero joint simulation (pre-registered 2026-10-23, before computing)
+User: "go ahead with the joint simulation on Darwinex Zero".
+`reports/portfolio/dz_joint_ni225.py`, closed trades only, no tester runs, 2022-01-01..2026-10-01, Darwinex logs.
+- **A, the six live EAs on Darwinex Zero settings:** 0.5% constant risk, throttle off. Trade lists as in spec
+  2026-10-22-dd-reduction phase 1.
+- **B = A + NI225_Gap_Continuation_EA at its defaults:** 0.5% risk, SELL 0.25% on gaps under 1.25%. Its trades are
+  S0 (2022-01..2023-04 generated + 2023-04..2026-10 real ticks), as % of the run's balance before each trade.
+- **Path:** simple sum in % of the initial balance. Days and months by server close time.
+- **Reported for A and B:** total %, % a year, max DD, worst day, worst month, monthly mean and sd, annualised Sharpe
+  (monthly), monthly 95% VaR (5th percentile), return / max DD. Also NI225's monthly and daily correlation with A.
+- **Decision rule (add NI225 to the Darwinex Zero set if all three hold):**
+  - B's return / max DD >= A's;
+  - B's max DD <= A's + 1.0 point;
+  - B's worst month no more than 1.0 point worse than A's.
+
+### Outcome (2026-10-23): **add NI225 to the Darwinex Zero set**
+| 2022-01..2026-10, closed trades, 0.5% | total | % a year | max DD | worst day | worst month | monthly mean / sd | Sharpe | monthly VaR95 | return / DD |
+|---|---|---|---|---|---|---|---|---|---|
+| A six EAs (2,226 trades) | +319.2% | +67.2 | 15.61% | -4.06% | -10.13% | +5.60% / 9.61% | 2.02 | -7.86% | 20.4 |
+| B six + NI225 (+217 trades) | +334.3% | +70.4 | 15.93% | -4.06% | -10.45% | +5.86% / 9.66% | 2.10 | -8.66% | 21.0 |
+| NI225 alone | +15.0% | +3.2 | 3.88% | -0.53% | -1.70% | +0.26% / 0.88% | 1.03 | -1.47% | 3.9 |
+
+- **Correlation of NI225 with A:** monthly +0.01, daily -0.02. In practice NI225 is uncorrelated with the six EAs.
+- **Rule:** return / DD 21.0 >= 20.4; max DD 15.93 <= 16.61; worst month -10.45 >= -11.13. All three hold, so **add**.
+- **Effect:** +15 points over 4.75 years (+3.2% a year). Sharpe rises from 2.02 to 2.10, the worst day is unchanged,
+  and the max DD rises 0.3 points.
+- **Monthly VaR95 is 0.8 points worse.** With 57 months, the 5th percentile is the 2nd-3rd worst month, so this is a
+  different month moving into that slot, not a new risk. The rule does not use it.
+- **Totals are simple sums in % of the initial balance** at 0.5%, as in phase 1. Compounding would differ.
