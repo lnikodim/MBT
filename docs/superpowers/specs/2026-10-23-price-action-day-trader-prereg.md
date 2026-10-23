@@ -64,3 +64,13 @@ of `reports/crabel/crabel_eval.py`; one position at a time).
   the first new bar of each server day.
 - **Result seen before this change:** only the 13-trade, broken run.
 - **Unchanged:** the grid, the checks, sizing and every other rule. All 6 cells rerun from scratch.
+
+## Amendment 3 (2026-10-23, during the grid; no XAUUSD result seen)
+- **User:** pointed at a Code Base comment: "i have back tested this in 5 min and 15 min in XAUUSD super working and good
+  results almost 90% returns".
+- **Added:** XAUUSD M5 and M15, source defaults (with amendments 1-2), same window, Gate A and out-of-sample check
+  (`pa_eval.py extra XAUUSD M5,M15`).
+- **Expectation, written now:** strongly negative. The stop is 40 "pips" = $0.40 on gold, about the size of Darwinex's
+  real-tick gold spread ($0.28-0.89). Results like "90% returns" usually come from a generated-tick or 1-minute-OHLC
+  test with a small fixed spread.
+- **Cells:** 8 in total, about 0.4 could pass one check by chance.
