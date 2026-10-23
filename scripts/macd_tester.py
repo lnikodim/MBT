@@ -94,7 +94,7 @@ def write_ini(name, args, inputs, ranges):
     lines = ["[Tester]", f"Expert={ea_profiles.expert_path(args.expert)}", f"Symbol={args.symbol}", f"Period={period}",
              f"Model={model}", f"Optimization={opt}", f"OptimizationCriterion={args.criterion}",
              f"Deposit={args.deposit}", f"Leverage={args.leverage}", "Currency=USD",
-             "ExecutionMode=0", "Visual=0", "ShutdownTerminal=1", "ReplaceReport=1",
+             f"ExecutionMode={args.delay}", "Visual=0", "ShutdownTerminal=1", "ReplaceReport=1",
              f"FromDate={args.date_from.replace('-', '.')}", f"ToDate={args.date_to.replace('-', '.')}",
              f"Report={name}"]
     if args.forward:
@@ -117,6 +117,7 @@ def main():
     ap.add_argument("--period", default="H1")
     ap.add_argument("--model", default="real_ticks")   # user rule 2026-10-17: real ticks by default
     ap.add_argument("--deposit", default="100000")
+    ap.add_argument("--delay", default="0")   # MT5 ExecutionMode: 0 = no delay, N = N ms, -1 = random
     ap.add_argument("--leverage", default="20")
     ap.add_argument("--from", dest="date_from", default="2026-01-01")
     ap.add_argument("--to", dest="date_to", default="2026-10-01")
