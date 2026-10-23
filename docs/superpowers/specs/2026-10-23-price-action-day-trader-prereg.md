@@ -46,3 +46,10 @@ of `reports/crabel/crabel_eval.py`; one position at a time).
   none after costs. The end-of-day close at 20:00 cuts many 80-pip targets on M15 / H1.
 - **PF:** 0.85-1.00 in most cells.
 - **Most likely verdict:** closed.
+
+## Amendment 1 (2026-10-23, after the first run was stopped unfinished; no result seen)
+- **What happened:** the first S0 run (EURUSD M15) was stopped. On a day the 3% daily loss limit is hit, the EA prints
+  "Daily loss limit reached. No new trades today." on **every tick** until the day ends (line 134). On real ticks this
+  grew the tester agent log to 35.7 GB.
+- **Change (logging only, trading identical):** the message prints once per server day (`static` day stamp).
+- **Before the grid:** a one-month probe (EURUSD M15, 2026-09) measures the log growth.

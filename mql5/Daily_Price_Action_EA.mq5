@@ -131,7 +131,13 @@ void OnTick()
    // Check daily loss limit
    if(CheckDailyLossLimit())
    {
-      Print("Daily loss limit reached. No new trades today.");
+      static datetime s_lossDay = 0;                      // MBT amendment 1: log once per day, not on every tick
+      const datetime today = TimeCurrent() - TimeCurrent() % 86400;
+      if(s_lossDay != today)
+      {
+         Print("Daily loss limit reached. No new trades today.");
+         s_lossDay = today;
+      }
       return;
    }
    
