@@ -160,6 +160,13 @@ PROFILES = {
         "InpMaxDrawdownPercent": "15.0", "InpEnableDDClose": "false", "InpMaxSpreadATR": "0.2",
         "InpLatencyJitter": "0",
     },
+    # Chaos_Lyapunov_EA = lyapunov.mq5 v1.01 (mql5.com 76446), unchanged; source defaults (spec 2026-10-23-lyapunov-ema-prereg.md):
+    # EMA 9/21 cross, 1.5 / 2.5 ATR stop / target, Lyapunov filter (LLE <= 0), 0.15% risk
+    "Chaos_Lyapunov_EA": {
+        "InpLyaLookback": "100", "InpLyaEmbedding": "3", "InpLyaKSteps": "5", "InpLyaThreshold": "0.00", "InpFastEma": "9",
+        "InpSlowEma": "21", "InpRiskPercent": "0.15", "InpAtrPeriod": "14", "InpSlAtrMult": "1.5", "InpTpAtrMult": "2.5",
+        "InpMagicNumber": "202610",
+    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
