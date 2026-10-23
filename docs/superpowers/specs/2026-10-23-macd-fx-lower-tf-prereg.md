@@ -48,3 +48,9 @@ Each eligible pair x {M5, M15, H1, H4}. R per trade comes from the EA's own trad
   - EURUSD M15: -31,488.43 USD, PF 0.91, -22.7 R.
 - **Unchanged:** the checks, the out-of-sample rule and the multiple-testing note. 14 cells in total, about 0.7
   expected to pass one check by chance.
+
+## Amendment 2 (2026-10-23, during the grid; no XAGUSD result seen)
+- **User:** "include XAGUSD 1H & 4H in the checks list". Silver is added: XAGUSD H1 and H4, same settings.
+- **Steps:** the same coverage probe (history quality >= 90% in 2019-03 and 2022-03), the same Gate A on 2022-26,
+  and the same out-of-sample check on 2019-21 for a passing cell (`macdfx_eval.py extra XAGUSD H1,H4`).
+- **Cells:** 16 in total, about 0.8 expected to pass one check by chance.
