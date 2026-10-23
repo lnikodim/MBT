@@ -76,3 +76,28 @@ of `reports/crabel/crabel_eval.py`).
 - **XAUUSD:** PF 0.90-1.05; Gate A fails or passes narrowly; the out-of-sample check fails.
 - **Time limit:** PF +0.00 to +0.08 over C0, with 10-25% fewer trades.
 - **Most likely verdict:** closed on both symbols.
+
+## Outcome (2026-10-23; log `reports/ny4h/base.log`): closed on both symbols
+| run (100k, 1% risk) | net USD | PF | max DD | trades | win | net R | mean R (t) | R by year |
+|---|---|---|---|---|---|---|---|---|
+| EURUSD S0 2022-26, hq 100% | -97,331.12 | 0.75 | 97.4% | 2,133 | 30.5% | -431.0 | -0.202 (-6.37) | 22 -83.4, 23 -91.5, 24 -96.5, 25 -53.8, 26 -105.8 |
+| XAUUSD S0 2022-26, hq 100% | -95,863.71 | 0.80 | 96.4% | 2,253 | 30.4% | -340.0 | -0.151 (-5.04) | 22 -88.1, 23 -74.1, 24 -43.6, 25 -69.2, 26 -65.0 |
+| EURUSD S1 2019-21, hq 99% | -91,678.02 | 0.73 | 92.2% | 1,418 | 30.2% | -320.3 | -0.226 (-6.05) | 19 -157.3, 20 -62.0, 21 -101.0 |
+| XAUUSD S1 2019-21, hq 99% | -92,351.63 | 0.75 | 92.5% | 1,248 | 28.9% | -264.0 | -0.211 (-5.34) | 19 -77.6, 20 -84.0, 21 -102.4 |
+| EURUSD C0 limit off | -93,376.34 | 0.72 | 93.5% | 1,409 | 29.6% | -287.7 | -0.204 (-5.50) | |
+| XAUUSD C0 limit off | -80,178.45 | 0.85 | 84.7% | 1,606 | 31.6% | -166.0 | -0.103 (-2.91) | |
+
+- **Gate A fails on both symbols** (every year negative), and so does the out-of-sample check. Closed.
+- **Both sides lose.** Stops average -1.1 R and targets +1.95 R, but the win rate is 29-31%, below the 33% a 2R target
+  needs before costs.
+- **The time limit**, the only new rule: PF 0.75 vs 0.72 with it off on EURUSD, and 0.80 vs 0.85 on XAUUSD (worse with
+  the limit). Without it, wider stops and longer holds mean fewer trades (1,409 / 1,606 vs 2,133 / 2,253).
+- **Checks:**
+  - The 3 / 2 entries at NY 00:00:00 come from a signal on the 23:55 bar that filled when the next bar opened.
+  - "Skipped by limit 0" is a logging artifact: the skip line is written only with `InpLogEveryBar` on.
+  - 15 / 1 / 3 / 2 / 6 / 2 order failures.
+- **Expectation check:** EURUSD PF 0.75 was below the expected 0.80-0.95. XAUUSD 0.80 was below the expected 0.90-1.05.
+  The limit effect on gold was negative, against the expected +0.00 to +0.08.
+- **Removed** per the leftovers rule: `mql5/NY_4H_Range_EA.mq5`, its profile and the MT5 copies (the source is in git
+  at 7376af2). The 2026-09-20 port `mql5/FourHourRangeScalper.mq5` of the same strategy is removed with it (in git at
+  31e5155). `NYClockSelfTest.mq5` stays as a tool.

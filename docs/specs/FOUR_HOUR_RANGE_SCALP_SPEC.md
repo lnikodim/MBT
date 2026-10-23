@@ -176,3 +176,8 @@ the terminal's own `TimeGMT()`.
    always shows the breakout happening from inside, during the day.
 4. The transcript's crypto examples cannot be reproduced on this broker: Darwinex-Demo
    carries no crypto symbols. EURUSD and XAUUSD both have M1 history back to 2017.
+
+**Removed 2026-10-23:** `mql5/FourHourRangeScalper.mq5` (in git at 31e5155). The strategy was re-tested on real ticks as
+`NY_4H_Range_EA` (spec `docs/superpowers/specs/2026-10-23-ny-4h-range-prereg.md`) and closed. Note: this port
+assumed the Darwinex server follows EU DST. It follows US DST (New York + 7 h all year), so the range was an hour off
+for about 4 weeks a year.

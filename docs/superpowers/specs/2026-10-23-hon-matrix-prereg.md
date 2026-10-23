@@ -68,3 +68,25 @@ closed in the same second). R per trade is undefined without stops, so the gate 
 - **Defaults:** few baskets, possibly under 150 (the "not firing" report).
 - **Author's set:** more baskets, a deeper martingale and a larger worst basket.
 - **Most likely verdict:** closed on both configurations.
+
+## Outcome (2026-10-23; log `reports/honmatrix/base.log`): closed
+| run (10k) | net USD | PF | max equity DD | worst day | legs / baskets | basket win | worst basket (% of balance at close) | k | scaled %/yr 22-24 / 25-26 |
+|---|---|---|---|---|---|---|---|---|---|
+| D0 EURUSD defaults 2022-26, hq 100% | +1,781.26 | 1.80 | 18.61% | -2.83% | 1,860 / 1,292 | 83.8% | -2.6% | 0.43 | +1.5 / +1.9 |
+| A0 EURUSD author's set 2022-26, hq 100% | -3,048.27 | 0.78 | 48.11% | -43.44% | 7,601 / 4,183 | 82.9% | -33.8% | 0.17 | +0.3 / -3.4 |
+| G0 GBPUSD author's set 2024-26 (report only), hq 100% | +859.15 | 1.17 | 20.68% | -24.72% | 3,873 / 1,981 | 81.5% | -16.6% | | |
+
+- **Gate fails for both configurations.** No confirmation run, no out-of-sample run. Closed under rule 5.
+- **D0 by year:** 2022 +428, 2023 +117, 2024 +475, 2025 +439, 2026 +323. Entries: 1,075 channel, 109 breakout,
+  0 S/R bounce. No close-all fired, and there was no stop-out.
+- **Where the losses are:** baskets of 1-4 legs make money in every run. The losses are 5-leg baskets that stay open for
+  weeks:
+  - D0's 18.6% drawdown is one basket held 2,638 h (110 days), closed 2023-11-28 at -2.6%;
+  - A0's two -40% close-alls were baskets held 2,368 h and 5,213 h (2022-07-08 -4,231 USD, 2025-09-17 -4,344 USD);
+  - G0's -18.5% basket was open at the end of the test (2026-09-30).
+  - Baskets held over 72 h, net: D0 -208 USD (15), A0 -9,427 USD (38), G0 -2,623 USD (17).
+  - Baskets held over a weekend: small and positive in all three runs.
+- **Expectation check:** D0 had more baskets than expected (1,292, not under 150) and no close-all. Its drawdown came
+  from an open basket's unrealised loss, not a realised one. A0 was as expected.
+- **Removed** per the leftovers rule: `mql5/Hon_Matrix_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  d300bb6).
