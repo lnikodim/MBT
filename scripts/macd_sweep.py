@@ -40,7 +40,7 @@ def winpath(p):
 
 
 def run(mode, name, sets=None, ranges=None, model="real_ticks", frm=IS_FROM, to=IS_TO, timeout=3000, symbol="XAUUSD",
-        expert="MACD_Cross_EA", period="H1", leverage=None, criterion="6"):
+        expert="MACD_Cross_EA", period="H1", leverage=None, criterion="6", deposit=None):
     os.makedirs(OUTDIR, exist_ok=True)
     out = os.path.join(OUTDIR, name + ".json")
     cmd = [RUNNER, "scripts/macd_tester.py", mode, "--name", name, "--out", winpath(out), "--model", model,
@@ -50,6 +50,8 @@ def run(mode, name, sets=None, ranges=None, model="real_ticks", frm=IS_FROM, to=
         cmd += ["--criterion", criterion]
     if leverage is not None:                      # default stays macd_tester's 1:20 (gold); FX grids use 1:30
         cmd += ["--leverage", str(leverage)]
+    if deposit is not None:                       # default stays macd_tester's 100k
+        cmd += ["--deposit", str(deposit)]
     for k, v in (sets or {}).items():
         cmd += ["--set", f"{k}={v}"]
     for k, v in (ranges or {}).items():

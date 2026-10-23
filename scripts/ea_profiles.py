@@ -8,7 +8,7 @@ v||v||1||v||N. Unknown input names are refused instead of silently ignored.
 import os
 
 BLESSING_STRINGS = {"AlertSound", "DDorLevel", "GridSetArray", "HedgeSymbol", "Holidays", "LabelAcc", "LabelAdv", "LabelBBS", "LabelCCI", "LabelDisplay", "LabelEDD", "LabelEE", "LabelEH", "LabelES", "LabelEST", "LabelEST0", "LabelGS", "LabelGrid", "LabelGridOpt", "LabelHS", "LabelHS0", "LabelIchi", "LabelLS", "LabelMA", "LabelMACD", "LabelOS", "LabelOS0", "LabelOpt", "LabelSG", "LabelSto", "LabelTS", "LabelTST", "LabelUE", "Notes", "SetCountArray", "TP_SetArray", "TradeComment", "Version_3_9_6_23", "displayFont", "eopb", "eopb1", "s1", "s2", "s3"}
-STRING_INPUTS = {"InpComment"} | BLESSING_STRINGS
+STRING_INPUTS = {"InpComment", "NewsSymbols", "StartTime", "EndTime", "Commentary"} | BLESSING_STRINGS   # last four: Hon_Matrix_EA
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
 # stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.
@@ -145,6 +145,28 @@ PROFILES = {
         "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
         "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5",
+    },
+    # Hon_Matrix_EA = Hon-Matrix.mq5 v1.2 (mql5.com 71645, KSQUANTITATIVE), unchanged; source defaults (spec
+    # 2026-10-23-hon-matrix-prereg.md). Grid without stops: basket target / break-even / trail in points, account close at -30%.
+    "Hon_Matrix_EA": {
+        "Start_Date": "1577836800", "StartCapital": "10000", "EnableBacktestValidation": "true",
+        "MaxAccountExposure": "15.0", "CloseLosesAtPercent": "30.0", "CloseProfitsAtPercent": "40.0", "InitialLotSize": "0.06",
+        "MaxLotSize": "1.0", "LotMultiplier": "1.1", "MaxGridOrders": "5", "TakeProfitPips": "50.0", "BreakevenTrigger": "20.0",
+        "TrailingDistance": "15.0", "UseTrailingStop": "true",
+        "EnableNewsFilter": "true", "StopBeforeNewsMin": "30", "StopAfterNewsMin": "30", "EnableHighImpact": "true",
+        "EnableMediumImpact": "true", "EnableLowImpact": "false", "UseInternalCalendar": "true",
+        "NewsSymbols": "USD,EUR,GBP,CHF,CAD,AUD,NZD,JPY", "ClosePositionsBeforeNews": "false", "AlertOnUpcomingNews": "true",
+        "DrawNewsLines": "true", "HighImpactColor": "255", "MediumImpactColor": "42495", "LowImpactColor": "65535",
+        "AMA_Period": "21", "ATR_Period": "14", "ATR_Threshold": "1.5", "TrendTimeframe": "16388", "TrendMA_Period": "100",
+        "SwingLookback": "50", "UseFibonacciGrid": "true", "FibLevel1": "38.2", "FibLevel2": "50.0", "FibLevel3": "61.8",
+        "FibLevel4": "78.6", "UseEnhancedEntry": "true", "SR_LookbackPeriod": "100", "SR_MinStrength": "3.0",
+        "SR_ZoneBuffer": "20.0", "UseChannelTrading": "true", "ChannelMinBars": "50", "ChannelThreshold": "0.8",
+        "UseDynamicLotSizing": "true", "BreakoutMinPips": "5.0", "BreakoutMaxPips": "50.0", "UseMomentumFilter": "true",
+        "MomentumThreshold": "1.2", "UseVolumeFilter": "true", "VolumeMultiplier": "1.5", "FalseBreakoutFilter": "0.6",
+        "VolumeConfirmPeriod": "10", "BreakoutConfirmBars": "3", "UseRSIFilter": "false", "RSI_Period": "14",
+        "RSI_Oversold": "30.0", "RSI_Overbought": "70.0", "EntryDistance": "30.0", "UseSimpleEntry": "false",
+        "UseTimeFilter": "false", "StartTime": "08:00", "EndTime": "18:00", "MagicNumber": "777777",
+        "Commentary": "Hon-Matrix", "ShowPanel": "true",
     },
     # NY_4H_Range_EA v1.00 (mql5.com 68082 on EACore, spec 2026-10-23-ny-4h-range-prereg.md): M5, New York = server - 7 h,
     # fade a close back inside the 00:00-04:00 NY range, at most 13 bars outside, 2R target; no spread cap, as in the source
