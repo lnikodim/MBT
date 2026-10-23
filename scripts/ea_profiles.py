@@ -8,7 +8,7 @@ v||v||1||v||N. Unknown input names are refused instead of silently ignored.
 import os
 
 BLESSING_STRINGS = {"AlertSound", "DDorLevel", "GridSetArray", "HedgeSymbol", "Holidays", "LabelAcc", "LabelAdv", "LabelBBS", "LabelCCI", "LabelDisplay", "LabelEDD", "LabelEE", "LabelEH", "LabelES", "LabelEST", "LabelEST0", "LabelGS", "LabelGrid", "LabelGridOpt", "LabelHS", "LabelHS0", "LabelIchi", "LabelLS", "LabelMA", "LabelMACD", "LabelOS", "LabelOS0", "LabelOpt", "LabelSG", "LabelSto", "LabelTS", "LabelTST", "LabelUE", "Notes", "SetCountArray", "TP_SetArray", "TradeComment", "Version_3_9_6_23", "displayFont", "eopb", "eopb1", "s1", "s2", "s3"}
-STRING_INPUTS = {"InpComment", "InpSymbols"} | BLESSING_STRINGS   # InpSymbols: Apex_Velocity_EA
+STRING_INPUTS = {"InpComment"} | BLESSING_STRINGS
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
 # stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.
@@ -145,20 +145,6 @@ PROFILES = {
         "InpExitMin": "0", "InpEntryGraceMin": "5", "InpDayMask": "1", "InpMaxSpreadPips": "3.0", "InpMinMarginLevel": "300.0",
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
         "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5", "InpDailyLossPct": "0.0",   # DailyStop.mqh: off
-    },
-    # Apex_Velocity_EA = APEX VELOCITY V1.mq5 (mql5.com 78275), unchanged; live-code (v1.0) defaults (spec
-    # 2026-10-23-apex-velocity-xauusd-prereg.md): M5 breakout, 0.05 ATR trailing from the first tick, fixed 0.01 lot
-    "Apex_Velocity_EA": {
-        "InpSymbols": "XAUUSD", "InpSymbolSuffixAuto": "true", "InpMagicNumber": "30836",
-        "InpComment": "ApexVelocity v1.0", "InpCalcMethod": "1", "InpRiskPercent": "1.0", "InpFixedLot": "0.01",
-        "InpMaxPositions": "1", "InpVolumePeriod": "5", "InpVolumeThreshold": "1.5", "InpMAPeriod": "9",
-        "InpATRPeriod": "14", "InpATRMultiplierSL": "2.5", "InpATRMultiplierTP": "4.5", "InpEntryMode": "1",
-        "InpAggrVolumeThreshold": "1.1", "InpMinBodyPercent": "0.85", "InpBreakoutBufferATR": "0.1",
-        "InpMinVolatilityATR": "0.7", "InpAllowHedging": "false", "InpBreakEvenOn": "true", "InpBreakEvenATR": "0.3",
-        "InpBreakEvenPaddingATR": "0.05", "InpTrailingOn": "true", "InpTrailingATR": "0.05", "InpUseSession": "true",
-        "InpStartHour": "13", "InpEndHour": "21", "InpCloseOnWeekend": "22", "InpAvoidTripleSwap": "true",
-        "InpMaxDrawdownPercent": "15.0", "InpEnableDDClose": "false", "InpMaxSpreadATR": "0.2",
-        "InpLatencyJitter": "0",
     },
     # Chaos_Lyapunov_EA = lyapunov.mq5 v1.01 (mql5.com 76446), unchanged; source defaults (spec 2026-10-23-lyapunov-ema-prereg.md):
     # EMA 9/21 cross, 1.5 / 2.5 ATR stop / target, Lyapunov filter (LLE <= 0), 0.15% risk

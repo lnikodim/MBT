@@ -68,3 +68,20 @@ of `reports/crabel/crabel_eval.py`).
 - **Change:** P0 and A0 run on **1,000 USD** with the same fixed 0.01 lot. Fixed-lot P/L in USD is unchanged, so A0
   stays comparable with the author's +1,577.89. S0, L0 and S1 (100k, 1% risk) are unchanged.
 - **Also from P0:** a month of real ticks (12.0M ticks) takes 11 seconds, so the 4.75-year runs are short.
+
+## Outcome (2026-10-23, after amendment 1; log `reports/apex/base.log`): closed
+| run (XAUUSD M5, real ticks) | net USD | PF | max DD | trades | win | net R | mean R (t) | R by year | median hold |
+|---|---|---|---|---|---|---|---|---|---|
+| A0 2026-01..10, 1,000 USD, 0.01 lot | -263.73 | 0.10 | 26.4% | 347 | 12.4% | -19.5 | -0.056 (-21.92) | 26 -19.5 | 2 s |
+| S0 2022-01..2026-10, 100k, 1% | -84,184.38 | 0.07 | 84.2% | 2,912 | 10.2% | -186.2 | -0.064 (-69.22) | 22 -52.4, 23 -42.5, 24 -36.5, 25 -35.4, 26 -19.5 | 2 s |
+
+- **Gate A fails on S0** with zero-latency fills, so the latency check cannot change the verdict. **L0 was stopped
+  unfinished at the user's request** ("skip apex"). No S1. Closed.
+- **The author's result does not reproduce.** A0 covers the author's window with the author's 0.01 lot: 347 trades and
+  PF 0.10, against 1,254 trades and PF 9.96.
+- **Every trade exits on the trailing stop**, after a median 2 s and about 8-12 stop changes. On Darwinex's gold
+  spread, the 0.05 ATR trail closes almost every trade at a small loss.
+- **Expectation check:** A0 lost money, against the expected "profitable below PF 9.96". S0 lost even without delay.
+- **Kept:** the execution-delay option in `macd_tester.py` / `macd_sweep.run` (generic).
+- **Removed** per the leftovers rule: `mql5/Apex_Velocity_EA.mq5`, its profile and the MT5 copies (the source is in git
+  at a9cc9e2).
