@@ -160,6 +160,12 @@ PROFILES = {
         "InpMoveStopToBreakEven": "true", "InpMagicNumber": "2250101", "InpMaxSlippagePoints": "30",
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
     },
+    # MartinGale_Breakout_EA = MartinGaleBreakout.mq5 v1.00 (mql5.com 46591) + ExpertFunctions.mqh (MQL5\\Include), unchanged;
+    # defaults (spec 2026-10-23-martingale-breakout-prereg.md): money TP 0.1% / cut 1%, recovery x~11 with a 10% cut
+    "MartinGale_Breakout_EA": {
+        "TakeProfPoints": "50", "BalancePercentageAvailable": "50", "TP_Percentage_of_Balance": "0.1", "SL_Percentage_of_Balance": "10",
+        "Start_The_Recovery": "0.1", "TP_Points_Multiplier": "1", "MagicNumber": "89758029",
+    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
