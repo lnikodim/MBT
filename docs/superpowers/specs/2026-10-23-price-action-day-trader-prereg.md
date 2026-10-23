@@ -74,3 +74,11 @@ of `reports/crabel/crabel_eval.py`; one position at a time).
   real-tick gold spread ($0.28-0.89). Results like "90% returns" usually come from a generated-tick or 1-minute-OHLC
   test with a small fixed spread.
 - **Cells:** 8 in total, about 0.4 could pass one check by chance.
+
+## Amendment 4 (2026-10-23, after XAUUSD M5 made 0 trades; no trade results)
+- **User:** "skip the forex pairs and continue directly with XAUUSD". GBPUSD H1 / H4 are not run; EURUSD M15 / H1 / H4
+  and GBPUSD M15 were done.
+- **XAUUSD M5 S0 made 0 trades.** All 37,705 signals were refused by the EA's own margin check ("Insufficient funds").
+  The default 1.5% risk on a $0.40 stop asks for 37.5 lots, about 360-380k USD of margin on Darwinex gold.
+- **Change for the XAUUSD cells only:** `RiskPercent` 1.5 -> **0.3**, so 7.5 lots (about 76k USD margin) fits.
+  R per trade does not depend on the size. The rest is unchanged.
