@@ -48,3 +48,17 @@ Per symbol, at 1% risk (`InpRiskPercent` 1.0; R does not depend on it):
 - **The filter:** a nearest-neighbour exponent from three raw closes is mostly noise, so it acts as a random
   subsample. Mean R within about ±0.03 of the control, with fewer trades.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-23; log `reports/lyapunov/base.log`): closed
+| run (XAUUSD H1, real ticks, 100k, 1%) | net USD | PF | max DD | trades | win | net R | mean R (t) | R by year |
+|---|---|---|---|---|---|---|---|---|
+| S0 filter on, hq 100% | +2,452.51 | 1.05 | 13.1% | 83 | 39.8% | +3.3 | +0.039 (+0.27) | 22 -0.2, 23 -1.5, 24 -6.0, 25 +5.8, 26 +5.2 |
+| C0 filter off, hq 100% | -49,704.16 | 0.90 | 66.1% | 993 | 36.1% | -61.5 | -0.062 (-1.50) | |
+
+- **XAUUSD fails Gate A:** 83 trades against the 150 floor, and 2022-24 is -7.7 R (2025-26 +11.0 R).
+- **The plain EMA 9/21 cross loses on gold H1.** The filter keeps 8% of the trades (83 of 993). Their mean R
+  (+0.039 vs -0.062) is about 0.8 standard errors above a random 83 of the control's trades, so it is not significant.
+- **EURUSD:** the user stopped the runs before they finished ("skip the tests and remove the leftovers"), so it is not
+  tested. Closed.
+- **Removed** per the leftovers rule: `mql5/Chaos_Lyapunov_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 11aa066).
