@@ -146,6 +146,20 @@ PROFILES = {
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
         "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5", "InpDailyLossPct": "0.0",   # DailyStop.mqh: off
     },
+    # NI225_Gap_Continuation_EA = Nikkei225_Gap_Continuation_EA.mq5 (mql5.com 75301), unchanged; source defaults (spec
+    # 2026-10-23-ni225-gap-continuation-prereg.md): gap >= 1%, 10-min range breakout + VWAP, 1R partial, 2R target, 0.5% risk
+    "NI225_Gap_Continuation_EA": {
+        "InpSessionTimeMode": "0", "InpSessionOpenHour": "9", "InpSessionOpenMinute": "0", "InpSessionCloseHour": "15",
+        "InpSessionCloseMinute": "30", "InpOpeningRangeMinutes": "10", "InpMaxEntryMinutesFromOpen": "90",
+        "InpExitMinutesBeforeClose": "5", "InpEnableBuyGaps": "true", "InpMinimumBuyGapPercent": "1.0",
+        "InpEnableSellGaps": "true", "InpMinimumSellGapPercent": "1.0", "InpUseRealVolumeIfAvailable": "true",
+        "InpMaxSpreadPoints": "0.0", "InpMaxSpreadToStopPercent": "10.0", "InpStopBufferPoints": "0.0",
+        "InpBuyRiskPercent": "0.50", "InpSellRiskPercent": "0.50", "InpReduceRiskOnSmallSellGap": "true",
+        "InpSellFullRiskFromGapPct": "1.25", "InpSmallSellRiskPercent": "0.25", "InpFixedLots": "0.0",
+        "InpMaxLots": "0.0", "InpPartialClosePercent": "40.0", "InpPartialTargetR": "1.0", "InpFinalTargetR": "2.0",
+        "InpMoveStopToBreakEven": "true", "InpMagicNumber": "2250101", "InpMaxSlippagePoints": "30",
+        "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
+    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
