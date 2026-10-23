@@ -159,6 +159,7 @@ PROFILES = {
         "InpMaxLots": "0.0", "InpPartialClosePercent": "40.0", "InpPartialTargetR": "1.0", "InpFinalTargetR": "2.0",
         "InpMoveStopToBreakEven": "true", "InpMagicNumber": "2250101", "InpMaxSlippagePoints": "30",
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
+        "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)

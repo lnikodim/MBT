@@ -123,3 +123,13 @@ User: "go ahead with the joint simulation on Darwinex Zero".
 - **Monthly VaR95 is 0.8 points worse.** With 57 months, the 5th percentile is the 2nd-3rd worst month, so this is a
   different month moving into that slot, not a new risk. The rule does not use it.
 - **Totals are simple sums in % of the initial balance** at 0.5%, as in phase 1. Compounding would differ.
+
+## Live build MBT 1.51 (2026-10-23)
+- **Changes:** `DailyStop.mqh` added (account equity -4% from the day start closes the EA's position; no entries until
+  the next server day; compiled default 4.0 = Darwinex Zero). Inputs regrouped per `docs/ea-inputs.md`, with names,
+  types and defaults unchanged (only `InpDailyLossPct` is new). The trading logic is unchanged.
+- **Tester check** (`reports/portfolio/dailystop_check.py NI225_Gap_Continuation_EA`, real ticks 2023-04..2026-10):
+  - stop off: the validated run's entries (154 / 154, net +11,918.82, identical);
+  - stop on at 0.05%: 135 stop days, every open position closed within 60 s, no same-day entry after a stop.
+- **Live set:** `mql5/sets/darwinex_zero/NI225_Gap_Continuation_EA.set` (0.5% / 0.25%, daily stop -4%). No FTMO set.
+  `.ex5` MD5 fdb6058c….

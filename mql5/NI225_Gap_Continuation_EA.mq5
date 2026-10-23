@@ -1,10 +1,13 @@
 ﻿//+------------------------------------------------------------------+
-//|                                                      ProjectName |
-//|                                      Copyright 2020, CompanyName |
-//|                                       http://www.companyname.net |
+//| NI225_Gap_Continuation_EA.mq5 -- mql5.com code 75301 v1.50 by    |
+//| Francesc Jordi Mallol Nolden, Nikkei 225 cash-open gap           |
+//| continuation (spec 2026-10-23-ni225-gap-continuation-prereg.md). |
+//| MBT 1.51: daily loss stop (DailyStop.mqh, -4% = Darwinex Zero)   |
+//| and inputs grouped per docs/ea-inputs.md (names unchanged);      |
+//| trading logic same.                                              |
 //+------------------------------------------------------------------+
 #property copyright "Francesc Jordi Mallol Nolden"
-#property version   "1.50"
+#property version   "1.51"
 #property strict
 
 #include <Trade\Trade.mqh>
@@ -13,56 +16,56 @@ CTrade Trade;
 
 enum ENUM_SESSION_TIME_MODE
   {
-   SESSION_JST_DARWINEX_AUTO=0,
-   SESSION_MANUAL_SERVER=1
+   SESSION_JST_DARWINEX_AUTO=0,   // Japan time -> Darwinex server time, automatic
+   SESSION_MANUAL_SERVER=1        // Hours below are server time
   };
 
-input group "Cash session"
-input ENUM_SESSION_TIME_MODE InpSessionTimeMode = SESSION_JST_DARWINEX_AUTO; // Session time mode
-input int      InpSessionOpenHour          = 9;      // Session open hour
-input int      InpSessionOpenMinute        = 0;      // Session open minute
-input int      InpSessionCloseHour         = 15;     // Session close hour
-input int      InpSessionCloseMinute       = 30;     // Session close minute
-input int      InpOpeningRangeMinutes      = 10;     // Opening range duration in minutes (5-15)
-input int      InpMaxEntryMinutesFromOpen  = 90;     // Maximum entry time after session open (minutes)
-input int      InpExitMinutesBeforeClose   = 5;      // Forced exit before session close (minutes)
+//--- inputs: groups per docs/ea-inputs.md (MBT 1.51; names unchanged, so .set files still apply)
+input group "1. Trade size"
+input double   InpBuyRiskPercent           = 0.50;   // BUY risk per trade, % of equity
+input double   InpSellRiskPercent          = 0.50;   // SELL risk per trade, % of equity
+input bool     InpReduceRiskOnSmallSellGap = true;   // Use the smaller SELL risk on small gaps
+input double   InpSellFullRiskFromGapPct   = 1.25;   // Small SELL gap: full risk at gap >=, %
+input double   InpSmallSellRiskPercent     = 0.25;   // Small SELL gap: risk, % of equity
+input double   InpFixedLots                = 0.0;    // Fixed lots (0 = off, size by risk %)
+input double   InpMaxLots                  = 0.0;    // Max lots (0 = off)
 
-input group "BUY - bullish gaps"
-input bool     InpEnableBuyGaps            = true;   // Enable BUY trades on bullish gaps
-input double   InpMinimumBuyGapPercent     = 1.0;    // Minimum bullish gap (%)
+input group "2. Account protection"
+#define EA_DAILY_LOSS_PCT 4.0          // live default = Darwinex Zero: -4%, as the six live EAs there (DailyStop.mqh)
+#include "DailyStop.mqh"
 
-input group "SELL - bearish gaps"
-input bool     InpEnableSellGaps           = true;   // Enable SELL trades on bearish gaps
-input double   InpMinimumSellGapPercent    = 1.0;    // Minimum bearish gap (%)
+input group "3. Orders"
+input double   InpMaxSpreadPoints          = 0.0;    // Max spread, points (0 = off)
+input double   InpMaxSpreadToStopPercent   = 10.0;   // Max spread, % of stop distance (0 = off)
+input ulong    InpMaxSlippagePoints        = 30;     // Max slippage, points
 
-input group "Common signal filters"
-input bool     InpUseRealVolumeIfAvailable = true;   // Use real volume when available
-input double   InpMaxSpreadPoints          = 0.0;    // Maximum spread in points (0 = disabled)
-input double   InpMaxSpreadToStopPercent   = 10.0;   // Maximum spread as % of stop (0 = disabled)
-input double   InpStopBufferPoints         = 0.0;    // Stop-loss buffer in points
+input group "4. Identity and logs"
+input ulong    InpMagicNumber              = 2250101; // Magic number (unique per EA)
+input bool     InpShowStatusOnChart        = true;    // Show the status panel on the chart
+input bool     InpPrintDailyDiagnostics    = true;    // Log each day's setup and entry details
 
-input group "BUY risk"
-input double   InpBuyRiskPercent           = 0.50;   // BUY risk per trade (% of equity)
+//--- Session hours are Japan time (JST) in the automatic mode, server time in the manual one.
+input group "5. Strategy"
+input ENUM_SESSION_TIME_MODE InpSessionTimeMode = SESSION_JST_DARWINEX_AUTO; // Session clock
+input int      InpSessionOpenHour          = 9;      // Cash session: open hour
+input int      InpSessionOpenMinute        = 0;      // Cash session: open minute
+input int      InpSessionCloseHour         = 15;     // Cash session: close hour
+input int      InpSessionCloseMinute       = 30;     // Cash session: close minute
+input int      InpOpeningRangeMinutes      = 10;     // Opening range, minutes (5-15)
+input int      InpMaxEntryMinutesFromOpen  = 90;     // Latest entry, minutes after the open
+input bool     InpEnableBuyGaps            = true;   // Allow buys (gap up)
+input double   InpMinimumBuyGapPercent     = 1.0;    // Min gap up for a buy, %
+input bool     InpEnableSellGaps           = true;   // Allow sells (gap down)
+input double   InpMinimumSellGapPercent    = 1.0;    // Min gap down for a sell, %
+input bool     InpUseRealVolumeIfAvailable = true;   // VWAP: use real volume when available
 
-input group "SELL risk"
-input double   InpSellRiskPercent          = 0.50;   // Full SELL risk per trade (% of equity)
-input bool     InpReduceRiskOnSmallSellGap = true;   // Reduce risk on smaller SELL gaps
-input double   InpSellFullRiskFromGapPct   = 1.25;   // Gap required for full SELL risk (%)
-input double   InpSmallSellRiskPercent     = 0.25;   // Reduced SELL risk (% of equity)
-
-input group "Volume and exits"
-input double   InpFixedLots                = 0.0;    // Fixed lot size (0 = risk-based sizing)
-input double   InpMaxLots                  = 0.0;    // Maximum lot size (0 = broker limit)
-input double   InpPartialClosePercent      = 40.0;   // Partial close size (%)
-input double   InpPartialTargetR           = 1.0;    // Partial close target (R multiple)
-input double   InpFinalTargetR             = 2.0;    // Final take-profit target (R multiple)
-input bool     InpMoveStopToBreakEven      = true;   // Move stop to break-even after partial close
-
-input group "Execution"
-input ulong    InpMagicNumber              = 2250101; // Expert Advisor magic number
-input ulong    InpMaxSlippagePoints        = 30;      // Maximum slippage in points
-input bool     InpShowStatusOnChart        = true;    // Show status panel on chart
-input bool     InpPrintDailyDiagnostics    = true;    // Print daily diagnostic messages
+input group "7. Exits"
+input double   InpStopBufferPoints         = 0.0;    // Stop loss: buffer beyond the range, points
+input double   InpPartialClosePercent      = 40.0;   // Partial close: size, %
+input double   InpPartialTargetR           = 1.0;    // Partial close: at profit, x stop distance
+input double   InpFinalTargetR             = 2.0;    // Take profit, x stop distance
+input bool     InpMoveStopToBreakEven      = true;   // Move the stop to break-even after the partial
+input int      InpExitMinutesBeforeClose   = 5;      // Close, minutes before the session close
 
 // Daily state
 int      g_day_key          = -1;
@@ -1098,11 +1101,18 @@ void OnTick()
 
    if(DateKey(now)!=g_day_key)
       ResetDay(now);
+   const bool stopped=DailyStop(InpMagicNumber);   // MBT: closes this EA's position while the stop is on
 
    ulong our_position=FindOurPosition();
    if(our_position>0)
      {
       ManagePosition(our_position,now);
+      UpdateChartStatus(now);
+      return;
+     }
+   if(stopped)
+     {
+      g_status="Daily loss stop: no entries until the next server day";
       UpdateChartStatus(now);
       return;
      }

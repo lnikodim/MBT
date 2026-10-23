@@ -11,7 +11,10 @@ BASE = {  # EA: (validated run, chart)
     "MA_Channel_EA": ("lowtf_mach_h1_20261019_214347", "XAUUSD H1"),
     "Donchian_Trend_EA": ("dtrend_pick_20261021_073858", "USDJPY H4"),
     "Invictus_GBPJPY_Monday_EA": ("inv131_s0_mon_20261021_131936", "GBPJPY M1 (any timeframe)"),
+    "NI225_Gap_Continuation_EA": ("ni225g_m0r_20261023_174047", "NI225 M5"),   # spec 2026-10-23-ni225-gap-continuation
 }
+DZ_ONLY = {"NI225_Gap_Continuation_EA"}   # the FTMO broker has no NI225 (user, 2026-10-23)
+SPEC = {"NI225_Gap_Continuation_EA": "2026-10-23-ni225-gap-continuation-prereg.md"}
 GOLD = {"MACD_Cross_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA"}
 ACCOUNTS = {  # folder: (title, EA daily stop %, throttle DD %)
     "ftmo_2step_50k": ("FTMO 2-Step $50k: 0.5% headline + 3% drawdown throttle, EA daily stop -3%", 3.0, 3.0),
@@ -30,6 +33,9 @@ def live_inputs(ea, daily, thr):
                    InpTradeLog="true", InpLogEveryBar="true")
     elif ea == "Donchian_Trend_EA":
         inp.update(InpRiskPercent="0.5")
+    elif ea == "NI225_Gap_Continuation_EA":                   # defaults = 0.5% (SELL 0.25% on small gaps); no throttle
+        inp.update(InpDailyLossPct=f"{daily:.1f}")
+        return inp
     else:
         inp.update(InpLotsPer1k="0.010", InpDemoOnly="false")   # 0.5x the author's 0.2 lot per 10k
     inp.update(InpDailyLossPct=f"{daily:.1f}", InpThrottleDDPct=f"{thr:.1f}", InpThrottleFactor="0.5")   # daily stop: all six EAs
@@ -39,12 +45,14 @@ def main():
     for folder, (title, daily, thr) in ACCOUNTS.items():
         os.makedirs(f"mql5/sets/{folder}", exist_ok=True)
         for ea, (run, chart) in BASE.items():
+            if ea in DZ_ONLY and folder != "darwinex_zero":
+                continue
             lines = [f"; {ea} -- {title}", f"; chart: {chart}; base inputs = validated run {run}",
-                     "; spec docs/superpowers/specs/2026-10-22-dd-reduction-phase1-prereg.md. Load via EA Inputs > Load."]
+                     f"; spec docs/superpowers/specs/{SPEC.get(ea, '2026-10-22-dd-reduction-phase1-prereg.md')}. Load via EA Inputs > Load."]
             lines += ea_profiles.tester_input_lines(live_inputs(ea, daily, thr), {})   # MT5's own Name=Value||start||step||stop||N
             with open(f"mql5/sets/{folder}/{ea}.set", "w", encoding="utf-16", newline="\r\n") as f:   # MT5 native: UTF-16 LE, CRLF
                 f.write("\n".join(lines) + "\n")
-        print("wrote", f"mql5/sets/{folder}/", len(BASE), "files")
+        print("wrote", f"mql5/sets/{folder}/", sum(folder == "darwinex_zero" or ea not in DZ_ONLY for ea in BASE), "files")
 
 if __name__ == "__main__":
     main()
