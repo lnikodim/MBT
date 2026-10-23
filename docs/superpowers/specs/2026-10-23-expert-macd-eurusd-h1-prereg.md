@@ -38,3 +38,20 @@ rebuilt from the Deals table (`scripts/blessing_eval.py` `deals_trades`).
 - **Trades:** the exit fires on the first tick against the trade, so trades are short and costs weigh heavily.
 - **PF:** 0.80-1.05.
 - **Most likely verdict:** closed (trade count or PF).
+
+## Outcome (2026-10-23; log `reports/expertmacd/base.log`): closed
+| run (100k, 10 lots per 100k, compounding) | net USD | PF | max DD | trades | win | mean % per trade (t) | worst trade / day | net by year |
+|---|---|---|---|---|---|---|---|---|
+| H1 S0 2022-26, hq 100% | -7,992.93 | 0.85 | 25.5% | 40 | 42.5% | -0.155% (-0.29) | -6.88% / -5.17% | 22 +7,181, 23 +4,995, 24 -3,795, 25 -15,337, 26 -1,038 |
+
+- **Gate A fails:** 40 trades against the 150 floor, PF 0.85, and 2025-26 lost -16,374 USD (2022-24 made +8,381).
+  No out-of-sample run. Closed.
+- **Sides:** buys 32 trades, -10,196 USD, PF 0.76; sells 8 trades, +2,203 USD.
+- **No stop:** with the source's sizing, one trade lost 6.9% of the balance and one day 5.2%. That day alone would break
+  FTMO's 5% daily limit. Median hold 136 min.
+- **Order failures:** 7 trailing-stop changes were refused `[invalid stops]`.
+- **Expectation check:** under 150 trades and PF 0.85, as expected.
+- **Fixed in the eval script:** an escaping error in the order-failure count crashed the last report line. The by-year
+  figures above come from the saved report.
+- **Removed** per the leftovers rule: `mql5/Expert_MACD_EURUSD_H1_EA.mq5`, its profile and the MT5 copies (the source is
+  in git at 2352b54).

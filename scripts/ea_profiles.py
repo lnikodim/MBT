@@ -146,9 +146,6 @@ PROFILES = {
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
         "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5", "InpDailyLossPct": "0.0",   # DailyStop.mqh: off
     },
-    # Expert_MACD_EURUSD_H1_EA = Expert_MACD_EURUSD_1_Hour.mq5 (mql5.com 16967), unchanged; source defaults (spec
-    # 2026-10-23-expert-macd-eurusd-h1-prereg.md): MACD(5,15,3) swing on the forming bar, no stop, 25-pip trail, 10 lots / 100k
-    "Expert_MACD_EURUSD_H1_EA": {"MagicNumber": "23478423", "InpTrailing": "25", "Risk": "0.01"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
