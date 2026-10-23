@@ -455,11 +455,6 @@ PROFILES = {
     },
 }
 
-# MACD_ATR_EA v1.48: research copy of MACD_Cross_EA v1.47 with an ATR stop mode (spec 2026-10-23-macd-atr-fx-prereg.md):
-# the MACD profile plus a 2 x ATR(14) stop, 7.5 R target, break-even at 1 R locking 0.2 R
-PROFILES["MACD_ATR_EA"] = dict(PROFILES["MACD_Cross_EA"], InpMagic="240818", InpComment="MACD_ATR",
-                               InpStopATR="2.0", InpTargetR="7.5", InpBreakEvenR="1.0", InpBELockR="0.2")
-
 
 def expert_path(expert):
     if expert not in PROFILES:

@@ -46,3 +46,29 @@ R per trade comes from the EA's trade log (`r_multiple`).
 - **A 7.5R target** is rarely hit on forex. Most exits will be stops or break-even, so PF depends on a few long trends.
 - **Expected:** most cells PF 0.85-1.05. H4 on the JPY pair, and XAGUSD, are the best chances.
 - **Most likely verdict:** no candidate, or one cell that is weak out of sample.
+
+## Outcome (2026-10-23; log `reports/macdatr/run.log`): closed, the user stopped the grid after 7 of 14 cells
+**Sanity check, XAUUSD H1 2022-26:** ATR version 949 trades, +217.6 R (PF 1.45 in R, t 3.05, +456,044.07 USD at 1%
+compounding). The live % version had 955 trades and +332.4 R. Same signals; the "0.5% = 2 ATR" conversion is
+approximate, so the result is weaker.
+
+| cell (real ticks 2022-01..2026-10, 1%) | trades | PF (R) | net USD | max DD | net R (t) | R 2022-24 / 2025-26 | Gate A | % version (same cell) |
+|---|---|---|---|---|---|---|---|---|
+| EURUSD H1 | 1,043 | 0.89 | -59,041.39 | 76.5% | -64.8 (-1.04) | -17.3 / -47.5 | fail | -57,984 USD |
+| EURUSD H4 | 239 | 0.58 | -36,325.44 | 50.8% | -49.5 (-2.23) | -21.6 / -27.9 | fail | -33,956 USD |
+| GBPUSD H1 | 1,023 | 0.94 | -42,022.36 | 68.0% | -32.1 (-0.51) | +8.1 / -40.2 | fail | +36,591 USD |
+| GBPUSD H4 | 208 | 0.96 | -7,448.99 | 29.5% | -4.3 (-0.16) | +10.8 / -15.1 | fail | -5,459 USD |
+| USDJPY H1 | 992 | 1.29 | +182,509.61 | 53.2% | +148.9 (+2.12) | +198.8 / -49.9 | fail | +111,817 USD |
+| **USDJPY H4** | 238 | 1.72 | **+93,479.93** | 15.0% | +73.4 (+2.11) | +66.8 / +6.5 | **PASS** | +142,005 USD (failed 2019-21) |
+| USDCHF H1 | 1,032 | 0.88 | -59,277.56 | 66.4% | -71.5 (-1.14) | +8.2 / -79.6 | fail | -30,813 USD |
+
+- **Not run, at the user's request** ("ok, skip the rest"): USDCHF H4, USDCAD, AUDUSD and XAGUSD (H1 / H4), and the
+  2019-21 out-of-sample check for USDJPY H4.
+- **Verdict: closed.**
+  - 1 of 7 cells passes Gate A: USDJPY H4, the same cell as in the % version.
+  - The % version of that cell failed 2019-21 (-13.5 R), and this one was not given the check, so it is not a
+    candidate.
+  - ATR scaling did not fix forex. 6 of 7 cells lose in 2025-26, and on the pairs that lost it lost about as much as
+    the % version.
+- **Removed** per the leftovers rule: `mql5/MACD_ATR_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  cf12fbd). MACD_Cross_EA (live) is unchanged.
