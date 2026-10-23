@@ -13,7 +13,7 @@ BASE = {  # EA: (validated run, chart)
     "Invictus_GBPJPY_Monday_EA": ("inv131_s0_mon_20261021_131936", "GBPJPY M1 (any timeframe)"),
 }
 GOLD = {"MACD_Cross_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA"}
-ACCOUNTS = {  # folder: (title, daily stop % for the gold EAs, throttle DD %)
+ACCOUNTS = {  # folder: (title, EA daily stop %, throttle DD %)
     "ftmo_2step_50k": ("FTMO 2-Step $50k: 0.5% headline + 3% drawdown throttle, EA daily stop -3%", 3.0, 3.0),
     "darwinex_zero": ("Darwinex Zero: 0.5% constant risk, throttle off, EA daily stop -4%", 4.0, 0.0),
 }
@@ -26,13 +26,13 @@ def ini_inputs(run):
 def live_inputs(ea, daily, thr):
     inp = ini_inputs(BASE[ea][0])
     if ea in GOLD:
-        inp.update(InpRiskMode="1", InpRiskValue="0.5", InpDailyLossPct=f"{daily:.1f}", InpMonthlyLossPct="12.0",
+        inp.update(InpRiskMode="1", InpRiskValue="0.5", InpMonthlyLossPct="12.0",
                    InpTradeLog="true", InpLogEveryBar="true")
     elif ea == "Donchian_Trend_EA":
         inp.update(InpRiskPercent="0.5")
     else:
         inp.update(InpLotsPer1k="0.010", InpDemoOnly="false")   # 0.5x the author's 0.2 lot per 10k
-    inp.update(InpThrottleDDPct=f"{thr:.1f}", InpThrottleFactor="0.5")
+    inp.update(InpDailyLossPct=f"{daily:.1f}", InpThrottleDDPct=f"{thr:.1f}", InpThrottleFactor="0.5")   # daily stop: all six EAs
     return inp
 
 def main():

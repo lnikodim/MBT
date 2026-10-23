@@ -2,11 +2,14 @@
 //| MajorFX_DonchianTrend_EA.mq5                                     |
 //| Research baseline: Donchian breakout + EMA trend + ADX + ATR risk  |
 //| Intended for local MT5 Strategy Tester experiments.               |
+//| MBT v1.03: daily loss stop (DailyStop.mqh, -3% live default):    |
+//| account equity -3% from the day start closes it, no entries till |
+//| the next server day; logic same.                                 |
 //| MBT v1.02: account drawdown throttle (AccountThrottle.mqh); live |
 //| defaults = FTMO 2-Step: 0.5% risk, throttle 3%; logic same.      |
 //+------------------------------------------------------------------+
 #property copyright "OpenAI"
-#property version   "1.02"
+#property version   "1.03"
 #property description "Donchian breakout EA with EMA trend filter, ADX confirmation and ATR-based SL/TP."
 #property description "Designed as a backtest baseline, not a claim of profitability."
 
@@ -22,6 +25,8 @@ input bool            InpSkipIfMinLotTooRisky = true; // Skip if the minimum lot
 input group "2. Account protection"
 #define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
 #include "AccountThrottle.mqh"
+#define EA_DAILY_LOSS_PCT 3.0         // live default = FTMO 2-Step: -3%, as the gold EAs (DailyStop.mqh)
+#include "DailyStop.mqh"
 
 input group "3. Orders"
 input int             InpMaxSpreadPoints  = 30;       // Max spread, points (0 = off)
@@ -114,7 +119,8 @@ void OnDeinit(const int reason)
 //+------------------------------------------------------------------+
 void OnTick()
   {
-   if(!IsNewSignalBar())
+   const bool stopped = DailyStop(InpMagicNumber);   // every tick: closes own positions while the stop is on
+   if(!IsNewSignalBar() || stopped)
       return;
 
    if(!TerminalInfoInteger(TERMINAL_TRADE_ALLOWED) || !MQLInfoInteger(MQL_TRADE_ALLOWED))

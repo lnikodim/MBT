@@ -11,6 +11,9 @@
 //|  Execution only. No panel, no statistics.                        |
 //|  MBT v1.31: live defaults (spread guard 3.0 pips, InpDemoOnly    |
 //|  false) and lots sized per $1,000 of balance (InpLotsPer1k).     |
+//|  MBT v1.33: daily loss stop (DailyStop.mqh, -3% live default):   |
+//|  account equity -3% from the day start closes the trade and      |
+//|  skips the entry until the next server day; logic same.          |
 //|  MBT v1.32: account drawdown throttle; live defaults = FTMO 2-Step:|
 //|  0.010 lot per $1,000 (0.5x the author's sizing), throttle 3%.    |
 //+------------------------------------------------------------------+
@@ -70,7 +73,7 @@
 //    position during the 12 hours is taken in full. Size accordingly.
 //
 #property copyright "Orangutang Trading"
-#property version   "1.32"
+#property version   "1.33"
 #property strict
 #property description "Attach to GBPJPY, M1. Buys Monday 11:00 server time, closes 23:00 server time."
 #property description "Tested on a GMT+3 summer / GMT+2 winter server: 04:00 to 16:00 New York time."
@@ -90,6 +93,8 @@ input double InpLots             = 0.05;   // Fixed lots, used when lots per $1,
 input group "2. Account protection"
 #define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
 #include "AccountThrottle.mqh"
+#define EA_DAILY_LOSS_PCT 3.0         // live default = FTMO 2-Step: -3%, as the gold EAs (DailyStop.mqh)
+#include "DailyStop.mqh"
 input double InpMinMarginLevel   = 300.0;  // Min margin level after entry, %
 input bool   InpDemoOnly         = false;  // Demo accounts only
 
@@ -379,6 +384,7 @@ void OnDeinit(const int reason) { EventKillTimer(); }
 //+------------------------------------------------------------------+
 void OnTimer()
   {
+   const bool stopped = DailyStop((ulong)InpMagic);   // closes the position while the stop is on
    datetime d = SrvDay();
    if(d != gDay)
      {
@@ -401,7 +407,7 @@ void OnTimer()
       return;
      }
 
-   if(gDoneToday)
+   if(gDoneToday || stopped)
       return;
    if(!ArmedToday())
       return;
