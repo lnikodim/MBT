@@ -59,3 +59,12 @@ of `reports/crabel/crabel_eval.py`).
 - **S0:** PF above 1 is possible on zero-latency fills.
 - **L0:** PF drops sharply, probably below 1.00.
 - **Most likely verdict:** closed on the latency check.
+
+## Amendment 1 (2026-10-23, after the P0 probe made 0 trades; no trade results seen)
+- **What happened:** P0 on 100 USD made **0 trades**. Every signal was blocked by the EA's own margin check: "Not enough
+  Free Margin. Required: 206-218, Available: 100".
+- **Why:** on Darwinex, 0.01 lot of XAUUSD needs about 215 USD of margin (about 5%, the EU retail cap on gold). The
+  author's 100 USD setup must have run on a high-leverage broker.
+- **Change:** P0 and A0 run on **1,000 USD** with the same fixed 0.01 lot. Fixed-lot P/L in USD is unchanged, so A0
+  stays comparable with the author's +1,577.89. S0, L0 and S1 (100k, 1% risk) are unchanged.
+- **Also from P0:** a month of real ticks (12.0M ticks) takes 11 seconds, so the 4.75-year runs are short.
