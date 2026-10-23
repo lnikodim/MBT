@@ -44,3 +44,18 @@ results and names no symbol or timeframe.
 - **PF:** 0.85-1.00 on both timeframes.
 - **Trades:** M15 has enough (several hundred); H1 is close to the 150 floor.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-23; log `reports/exsr/base.log`): closed
+| run (100k, 1% risk) | net USD | PF | max DD | trades | win | net R | mean R (t) | R by year |
+|---|---|---|---|---|---|---|---|---|
+| M15 S0 2022-26, hq 100% | -23,958.09 | 0.53 | 30.0% | 74 | 23.0% | -26.8 | -0.362 (-2.44) | 22 -7.9, 23 -10.7, 24 -5.5, 25 -4.5, 26 +1.8 |
+| H1 S0 2022-26, hq 100% | +2,043.49 | 1.12 | 6.8% | 26 | 38.5% | +2.3 | +0.089 (+0.30) | 22 -1.6, 23 +1.9, 24 -1.3, 25 +4.8, 26 -1.5 |
+
+- **Gate A fails on both timeframes:** 74 and 26 trades against the 150 floor; M15 also loses in both regimes, and H1
+  is negative in 2022-24. No out-of-sample run. Closed.
+- **The three conditions together are rare:** RSI beyond 20 / 80, a band pierce and a reversal candle on the same
+  bar. M15 shorts lose most: 35 trades, PF 0.31, -21.8 R.
+- **Expectation check:** PF was outside the expected 0.85-1.00 (0.53 and 1.12). M15 had far fewer trades than the
+  expected several hundred.
+- **Removed** per the leftovers rule: `mql5/EXSR_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  49248f5).
