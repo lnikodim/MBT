@@ -55,3 +55,17 @@ ticks a different test.
   ceil(equity x 0.2 / 298) / 10 - 0.1: 6.7 lots on 100k, about 1% of equity at the 15-pip stop (our research size),
   within 1:30 margin.
 - **Unchanged:** the signal, exits and gates. R per trade does not depend on the size.
+
+## Outcome (2026-10-23, after amendment 1; log `reports/mastermind/base.log`): closed
+| run (100k, ~1% risk) | net USD | PF | max DD | trades | win | net R | mean R (t) | R by year |
+|---|---|---|---|---|---|---|---|---|
+| M5 S0 2022-26, hq 100% | +451.37 | 1.00 | 43.3% | 546 | 28.9% | +8.9 | +0.016 (+0.22) | 22 -8.4, 23 -28.3, 24 +6.4, 25 +20.7, 26 +18.6 |
+
+- **Gate A fails:** 2022-24 is -30.3 R; 2025-26 is +39.2 R. No out-of-sample run. Closed.
+- **About break-even before luck:** PF 1.00, t 0.22. Longs lose (275 trades, PF 0.84, -36.0 R); shorts gain
+  (271 trades, PF 1.23, +44.9 R, t 1.52, not significant).
+- **Exits:** 388 stops at -1.07 R, 124 targets at +2.97 R, 34 by the opposite signal or trailing stop.
+- **Drawdown:** 43% at about 1% risk. A 29% win rate with a 3R target brings long losing runs.
+- **Expectation check:** PF 1.00 sits at the top of the expected 0.80-1.00.
+- **Removed** per the leftovers rule: `mql5/The_MasterMind_EA.mq5`, its profile and the MT5 copies. The source is in
+  git at 81f9b75, and the amended version at 929cdf1.
