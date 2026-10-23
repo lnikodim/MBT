@@ -161,15 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Daily_Price_Action_EA (mql5.com 68704), unchanged; source defaults (spec 2026-10-23-price-action-day-trader-prereg.md):
-    # pin bar / engulfing / inside bar + EMA 20/50, 40-pip stop, 2R, BE 20, trail 30/10, 02-20 h, 1.5% risk
-    "Daily_Price_Action_EA": {
-        "RiskPercent": "1.5", "StopLossPips": "40", "TakeProfitRatio": "2.0", "MaxDailyLoss": "3.0",
-        "PinBarPipSize": "10", "PinBarRatio": "2.0", "EngulfingMinPips": "15", "SRLookback": "20", "SRTolerance": "10",
-        "FastMA": "20", "SlowMA": "50", "MAMethod": "1", "StartHour": "2", "EndHour": "20", "CloseAtEndOfDay": "true",
-        "MagicNumber": "123456", "UseBreakEven": "true", "BreakEvenPips": "20", "UseTrailingStop": "true",
-        "TrailingStopPips": "30", "TrailingStepPips": "10", "FillingMode": "0", "AutoDetectFilling": "true",
-    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

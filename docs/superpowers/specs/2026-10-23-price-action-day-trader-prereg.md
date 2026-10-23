@@ -82,3 +82,28 @@ of `reports/crabel/crabel_eval.py`; one position at a time).
   The default 1.5% risk on a $0.40 stop asks for 37.5 lots, about 360-380k USD of margin on Darwinex gold.
 - **Change for the XAUUSD cells only:** `RiskPercent` 1.5 -> **0.3**, so 7.5 lots (about 76k USD margin) fits.
   R per trade does not depend on the size. The rest is unchanged.
+
+## Outcome (2026-10-23; log `reports/pa/base.log`): closed
+| cell (real ticks 2022-01..2026-10, 100k) | risk | net USD | PF | max DD | trades | win | net R (t) | R 2022-24 / 2025-26 |
+|---|---|---|---|---|---|---|---|---|
+| EURUSD M15 | 1.5% | -30,686.99 | 0.85 | 34.4% | 646 | 35.6% | -22.4 (-1.36) | -19.1 / -3.4 |
+| EURUSD H1 | 1.5% | -20,248.84 | 0.93 | 37.5% | 896 | 35.2% | -12.1 (-0.60) | -11.5 / -0.6 |
+| EURUSD H4 | 1.5% | -16,354.28 | 0.91 | 26.3% | 481 | 36.4% | -10.2 (-0.67) | -6.0 / -4.2 |
+| GBPUSD M15 | 1.5% | -73,308.07 | 0.75 | 76.2% | 1,204 | 30.7% | -83.9 (-3.50) | -69.3 / -14.7 |
+| XAUUSD M5 | 0.3% | -99,913.35 | 0.20 | 99.9% | 3,772 | 17.9% | -2,510.0 (-46.04) | -2,510.0 / account empty |
+| XAUUSD M15 | 0.3% | -99,909.14 | 0.19 | 99.9% | 3,657 | 17.1% | -2,498.2 (-47.27) | 22 -1,786.2, 23 -712.0 / account empty |
+
+- **Every cell fails Gate A.** No out-of-sample run. GBPUSD H1 / H4 were not run (user). Closed.
+- **Forex:** the candlestick setups lose in every cell and both regimes (PF 0.75-0.93).
+- **Gold:**
+  - the 40-pip default is a $0.40 stop, about Darwinex's real-tick gold spread;
+  - stops 3,427 vs targets 230 on M15; both accounts were empty by 2023-24.
+  - The Code Base comment's "almost 90% returns" on XAUUSD M5 / M15 is not reproduced on real ticks. Such a result
+    needs a small fixed spread (generated ticks / 1-minute OHLC) and a high-leverage broker; at the default 1.5% the
+    EA cannot even open on Darwinex's gold margin (amendment 4).
+- **Bugs found in the published EA** (the fixes were tested only here):
+  - the every-tick daily-loss print (amendment 1);
+  - the daily reset needs a tick at exactly 00:00, so one daily stop blocks the EA permanently on Darwinex
+    (amendment 2).
+- **Removed** per the leftovers rule: `mql5/Daily_Price_Action_EA.mq5`, its profile and the MT5 copies (the original in
+  git at 2f3930e; with amendments 1-2 at 3d14d77).
