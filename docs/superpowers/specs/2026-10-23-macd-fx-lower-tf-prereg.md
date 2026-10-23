@@ -40,3 +40,11 @@ Each eligible pair x {M5, M15, H1, H4}. R per trade comes from the EA's own trad
 - **Most cells:** PF 0.80-1.00. The gold-tuned % stop and target don't fit forex volatility, especially on M5 / M15.
 - **Best chance:** H4 (and H1) on trending pairs (JPY crosses), where the wide target fits better.
 - **Most likely verdict:** no candidate.
+
+## Amendment 1 (2026-10-23, after the EURUSD M5 and M15 cells; no other cell seen)
+- **User:** "skip the 5 & 15min checks for the rest of the pairs". The grid becomes the 6 pairs x {H1, H4}, 12 cells.
+- **Already run** (Gate A fail, reported in the outcome):
+  - EURUSD M5: -52,488.50 USD, PF 0.86, -55.1 R;
+  - EURUSD M15: -31,488.43 USD, PF 0.91, -22.7 R.
+- **Unchanged:** the checks, the out-of-sample rule and the multiple-testing note. 14 cells in total, about 0.7
+  expected to pass one check by chance.
