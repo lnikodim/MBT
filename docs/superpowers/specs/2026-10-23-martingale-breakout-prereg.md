@@ -57,3 +57,15 @@ a normal trade, plus the recovery trade if there was one.
   costs on a 5-pip target. Expected value is about zero minus costs.
 - **Failed recoveries:** a few in 2022-26 (-11% each), so the max DD is >= 15% and k <= 0.5.
 - **Most likely verdict:** closed (gate and portfolio fit).
+
+## Outcome (2026-10-23; log `reports/mgbreak/base.log`): closed
+| run (EURUSD H1, real ticks, 10k, defaults) | net USD | PF | max equity DD | worst day | trades | normal won / cut | recovery won / failed | net by year |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | -1,500.16 | 0.52 | 22.91% | -10.45% | 101 | 80 / 11 | 8 / 2 | 22 +156, 23 -906, 24 -889, 25 -15, 26 +153 |
+
+- **The gate fails:** 101 trades against the 150 floor; k = 0.35, scaled -1.9% a year in 2022-24 and +0.3% in
+  2025-26. No S1. Closed.
+- **The martingale cost, as expected:** 2 failed recoveries at about -10.3% each, worst day -10.45%. Each would break
+  FTMO's 5% daily limit and our -3% EA daily stop on its own.
+- **Removed** per the leftovers rule: `mql5/MartinGale_Breakout_EA.mq5`, `mql5/ExpertFunctions.mqh`, its profile and the
+  MT5 copies, including `MQL5/Include/ExpertFunctions.mqh` (no other EA includes it). The source is in git at 5e42f74.
