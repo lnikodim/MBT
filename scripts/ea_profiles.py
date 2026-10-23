@@ -146,6 +146,12 @@ PROFILES = {
         "InpMagic": "770531", "InpDemoOnly": "false", "InpMaxSlippagePts": "20", "InpMaxRetries": "3",
         "InpThrottleDDPct": "0.0", "InpThrottleFactor": "0.5",
     },
+    # NY_4H_Range_EA v1.00 (mql5.com 68082 on EACore, spec 2026-10-23-ny-4h-range-prereg.md): M5, New York = server - 7 h,
+    # fade a close back inside the 00:00-04:00 NY range, at most 13 bars outside, 2R target; no spread cap, as in the source
+    "NY_4H_Range_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261025", "InpComment": "NY4H", "InpTimeframe": "5", "InpMaxSpreadPoints": "0", "InpSpreadWaitMin": "0",
+        "InpServerMinusNY": "7", "InpMaxBarsOutside": "13", "InpTargetR": "2.0",
+    }),
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
