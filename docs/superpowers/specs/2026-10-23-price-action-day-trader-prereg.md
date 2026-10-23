@@ -53,3 +53,14 @@ of `reports/crabel/crabel_eval.py`; one position at a time).
   grew the tester agent log to 35.7 GB.
 - **Change (logging only, trading identical):** the message prints once per server day (`static` day stamp).
 - **Before the grid:** a one-month probe (EURUSD M15, 2026-09) measures the log growth.
+
+## Amendment 2 (2026-10-23, after one S0 cell showed the EA stops trading)
+- **What happened:** EURUSD M15 S0 made 13 trades, all in 2022-01..02 (-3,320.24 USD), then none.
+- **Why:** the daily-loss limit hit on 2022-02-18 and never released (1,198 blocked days to 2026-09-30). The source resets
+  the day-start balance only on a new bar whose first tick is at exactly 00:00 server time. Darwinex ticks after the
+  midnight rollover arrive later, so the reset never runs and one daily stop blocks the EA permanently. This also
+  caused the 35.7 GB per-tick log.
+- **Change (a bug fix that makes the feature work as described, "stops trading for the day"):** the balance resets on
+  the first new bar of each server day.
+- **Result seen before this change:** only the 13-trade, broken run.
+- **Unchanged:** the grid, the checks, sizing and every other rule. All 6 cells rerun from scratch.

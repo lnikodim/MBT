@@ -110,11 +110,14 @@ void OnTick()
       lastBarTime = currentBarTime;
       
       // Update daily start balance at beginning of day
-      MqlDateTime time;
-      TimeToStruct(TimeCurrent(), time);
-      if(time.hour == 0 && time.min == 0)
+      // MBT amendment 2: on the first new bar of each server day. The source needed a bar opening at exactly 00:00,
+      // which Darwinex's post-rollover ticks never hit, so one daily stop blocked the EA for good.
+      static datetime s_balanceDay = 0;
+      const datetime day = TimeCurrent() - TimeCurrent() % 86400;
+      if(day != s_balanceDay)
       {
          dailyStartBalance = AccountInfoDouble(ACCOUNT_BALANCE);
+         s_balanceDay = day;
       }
    }
    
