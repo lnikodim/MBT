@@ -171,6 +171,11 @@ PROFILES = {
                      "Commission_USDNZD": "7.0", "Commission_EURCAD": "7.0", "Commission_CADJPY": "700.0",
                      "Commission_USDSGD": "7.0", "MaxDailyTrades": "5", "MagicNumber": "1234567", "MaxTradeDuration":
                      "60", "Plot_Max_Difference": "true"},
+    # BreakRevertPro_EA = BreakRevertPro.mq5 (mql5.com 56773) + a logging-only amendment; defaults except the tester-only safety trade
+    # (spec 2026-10-24-breakrevertpro-eurusd-prereg.md): "breakout" buys / "mean-reversion" sells, 1.5 / 2 x ATR, 0.01 lot
+    "BreakRevertPro_EA": {"risk_per_trade": "1.0", "lookback_period": "1", "breakout_threshold": "0.4", "mean_reversion_threshold": "0.4",
+                          "TF_M1": "1", "TF_M15": "15", "TF_H1": "16385", "trade_delay_seconds": "10", "max_positions": "1",
+                          "enable_safety_trade": "false", "safety_trade_interval": "60", "Magic_Number": "123456"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
