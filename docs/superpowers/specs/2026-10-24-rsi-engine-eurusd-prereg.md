@@ -48,3 +48,19 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/63698". Server: Darwinex-D
   about 0.03 R a trade.
 - **PF:** 0.85-1.05 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-24; log `reports/oct24/rsie.log`): closed
+| run (EURUSD H1, real ticks, 100k, 0.1 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-319.73** | 0.94 | 0.6% | 337 | 49.5% | **-10.7** (-0.58) | 22 -1.1, 23 -12.6, 24 +9.3, 25 -3.0, 26 -3.3 | stop 170 at -1.03 R, target 167 at +0.98 R |
+
+- **Gate A fails:** PF 0.94; 2022-24 is -4.4 R and 2025-26 -6.3 R. Closed.
+- **The shape:** the 1:1 stop and target split evenly (170 / 167). Costs (-245.33 USD, about -0.04 R a trade) are the
+  loss, so there is no signal edge.
+  - Longs: -7.3 R.
+  - Shorts: -3.4 R.
+- **Expectation check:**
+  - PF 0.94 in R, inside the expected 0.85-1.05.
+  - 337 trades, about 71 a year, at the top of the expected 30-80 a year, so Gate A's count was met.
+- **Removed** per the leftovers rule: `mql5/RSI_Engine_EA.mq5`, its profile and string inputs, and the MT5 copies (the
+  source is in git at 4b3ef18).

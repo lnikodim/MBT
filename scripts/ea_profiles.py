@@ -8,7 +8,7 @@ v||v||1||v||N. Unknown input names are refused instead of silently ignored.
 import os
 
 BLESSING_STRINGS = {"AlertSound", "DDorLevel", "GridSetArray", "HedgeSymbol", "Holidays", "LabelAcc", "LabelAdv", "LabelBBS", "LabelCCI", "LabelDisplay", "LabelEDD", "LabelEE", "LabelEH", "LabelES", "LabelEST", "LabelEST0", "LabelGS", "LabelGrid", "LabelGridOpt", "LabelHS", "LabelHS0", "LabelIchi", "LabelLS", "LabelMA", "LabelMACD", "LabelOS", "LabelOS0", "LabelOpt", "LabelSG", "LabelSto", "LabelTS", "LabelTST", "LabelUE", "Notes", "SetCountArray", "TP_SetArray", "TradeComment", "Version_3_9_6_23", "displayFont", "eopb", "eopb1", "s1", "s2", "s3"}
-STRING_INPUTS = {"InpComment", "FridayHours", "MondayHours", "SaturdayHours", "SundayHours", "ThursdayHours", "TuesdayHours", "WednesdayHours"} | BLESSING_STRINGS
+STRING_INPUTS = {"InpComment"} | BLESSING_STRINGS
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
 # stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.
@@ -161,20 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # RSI_Engine_EA = The_RSI_Engine_v2_1.mq5 v2.1 (mql5.com 63698), unchanged; source defaults (spec
-    # 2026-10-24-rsi-engine-eurusd-prereg.md): RSI divergence or 30 / 70 reversal + a 50 cross, 300 / 300 points, 0.1 lot
-    "RSI_Engine_EA": {"InpUseRiskManagement": "false", "InpRiskPercent": "1.0", "InpLots": "0.1", "InpStopLossPoints":
-                      "300", "InpTakeProfitPoints": "300", "InpMagicNumber": "1901", "InpUseTrailingStop": "true",
-                      "InpTrailingStopTrigger": "3000", "InpTrailingStopStep": "50", "InpRSI_Period": "14",
-                      "InpRSI_Overbought": "70", "InpRSI_Oversold": "30", "InpRSI_Centerline": "50",
-                      "InpUse_Divergence_Signal": "true", "InpUse_OverboughtOversold_Reversal": "true",
-                      "InpUse_Centerline_Confirmation": "true", "InpUse_RSI_Level_Exit": "false",
-                      "InpDivergence_Lookback_Bars": "60", "EnableDailyLimits": "true", "DailyProfitTarget":
-                      "10000.0", "DailyLossLimit": "5000.0", "InpUseNewsFilter": "false", "InpNewsTimeHour": "15",
-                      "InpNewsTimeMinute": "30", "InpMinutesBeforeNews": "10", "InpMinutesAfterNews": "10",
-                      "EnableTimeFilter": "false", "MondayHours": "16:30-18:00", "TuesdayHours": "16:30-18:00",
-                      "WednesdayHours": "16:30-18:00", "ThursdayHours": "16:30-18:00", "FridayHours": "16:30-18:00",
-                      "SaturdayHours": "00:00-00:00", "SundayHours": "00:00-00:00", "CloseAtEndTime": "false"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
