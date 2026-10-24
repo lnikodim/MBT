@@ -161,10 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Bands_RSquared_EA = Bands.mq5 (mql5.com 58268), unchanged; source defaults (spec 2026-10-24-bands-rsquared-eurusd-prereg.md):
-    # Bollinger(100, 1.0) re-entry with the Donchian(100) trend, 4 ATR(21) stop / target, Donchian-break exit, 0.1 lot
-    "Bands_RSquared_EA": {"Magic": "123", "Lots": "0.1", "BPeriod": "100", "BDeviation": "1", "DonchPeriod": "100", "CPeriod": "100",
-                          "AtrPeriod": "21", "Stop": "4", "Take": "4", "Slippage": "30"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

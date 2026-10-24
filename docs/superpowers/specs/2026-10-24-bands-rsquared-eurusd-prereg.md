@@ -44,3 +44,17 @@ the size.
 - **Real ticks vs the author's 1-minute OHLC** usually costs about 0.05-0.10 PF.
 - **PF:** 0.95-1.15 in R, about 120 trades a year.
 - **Most likely verdict:** Gate A borderline; the out-of-sample check is the main risk.
+
+## Outcome (2026-10-24; log `reports/bands/base.log`): closed
+| run (EURUSD M15, real ticks, 100k, 0.1 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +451.73 | 1.06 (R 1.01) | 0.4% | 599 | 45.7% | +1.7 (+0.08) | 22 -0.9, 23 +3.3, 24 +3.9, 25 +6.4, 26 -11.0 | stop 110 at -1.05 R, target 217 at +0.99 R, channel exit 272 at -0.36 R |
+
+- **Gate A fails:** 2025-26 is -4.6 R (2022-24 +6.3 R). The edge is about zero (+0.003 R per trade, t 0.08). No S1.
+  Closed.
+- **Sides:** longs +10.5 R (PF 1.09), shorts -8.8 R (PF 0.94); neither is significant.
+- **The author's PF 1.20 (1-minute OHLC, 2022-01..2025-04)** comes out as PF 1.01 in R on real ticks. That is near the
+  expected 0.05-0.10 PF loss from the model change.
+- **Expectation check:** PF in R 1.01, inside the expected 0.95-1.15. Trades about 126 a year, as expected.
+- **Removed** per the leftovers rule: `mql5/Bands_RSquared_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 4476501).
