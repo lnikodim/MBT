@@ -161,10 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # VR_Breakdown_Level_EA = VR_Breakdown_level.mq5 (mql5.com 69545), unchanged; source defaults (spec
-    # 2026-10-24-vr-breakdown-level-eurusd-prereg.md): previous-bar high / low breakout, 200-point stop, 400-point target, 0.01 lot
-    "VR_Breakdown_Level_EA": {"iLots": "0.01", "iTimeFrame": "0", "iTakeProfit": "400", "iStopLoss": "200", "iMagicNumber": "227",
-                              "iSlippage": "30"},
     # GDS_Renko_Bollinger_EA = GDS_Renko_Bollinger_4Mode_Demo.mq5 v1.30 (mql5.com 77236), unchanged; source defaults (spec
     # 2026-10-24-gds-renko-bollinger-xauusd-prereg.md): four Renko + Bollinger modes, virtual TP / SL / max hold, 0.01 lot
     "GDS_Renko_Bollinger_EA": {"InpLots": "0.01", "InpMagic": "26091150", "InpMaxPositions": "4",

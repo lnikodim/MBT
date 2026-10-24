@@ -52,3 +52,22 @@ None of these matter at the defaults on Darwinex: 0.01 lot is the minimum, and t
   about -0.04 R per trade.
 - **PF:** 0.90-0.98 in R. With that many trades even a small cost gives a large negative t.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-24; logs `reports/vrbl/probe.log`, `reports/vrbl/base.log`): closed
+| run (EURUSD H1, real ticks, 100k, 0.01 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year |
+|---|---|---|---|---|---|---|---|
+| probe 2026-09 | -201.95 | 0.76 | 0.25% | 553 | 29.8% | -101.0 (-3.09) | |
+| S0 2022-01..2026-10, hq 100% | **-4,355.09** | 0.90 | 4.4% | 30,275 | 32.6% | **-2,177.5** (-8.77) | 22 -408.1, 23 -309.8, 24 -482.6, 25 -408.4, 26 -568.7 |
+
+- **Gate A fails:** PF 0.90; 2022-24 is -1,200.5 R and 2025-26 -977.0 R. Every year loses. Closed.
+- **The loss is the cost:** about -0.07 R per trade, which is roughly the expected 0.7-1 pip of costs on a 20-pip stop.
+  The breakout itself adds nothing.
+  - Longs: -1,898.0 R (PF 0.84).
+  - Shorts: -279.5 R (PF 0.97).
+- **Up to 82 positions were open at once**, because the EA has no position limit.
+- **Exits:** 13,849 stops, 7,059 targets, 9,367 other. The "other" share is inflated: `deals_trades` pairs equal 0.01
+  legs oldest-first, so with many open positions the open price behind the exit split can be another leg's. Net USD and
+  R per trade come from the closing deal, so they are exact.
+- **Expectation check:** about 30k trades and PF 0.90 in R, as expected.
+- **Removed** per the leftovers rule: `mql5/VR_Breakdown_Level_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 57bd75c).
