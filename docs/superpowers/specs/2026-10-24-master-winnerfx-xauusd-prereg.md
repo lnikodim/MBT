@@ -73,8 +73,12 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/69712". Server: Darwinex-D
 | S0 2022-01..2026-10, hq 100% | **-858.11** | 0.41 | 89.5% | -121.2% | 169 | 134 / 5 | -1,211.52 (one -1,000 exit) |
 
 - **Gate fails:** k = 0.09; the scaled return is -2.6%/yr in 2022-24 and 0.0 in 2025-26. Closed.
-- **The account is spent in 2022:** all 169 legs and the whole -858.11 USD fall in 2022. After it, the about 142 USD
-  left opens nothing more. There was no broker stop-out; the EA's own -1,000 basket exit fired once.
+- **A broker stop-out ended the test on 2022-07-13** (margin level 46.31%; corrected 2026-10-24, see the note below).
+  All 169 legs and the whole -858.11 USD fall in 2022-01..07. The EA's own -1,000 basket exit fired once before that.
+- **Correction (2026-10-24):** the first version of this outcome said "no broker stop-out" and that the 142 USD left
+  "opens nothing more". The eval's stop-out counter searched for "so: " but MT5 writes "so 46.31%", so it read 0. The
+  report shows 2 stop-out deals and the test ending at the stop-out. The pattern is fixed in `mwfx_eval.py`. The
+  verdict does not change.
 - **The pattern:** 134 small +3 USD baskets, then a few stuck 3-leg baskets that each take most of the account. 30 USD
   of grid depth is far below gold's swings.
 - **The author's +479,495.85 USD** comes from a 0%-quality, 4-ticks-a-bar history and has no meaning on real data.

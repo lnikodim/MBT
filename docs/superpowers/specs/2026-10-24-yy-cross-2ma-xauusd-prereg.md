@@ -55,3 +55,25 @@ by year.
   4,000 USD in 2022-26, so the short positions build losses of hundreds to thousands of USD each at 0.01 lot.
 - **Expected:** a margin stop-out of the 1,000 account in S0, probably in 2023-24.
 - **Most likely verdict:** closed (stop-out).
+
+## Outcome (2026-10-24; log `reports/yy/base.log`): closed (broker stop-out)
+| run (XAUUSD M1, real ticks, 1,000 USD, 0.01 lot) | net USD | PF | max equity DD | trades | closed before the end | end close-out | most open |
+|---|---|---|---|---|---|---|---|
+| R0 2024-01-03..03-22 (the author's window) | -355.86 | 0.76 | 65.0% | 381 | +1,049.11 | -1,404.97 | 21 |
+| S0 2022-01..2026-10 | **-407.06** | 0.66 | 59.4% | 278 | +726.27 | -1,133.33 (stop-out) | 22 |
+
+- **R0 matches the author's screenshot:**
+  - Closed-trade profit is +1,049.11 against about +1,450, inside the +/-50% band.
+  - Equity runs far below the balance.
+  - So XAUUSD M1 is the right reading of their test.
+  - The losers still open at the window's end take back -1,404.97, so the author's window is **net negative** (-355.86).
+    The screenshot's rising balance line hides it.
+- **S0 ends in a broker stop-out on 2022-02-24 04:51** (the invasion-day gold spike; margin level 49.97%):
+  - It had 22 short positions opened at 1,810-1,867 with gold at 1,919.
+  - The tester force-closed them and ended the test after 2 months. The account was at 592.94.
+  - The run's stop-out counter printed 0 because of the "so " vs "so: " parser bug (fixed the same day; see the
+    MASTER-WINNERFX correction). The deals show 7 stop-out closes.
+- **Gate fails:** a stop-out, and k = 0.13. Closed. The expectation (a stop-out of the 1,000 account) was met, earlier
+  than the guessed 2023-24.
+- **Removed** per the leftovers rule: `mql5/YY_Cross_2MA_EA.mq5`, its profile and string input, and the MT5 copies (the
+  source is in git at e0dd949).
