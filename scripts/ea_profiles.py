@@ -161,6 +161,10 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # VR_Breakdown_Level_EA = VR_Breakdown_level.mq5 (mql5.com 69545), unchanged; source defaults (spec
+    # 2026-10-24-vr-breakdown-level-eurusd-prereg.md): previous-bar high / low breakout, 200-point stop, 400-point target, 0.01 lot
+    "VR_Breakdown_Level_EA": {"iLots": "0.01", "iTimeFrame": "0", "iTakeProfit": "400", "iStopLoss": "200", "iMagicNumber": "227",
+                              "iSlippage": "30"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
