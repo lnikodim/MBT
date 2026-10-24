@@ -161,6 +161,11 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # ADX_Trend_Pullback_EA = ADX_Trend_Pullback_EA.mq5 v1.00 (mql5.com 73958), unchanged; source defaults (spec
+    # 2026-10-24-adx-trend-pullback-xauusd-prereg.md): rising ADX > 25, EMA(20) pullback inside 0.5 ATR, DI direction, 1.5 ATR / 2R, 0.01 lot
+    "ADX_Trend_Pullback_EA": {"InpTradeDirection": "0", "InpMagicNumber": "270601", "InpLotSize": "0.01", "InpATR_SL_Multiplier": "1.5",
+                              "InpRR_Ratio": "2.0", "InpIndicatorTF": "16385", "InpADXPeriod": "14", "InpEMAPeriod": "20", "InpATRPeriod": "14",
+                              "InpADXThreshold": "25.0", "InpPullbackATRRatio": "0.5"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
