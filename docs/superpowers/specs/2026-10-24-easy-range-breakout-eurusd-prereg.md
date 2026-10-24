@@ -77,3 +77,8 @@ updated 2026-09-11), `Range_BreakOut_EA_1_02.mq5`, 274 lines, MD5 df6cbbc2….
 - **Expectation check:** cell A PF 0.93 in R, inside the expected 0.90-1.05. Cell B: no trades, not foreseen.
 - **Removed** per the leftovers rule: `mql5/Easy_Range_Breakout_EA.mq5`, its profile and the MT5 copies (the source is in
   git at 458e843).
+
+**Later the same day:** the user sent `Range_BreakOut_EA_1.02.mq5` from ForexFactory thread 1407952 (MD5 6a6234b5…).
+- **Difference from the Code Base file:** no BOM, and the link is www.mql5.com instead of forge.mql5.io. The trading logic
+  is identical, so this outcome covers it. Not re-run.
+- **The thread's developer** posts a modified version 1.89, which has not been tested.
