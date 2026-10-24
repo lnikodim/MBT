@@ -165,6 +165,24 @@ PROFILES = {
     # 2026-10-24-vr-breakdown-level-eurusd-prereg.md): previous-bar high / low breakout, 200-point stop, 400-point target, 0.01 lot
     "VR_Breakdown_Level_EA": {"iLots": "0.01", "iTimeFrame": "0", "iTakeProfit": "400", "iStopLoss": "200", "iMagicNumber": "227",
                               "iSlippage": "30"},
+    # GDS_Renko_Bollinger_EA = GDS_Renko_Bollinger_4Mode_Demo.mq5 v1.30 (mql5.com 77236), unchanged; source defaults (spec
+    # 2026-10-24-gds-renko-bollinger-xauusd-prereg.md): four Renko + Bollinger modes, virtual TP / SL / max hold, 0.01 lot
+    "GDS_Renko_Bollinger_EA": {"InpLots": "0.01", "InpMagic": "26091150", "InpMaxPositions": "4",
+                               "InpSkipOppositeSignals": "true", "InpBreakoutEnabled": "true", "InpBreakoutBrickSize":
+                               "17.0", "InpBreakoutBBPeriod": "20", "InpBreakoutDeviation": "1.0",
+                               "InpBreakoutEntryRun": "2", "InpBreakoutTP": "24.0", "InpBreakoutSL": "42.0",
+                               "InpBreakoutMaxHold": "1230", "InpBreakoutCooldown": "5", "InpBreakoutMaxSpread":
+                               "0.35", "InpReentryEnabled": "true", "InpReentryBrickSize": "30.0",
+                               "InpReentryBBPeriod": "31", "InpReentryDeviation": "1.2", "InpReentryEntryRun": "1",
+                               "InpReentryTP": "28.0", "InpReentrySL": "48.5", "InpReentryMaxHold": "2580",
+                               "InpReentryCooldown": "3", "InpReentryMaxSpread": "0.35", "InpMidlineEnabled": "true",
+                               "InpMidlineBrickSize": "30.0", "InpMidlineBBPeriod": "5", "InpMidlineDeviation": "3.0",
+                               "InpMidlineEntryRun": "1", "InpMidlineTP": "10.0", "InpMidlineSL": "34.5",
+                               "InpMidlineMaxHold": "2220", "InpMidlineCooldown": "3", "InpMidlineMaxSpread": "0.35",
+                               "InpSqueezeEnabled": "true", "InpSqueezeBrickSize": "14.0", "InpSqueezeBBPeriod": "18",
+                               "InpSqueezeDeviation": "2.4", "InpSqueezeMaxWidth": "34.5", "InpSqueezeEntryRun": "1",
+                               "InpSqueezeTP": "26.0", "InpSqueezeSL": "31.0", "InpSqueezeMaxHold": "2050",
+                               "InpSqueezeCooldown": "1", "InpSqueezeMaxSpread": "0.35"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
