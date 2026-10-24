@@ -161,6 +161,13 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # Enhanced_Range_Breakout_EA = Enhanced_Range_Breakout_EA_v1.67.ex5 (ForexFactory thread 1407952, no source, AVX2 build: runs need
+    # ROSETTA_ADVERTISE_AVX=1); compiled defaults from the tester log of a no-inputs run on 2026-10-24 (spec 2026-10-24-erb167-prereg.md)
+    "Enhanced_Range_Breakout_EA": {"RangeStartHour": "1", "RangeStartMin": "0", "RangeEndHour": "6", "RangeEndMin": "0",
+                                   "TradingEndHour": "22", "TradingEndMin": "0", "RangeTimeToServerOffsetHours": "2",
+                                   "RangeTimeToServerOffsetMin": "0", "BreakoutTimeframe": "15", "BreakoutBufferPips": "0.0",
+                                   "TradeDirection": "0", "LotMode": "1", "LotSize": "0.0", "RiskPercent": "1.0", "RiskMoney": "50.0",
+                                   "TakeProfitRR": "1.0", "MaxSpreadPips": "30", "MagicNumber": "20260708"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
