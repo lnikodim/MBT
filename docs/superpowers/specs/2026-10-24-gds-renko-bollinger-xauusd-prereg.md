@@ -59,3 +59,28 @@ deposit, defaults):
   - About 45 inputs fitted on 4 months.
 - **S0:** PF 0.85-1.10 outside 2026, with 2022-24 at or below zero.
 - **Most likely verdict:** closed (Gate A fails in 2022-24, or there are too few trades).
+
+## Outcome (2026-10-24; log `reports/gds/base.log`): closed
+| run (XAUUSD M1, real ticks, 10k, 0.01 lot) | net USD | PF | max DD | trades | win | mean USD (t) | net by year |
+|---|---|---|---|---|---|---|---|
+| R0 2026-05-01..09-08 (the author's fitted window) | +3,387.28 | 3.62 | 2.9% | 107 | 65.4% | +31.66 (+5.08) | author: +4,084.32, PF 4.22, 108 trades |
+| S0 2022-01..2026-10, hq 100% | +3,868.08 | 1.27 | 11.4% | 659 | 50.5% | +5.87 (+2.20) | 22 +28, 23 +15, 24 +10, 25 +473, 26 +3,343 |
+| S1 2019-01..2022-01, hq 99% | **-215.37** | 0.77 | 4.5% | 105 | 42.9% | -2.05 (-1.05) | 19 -90, 20 +45, 21 -170 |
+
+- **Gate A passes only on paper:** 2022-24 is +52.51 USD over 3 years, about 0.2 USD a trade, so about zero.
+  2025-26 is +3,815.57.
+- **The fitted window is almost all of the profit:** R0's +3,387.28 is 88% of S0's +3,868.08. The rest of 2026 is about
+  -44 USD, and 2022-25 is +526 USD over about 550 trades.
+- **Out-of-sample check fails:** 2019-21 is -215.37 USD, PF 0.77, t -1.05. Closed per the pre-registration.
+- **Exits:**
+  - Virtual TP: hit 4 times in 659 trades. Virtual SL: never.
+  - Max-hold timer: 439 trades.
+  - Opposite band signal or the midline: the rest.
+  - So the edge, where there is one, is a holding-time drift in 2025-26 gold. The Renko TP / SL design does not drive it.
+- **Replication:** the author's window reproduces closely on real ticks (+3,387 vs +4,084; 107 vs 108 trades). This shows
+  the EA works as described, not that it has an edge.
+- **Expectation check:**
+  - 2022-24 at about zero, as expected.
+  - PF 1.27 over 2022-26 is above the expected 0.85-1.10, because the fitted 2026 window is inside S0.
+- **Removed** per the leftovers rule: `mql5/GDS_Renko_Bollinger_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 5ae4e9e).
