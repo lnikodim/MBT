@@ -93,3 +93,25 @@ That is about 1.6-2.9% a year at 0.5% risk.
     likely passes, with PF 1.2-1.5 in R and about 200-300 trades.
   - 2019-21: 2019-20 trended and 2021 was choppy; expect about PF 1.0-1.2, so the out-of-sample t is the main risk again.
   - Darwinex gold real-tick quality before 2022 is not yet known; below 90% means inconclusive.
+
+### Amendment 1 outcome (2026-10-24; log `reports/storm/xau.log`): closed (out-of-sample check fails)
+| run (XAUUSD H4, real ticks, 100k, 0.5% of equity) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **+24,762.76** | 1.35 (R 1.35) | 9.9% | 273 | 35.2% | **+48.7** (+1.59) | 22 -2.9, 23 +10.7, 24 +9.6, 25 +13.0, 26 +18.3 | stop 106 at -1.01 R, signal 167 at +0.94 R |
+| S1 2019-01..2022-01, hq 99% | **-3,848.26** | 0.93 (R 0.94) | 10.7% | 191 | 29.8% | **-6.7** (-0.26) | 19 -12.4, 20 +8.1, 21 -2.4 | stop 87 at -1.04 R, signal 104 at +0.81 R |
+
+- **Gate A passes:** 273 trades, PF 1.35, 2022-24 +17.4 R, 2025-26 +31.4 R.
+  - Longs: +56.6 R (PF 1.87).
+  - Shorts: -7.8 R (PF 0.89).
+- **The out-of-sample check fails outright:** net -3,848.26 USD, PF 0.93, t -0.26. 2019 lost 12.4 R; only 2020 (a
+  strong gold trend) was positive. No neighbour runs.
+- **Both symbols together:**
+  - The 2022-26 edge (+46.7 R silver, +48.7 R gold) comes from the 2023-26 metals trend.
+  - Before it, the same rules give +7.2 R (silver) and -6.7 R (gold) in 2019-21.
+  - So the setup follows a strong trend when there is one, and does not show an edge across regimes.
+- **Expectation check:**
+  - Gate A passed with PF 1.35, inside the expected 1.2-1.5.
+  - 273 trades, inside the expected 200-300.
+  - 2019-21 came out below the expected PF 1.0-1.2.
+- **Removed again** per the leftovers rule: `mql5/Stormbreaker_ADX_EA.mq5`, its profile and the MT5 copies (the source
+  is in git at 6e9a669 / 7584688).
