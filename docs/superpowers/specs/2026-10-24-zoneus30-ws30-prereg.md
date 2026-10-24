@@ -43,3 +43,20 @@ gross.
 - **Shape:** a high win rate with rare losses of about -1 R. One or two losses wipe out about 10-12 wins, and US30's
   2023-26 uptrend gives a sell-only fade few chances.
 - **Most likely verdict:** closed (trade count).
+
+## Outcome (2026-10-24; log `reports/oct24/zone.log`): closed (trade count)
+| run (WS30 M30, real ticks, 100k, 5 lots) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +26,563.10 | 2.29 (R 2.07) | 8.1% | 34 (all sells) | 91.2% | +3.1 (+1.59) | 22 +1.6, 23 -0.2, 24 +1.0, 25 -0.4, 26 +1.1 | stop 3 at -0.98 R, target 31 at +0.20 R |
+
+- **Gate A fails on the trade count:** 34 against 150, about 7 trades a year. Closed, as expected before the run.
+- **The USD figure hides the risk:** at 5 lots one stop (4% of about 33-47k index points) costs about 6,600-9,400
+  USD, 7-9% of the account.
+  - The result is 31 targets at +0.20 R and 3 stops at -1 R: +3.1 R in 4.75 years.
+  - 2023 and 2025 were negative.
+- **Swap:** commission plus swap added +2,313.10 USD. The short swap is positive at Darwinex's current rates, which the
+  tester applies to the whole history, so this is indicative only.
+- **The author's claim** (26 trades, PF 6.04, 85.5% equity DD on 5,000) has the same shape: a high win rate and one or
+  two large losses.
+- **Removed** per the leftovers rule: `mql5/ZoneUS30_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  136c6ef).
