@@ -65,7 +65,7 @@ by year.
 - **R0 matches the author's screenshot:**
   - Closed-trade profit is +1,049.11 against about +1,450, inside the +/-50% band.
   - Equity runs far below the balance.
-  - So XAUUSD M1 is the right reading of their test.
+  - So XAUUSD M1 is consistent with their test (the symbol is still a guess).
   - The losers still open at the window's end take back -1,404.97, so the author's window is **net negative** (-355.86).
     The screenshot's rising balance line hides it.
 - **S0 ends in a broker stop-out on 2022-02-24 04:51** (the invasion-day gold spike; margin level 49.97%):
