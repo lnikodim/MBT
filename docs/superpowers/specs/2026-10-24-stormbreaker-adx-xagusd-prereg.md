@@ -70,7 +70,7 @@ That is about 1.6-2.9% a year at 0.5% risk.
   result in all periods, too weak to separate from noise. No neighbour runs (they were conditional on passing the
   out-of-sample check).
 - **Expectation check:**
-  - PF 1.37 in R, inside the expected 1.00-1.25 band's upper end and slightly above it.
+  - PF 1.37 in R, above the expected 1.00-1.25.
   - 265 trades, as expected.
   - Gate A passed; the out-of-sample check was the deciding risk, as expected.
 - **Removed** per the leftovers rule: `mql5/Stormbreaker_ADX_EA.mq5`, its profile and the MT5 copies (the source is in
