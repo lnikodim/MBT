@@ -65,3 +65,19 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/69712". Server: Darwinex-D
   starting deposit) or a margin stop-out. Gold's 2024-25 rise of more than 1,500 USD makes a stuck sell basket likely.
 - **Expected:** a stop-out or a max DD above 50% (k < 0.16), with a high win rate before it.
 - **Most likely verdict:** closed. The author's +479k comes from 0%-quality data and cannot be compared.
+
+## Outcome (2026-10-24; logs `reports/mwfx/probe.log`, `reports/mwfx/base.log`): closed
+| run (XAUUSD M15, real ticks, 1,000 USD, defaults) | net USD | PF | max equity DD | worst day | legs | baskets won / lost | worst basket |
+|---|---|---|---|---|---|---|---|
+| probe 2026-09 | -670.64 | 0.14 | 69.2% | -73.9% | 33 | 24 / 2 | -738.90 |
+| S0 2022-01..2026-10, hq 100% | **-858.11** | 0.41 | 89.5% | -121.2% | 169 | 134 / 5 | -1,211.52 (one -1,000 exit) |
+
+- **Gate fails:** k = 0.09; the scaled return is -2.6%/yr in 2022-24 and 0.0 in 2025-26. Closed.
+- **The account is spent in 2022:** all 169 legs and the whole -858.11 USD fall in 2022. After it, the about 142 USD
+  left opens nothing more. There was no broker stop-out; the EA's own -1,000 basket exit fired once.
+- **The pattern:** 134 small +3 USD baskets, then a few stuck 3-leg baskets that each take most of the account. 30 USD
+  of grid depth is far below gold's swings.
+- **The author's +479,495.85 USD** comes from a 0%-quality, 4-ticks-a-bar history and has no meaning on real data.
+- **Expectation check:** a max DD above 50% with a high win rate (84% of legs), as expected.
+- **Removed** per the leftovers rule: `mql5/Master_WinnerFX_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at b3d9608).
