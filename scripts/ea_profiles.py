@@ -161,6 +161,12 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # Master_WinnerFX_EA = EA.mq5 "MASTER-WINNERFX-Asim" (mql5.com 69712), unchanged; source defaults (spec
+    # 2026-10-24-master-winnerfx-xauusd-prereg.md): EMA(50, M15) + RSI(14) 55 / 45 entry, grid 1500 points x 1.2 up to 3 legs,
+    # basket +3 USD / -1,000 USD, 0.01 lot per 1,000 of balance
+    "Master_WinnerFX_EA": {"LotPer1000": "0.01", "Multiplier": "1.2", "GridStep": "1500", "TargetProfit": "3.0", "MaxRisk": "1000.0",
+                           "MagicNumber": "506780", "EMAPeriod": "50", "TrendTF": "15", "RSIPeriod": "14", "RSILower": "55",
+                           "RSIUpper": "45", "PauseDuringNews": "true", "NewsHoursUTC": "13", "MarketCloseHour": "22"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
