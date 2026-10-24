@@ -41,3 +41,17 @@ and strategy testing only".
   happens only in quote glitches or at the rollover, when spreads are wide and fills poor.
 - **Expected:** few cycles, likely < 150, and each one loses about 3 spreads + commission.
 - **Most likely verdict:** closed (trade count or losses).
+
+## Outcome (2026-10-24; log `reports/oct24/tardio.log`): closed (trade count)
+| run (EURUSD / GBPUSD / EURGBP, real ticks, 100k, 0.2 lot a leg) | net USD | PF | max DD | cycles | per cycle | net by year |
+|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +53.19 | 1.07 (per cycle 1.34) | 0.2% | **23** | mean +2.31 USD (t +0.47) | 22 -15, 23 +49, 24 +19, 25-26 none |
+
+- **Gate A fails on the cycle count:** 23 against 150, and none at all in 2025-26. Closed.
+- **The gaps are as expected:**
+  - The implied-vs-actual EURGBP gap beat three spreads + 0.7 pip + 1 pip only 23 times in 4.75 years.
+  - Each cycle made +2.31 USD on average; entry commissions were -38.59 USD in total.
+  - Darwinex prices the cross in line with the majors.
+- **Expectation check:** fewer than 150 cycles and no edge, as expected. The small positive total is noise (t 0.47).
+- **Removed** per the leftovers rule: `mql5/TardioBot_EA.mq5`, its profile, the MT5 copies and the `ArbitrageLog.txt` it
+  wrote (the source is in git at 51081e2).
