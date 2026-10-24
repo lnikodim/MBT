@@ -42,3 +42,19 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/78308". Server: Darwinex-D
 - **Trades:** many, more than 500 in S0.
 - **PF:** 0.85-1.05 in R. The breakout has no known edge, and the exits mostly cap the winners.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-24; log `reports/oct24/gfb.log`): closed
+| run (XAUUSD H1, real ticks, 100k, 0.01 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year |
+|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-1,275.61** | 0.83 (R 0.80) | 1.3% | 2,061 | 85.8% | **-26.5** (-2.22) | 22 -4.7, 23 -16.0, 24 -1.3, 25 -0.7, 26 -3.8 |
+
+- **Gate A fails:** PF 0.83; 2022-24 is -22.0 R and 2025-26 -4.5 R. Every year loses. Closed.
+- **The trade shape is as expected:**
+  - 85.8% of trades win, but tiny. Most close on the break-even or trailing stop, so the "stop" exits (1,914) average
+    -0.02 R.
+  - The 146 target exits (the 1% target and salvage exits) average +0.03 R.
+  - Costs: commission and swap total -415.63 USD, about a third of the loss.
+- **Sides:** longs -10.3 R, shorts -16.2 R.
+- **Expectation check:** PF 0.80 in R, just below the expected 0.85-1.05. 2,061 trades, more than 500 as expected.
+- **Removed** per the leftovers rule: `mql5/Gold_Fractal_Breakout_EA.mq5`, its profile and the MT5 copies (the source is
+  in git at 136c6ef).

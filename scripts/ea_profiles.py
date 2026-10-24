@@ -161,19 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Gold_Fractal_Breakout_EA = Gold_Fractal_Breakout_EA.mq5 v1.00 (mql5.com 78308), unchanged; source defaults (spec
-    # 2026-10-24-gold-fractal-breakout-xauusd-prereg.md): stop orders 0.10% inside H1 swings, 2% stop, 1% target, break-even /
-    # trail / salvage rules, 0.01 lot
-    "Gold_Fractal_Breakout_EA": {"InpMagic": "900009", "InpComment": "GoldX9 strategy 9", "InpLotMode": "0",
-                                 "InpFixedLots": "0.01", "InpRiskPercent": "0.50", "InpMaxPending": "3",
-                                 "InpMaxPositions": "10", "InpPendingExpiryHours": "15", "InpDuplicatePoints": "100",
-                                 "InpRescanMinutes": "15", "InpFractalLeft": "5", "InpFractalRight": "5",
-                                 "InpMaxSearchBars": "200", "InpMinFractalClearancePct": "0.02",
-                                 "InpBuyEntryOffsetPct": "-0.10", "InpSellEntryOffsetPct": "-0.10", "InpStopLossPct":
-                                 "2.00", "InpTakeProfitPct": "1.00", "InpTrailTriggerPct": "0.20",
-                                 "InpTrailDistancePct": "0.20", "InpMaxTrailPct": "1.00", "InpSalvageTriggerPct":
-                                 "1.00", "InpSalvageExitPct": "0.15", "InpBreakEvenTriggerPct": "0.10",
-                                 "InpBreakEvenLockPct": "0.025"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
