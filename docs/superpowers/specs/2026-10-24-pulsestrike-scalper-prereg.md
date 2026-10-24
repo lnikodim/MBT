@@ -51,3 +51,21 @@ is attached after the fill), so R per trade = profit / (0.5% x balance at entry)
 - **R0:** far below the author's PF (likely < 1).
 - **S0:** PF < 1 on both symbols.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-24; log `reports/pulse/base.log`): closed, together with ZetaBurst (mql5.com 77220)
+| run (M1, real ticks, defaults) | net USD | PF | max DD | trades | win | net R (t) | author (generated ticks, same window) |
+|---|---|---|---|---|---|---|---|
+| R0 EURUSD 2026-01..09, 10k | -8,428.94 | 0.42 | 84.4% | 918 | 51.2% | -368.4 (-14.32) | +182,740.71, PF 1.30, 5,557 trades |
+| R0 USDJPY 2026-01..09, 10k | -8,240.63 | 0.43 | 82.5% | 943 | 50.9% | -345.4 (-12.25) | +98,592.56, PF 1.37, 7,240 trades |
+| S0 EURUSD 2022-26, 100k | -99,966.12 | 0.47 | 100% | 4,593 | 54.1% | -1,590.2 (-29.12) | |
+| S0 USDJPY 2022-26, 100k | -99,966.78 | 0.40 | 100% | 4,094 | 50.2% | -1,594.6 (-30.72) | |
+
+- **Gate A fails on both symbols.** Both accounts are empty by 2023-24. No S1. Closed.
+- **Replication:** the author's own window on real ticks loses 82-84% where the generated-tick test showed +98-183k.
+  Real ticks also give about 6-8x fewer bursts. The 4-second moves in generated ticks are artificial, and the
+  sub-pip TP does not survive real costs.
+- **ZetaBurst (mql5.com 77220, published 2026-09-10 by the same author)** is the identical file (MD5 eb984af6…, 20,309
+  bytes). Its page claims USDJPY +252,535.49 and EURUSD +215,509.88 from the same generated-tick setup. Not run
+  separately; this outcome covers it.
+- **Removed** per the leftovers rule: `mql5/PulseStrike_Scalper_EA.mq5`, its profile and the MT5 copies (the source is
+  in git at 497a10f).
