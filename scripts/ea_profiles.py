@@ -161,6 +161,16 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # TardioBot_EA = TardioBot_V1_05.mq5 (mql5.com 62857), unchanged; source defaults (spec 2026-10-24-tardiobot-arbitrage-prereg.md):
+    # triangular arbitrage EURUSD / GBPUSD / EURGBP on a 100 s timer, 0.002 lot per 1,000, 60 s max hold
+    "TardioBot_EA": {"SelectedTrio": "0", "MinArbitrageThreshold_EURGBP": "0.0001", "MinArbitrageThreshold_GBPJPY":
+                     "0.01", "MinArbitrageThreshold_EURCHF": "0.0001", "MinArbitrageThreshold_AUDNZD": "0.0001",
+                     "MinArbitrageThreshold_EURJPY": "0.01", "MinArbitrageThreshold_EURSGD": "0.0001",
+                     "Lot_Size_Per_Thousand": "0.002", "Commission_EURUSD": "7.0", "Commission_USDJPY": "700.0",
+                     "Commission_EURGBP": "7.0", "Commission_GBPCHF": "7.0", "Commission_AUDUSD": "7.0",
+                     "Commission_USDNZD": "7.0", "Commission_EURCAD": "7.0", "Commission_CADJPY": "700.0",
+                     "Commission_USDSGD": "7.0", "MaxDailyTrades": "5", "MagicNumber": "1234567", "MaxTradeDuration":
+                     "60", "Plot_Max_Difference": "true"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
