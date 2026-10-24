@@ -161,9 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # RSI_Exhaustion_Reversal_EA (mql5.com 77738), unchanged; the author's .set (spec 2026-10-24-rsi-exhaustion-eurusd-prereg.md):
-    # EURUSD M5 sell-only RSI(14) cross of 65, 14-18 h, 4 ATR stop / target, 96-bar timeout, fixed 1.0 lot
-    "RSI_Exhaustion_Reversal_EA": {"InpTimeframe": "5", "InpFixedLot": "1.0", "InpMagic": "26092601"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

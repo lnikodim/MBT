@@ -47,3 +47,18 @@ years, dates not stated):
 - **Trades:** about 60-70 a year, so about 300 in 2022-26.
 - **PF:** 0.90-1.10 in R.
 - **Most likely verdict:** closed; at best a weak S0 that fails the out-of-sample check.
+
+## Outcome (2026-10-24; log `reports/rsiexh/base.log`): closed
+| run (EURUSD M5, real ticks, 100k, 1.0 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | -4,825.48 | 0.95 (R 0.94) | 13.8% | 1,017 (all sells) | 49.7% | -27.0 (-0.88) | 22 -7.0, 23 -18.3, 24 -6.1, 25 -4.5, 26 +8.9 | stop 403 at -1.06 R, target 406 at +1.00 R, timeout 208 at -0.02 R |
+
+- **Gate A fails:** 2022-24 is -31.4 R (2025-26 +4.4 R) and PF is below 1. No S1. Closed.
+- **The 1:1 exits split evenly** (403 stops, 406 targets). Costs (stops average -1.06 R) and the near-flat timeouts
+  leave no edge.
+- **The author's 178 trades in about 2.7 years (about 66 a year)** compare with 214 a year here. Their window and broker
+  clock are unstated, so the claimed PF 1.60 is not reproduced and cannot be checked.
+- **Expectation check:** PF 0.94 in R, inside the expected 0.90-1.10. The trade count was over the expected (1,017 vs
+  about 300). Contrary to the expectation, 2025-26 was not the weak period.
+- **Removed** per the leftovers rule: `mql5/RSI_Exhaustion_Reversal_EA.mq5`, its profile and the MT5 copies (the source
+  is in git at d145c3a).
