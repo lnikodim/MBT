@@ -161,6 +161,16 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # PulseStrike_Scalper_EA (mql5.com 77167), unchanged; source defaults (spec 2026-10-24-pulsestrike-scalper-prereg.md):
+    # 4-second burst z >= 3 momentum, TP 0.35 / SL 0.55 x ATR(14) M1, 0.5% risk, 100 trades / day, -3% day stop
+    "PulseStrike_Scalper_EA": {
+        "InpBurstWindowSeconds": "4", "InpStatsSampleCount": "120", "InpZScoreThreshold": "3.0",
+        "InpModeIsMomentum": "true", "InpVolATRPeriod": "14", "InpRiskPercent": "0.5", "InpTakeProfitATRMult": "0.35",
+        "InpStopLossATRMult": "0.55", "InpMinTPToSpreadRatio": "3.0", "InpMaxSpreadPoints": "20",
+        "InpCooldownSeconds": "5", "InpSlippagePoints": "5", "InpMagicNumber": "771001", "InpMaxTradesPerDay": "100",
+        "InpDailyLossLimitPercent": "3.0", "InpUseSessionFilter": "false", "InpSessionStartHour": "7",
+        "InpSessionEndHour": "20", "InpDrawOnChart": "true",
+    },
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
