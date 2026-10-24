@@ -55,3 +55,12 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/68934". Server: Darwinex-D
 - **Trades:** about 400 a year, about 1,900 in S0.
 - **PF:** 0.80-1.00 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-24): closed by the user before a result
+- **What happened:** the S0 run was stopped mid-way when the user said "skip it, it fails heavily". No result was
+  written, so this spec records no numbers.
+- **What stands:** the code finding above. An MQL4-style `iRSI` call leaves the RSI filter inert, which makes the EA
+  buy-only. The author's own screenshot (0 sells in 2,194 trades) confirms it, and that screenshot is from another
+  version on 1-minute OHLC.
+- **Removed** per the leftovers rule: `mql5/Silvios_Best26_EA.mq5`, its profile and the MT5 copies (the source is in git
+  at 56270a6).
