@@ -73,9 +73,9 @@ detection of validation environments" and a "safety trade mechanism".
   "skip breakrevertpro".
 - **Sells only, as the code reading predicted.** The "breakout" buy can never fire on EURUSD, because the Weibull
   density of a price near 1.1 is about 0.13.
-- **Cost of trading:** -0.12 R a trade.
-  - Stops average -1.09 R and targets +1.29 R, with 9,500 stops against 6,598 targets.
-  - Costs: -939.74 USD.
+- **Loss per trade:** -0.12 R, more than costs alone (-939.74 USD over 16,099 trades, about -0.06 USD a trade at 0.01
+  lot). Stops average -1.09 R and targets +1.29 R, with 9,500 stops against 6,598 targets: the short-only entries lose
+  on direction as well as on costs.
 - **Log:** the amendment held the log at about 114M characters over 4.75 years.
 - **Expectation check:** PF 0.82 in R, inside the expected 0.80-0.95. Thousands of trades, as expected.
 - **Removed** per the leftovers rule: `mql5/BreakRevertPro_EA.mq5`, its profile and the MT5 copies (the source with the
