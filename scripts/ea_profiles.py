@@ -166,6 +166,10 @@ PROFILES = {
     "BreakRevertPro_EA": {"risk_per_trade": "1.0", "lookback_period": "1", "breakout_threshold": "0.4", "mean_reversion_threshold": "0.4",
                           "TF_M1": "1", "TF_M15": "15", "TF_H1": "16385", "trade_delay_seconds": "10", "max_positions": "1",
                           "enable_safety_trade": "false", "safety_trade_interval": "60", "Magic_Number": "123456"},
+    # Easy_Range_Breakout_EA = Range_BreakOut_EA_1_02.mq5 (mql5.com 71460), unchanged; source defaults (spec
+    # 2026-10-24-easy-range-breakout-eurusd-prereg.md): M1 range 01:00-06:00, M15 close breakout, 1:1, flat at 22:00, min lot
+    "Easy_Range_Breakout_EA": {"RangeStartHour": "1", "RangeStartMin": "0", "RangeEndHour": "6", "RangeEndMin": "0",
+                               "TradingEndHour": "22", "TradingEndMin": "0"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
