@@ -52,3 +52,26 @@ That is about 1.6-2.9% a year at 0.5% risk.
 - **PF:** 1.00-1.25 in R. The author's own PF is 1.12-1.45 on low-quality ticks.
 - **Most likely verdict:** borderline. Gate A may fail on 2022-24; if it passes, the out-of-sample check is the main
   risk.
+
+## Outcome (2026-10-24; log `reports/storm/base.log`): closed (out-of-sample check fails)
+| run (XAGUSD H4, real ticks, 100k, 0.5% of equity) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **+25,449.51** | 1.38 (R 1.37) | 7.1% | 265 | 37.7% | **+46.7** (+1.75) | 22 +4.5, 23 +8.5, 24 +15.4, 25 +16.9, 26 +1.4 | stop 99 at -1.01 R, signal 166 at +0.89 R |
+| S1 2019-01..2022-01, hq 99% | +2,933.08 | 1.07 (R 1.09) | 9.8% | 157 | 36.3% | +7.2 (+0.34) | 19 -13.9, 20 +17.1, 21 +3.9 | stop 68 at -1.02 R, signal 89 at +0.86 R |
+
+- **Gate A passes:** 265 trades, PF 1.38, 2022-24 +28.4 R, 2025-26 +18.3 R. Every year 2022-26 is positive.
+  - Longs: +30.9 R (PF 1.42).
+  - Shorts: +15.8 R (PF 1.29).
+- **The out-of-sample check fails on t:**
+  - Net (+2,933.08) and PF (1.07) pass; t is +0.34 against the required 1.65.
+  - 2019 lost 13.9 R, and the 2019-21 longs lost 1.6 R.
+  - Pooled 2019-26: about +53.9 R over 422 trades, mean about +0.13 R, t about 1.6, still below 1.65.
+- **Verdict: closed per the pre-registration.** It is a near-miss, not a clear failure: a positive trend-following
+  result in all periods, too weak to separate from noise. No neighbour runs (they were conditional on passing the
+  out-of-sample check).
+- **Expectation check:**
+  - PF 1.37 in R, inside the expected 1.00-1.25 band's upper end and slightly above it.
+  - 265 trades, as expected.
+  - Gate A passed; the out-of-sample check was the deciding risk, as expected.
+- **Removed** per the leftovers rule: `mql5/Stormbreaker_ADX_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 6e9a669 and can be restored if the user wants it as a research item).
