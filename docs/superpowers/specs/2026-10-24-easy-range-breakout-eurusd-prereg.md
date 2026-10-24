@@ -82,3 +82,26 @@ updated 2026-09-11), `Range_BreakOut_EA_1_02.mq5`, 274 lines, MD5 df6cbbc2….
 - **Difference from the Code Base file:** no BOM, and the link is www.mql5.com instead of forge.mql5.io. The trading logic
   is identical, so this outcome covers it. Not re-run.
 - **The thread's developer** posts a modified version 1.89, which has not been tested.
+
+### Correction (2026-10-24, later): cell B does trade; the zero-trade run was an artifact
+The user pasted the thread's first post, which documents the source defaults (01:00-06:00, M15 close, 1:1, flat at
+22:00), so cell B is the thread's default. A diagnostic copy was built from the ForexFactory 1.02 file: identical
+trading logic, plus one detailed print per refused day instead of the per-tick "SL or TP incorrect".
+
+| cell B run (EURUSD M15, real ticks, 100k, 0.01 lot) | net USD | PF | trades | net R (t) | R by year | refused days |
+|---|---|---|---|---|---|---|
+| diagnostic, 2022-01 | +11.45 | 1.79 | 21 | | | 0 |
+| diagnostic, 2026-09 | +0.60 | 1.04 | 22 | | | 0 |
+| **diagnostic, S0 2022-01..2026-10**, hq 100% | **-215.54** | 0.84 (R 0.88) | 1,223 | **-61.9** (-2.06) | 22 -3.7, 23 -8.5, 24 -28.4, 25 -20.3, 26 -1.0 | 6 |
+
+- **Cell B fails Gate A:** 2022-24 is -40.6 R and 2025-26 -21.3 R. Every year loses. Closed.
+- **The exit shape is as in cell A:** targets average +0.73 R and stops -1.04 R.
+- **The author's window** 2026-01-01..03-03 is 43 trades, -8.30 USD.
+- **The earlier zero-trade cell B run is unexplained.** That run logged 314,211 "SL or TP incorrect" lines and no orders,
+  with the right inputs in the tester log, but the same logic trades normally when run alone. The statement above that
+  "every breakout was refused" describes that run only, not the EA.
+  - A re-run of the original file was started, then stopped at the user's request ("skip it"), so it is not repeated.
+- **The thread's claim** "Broker Stop-Level Validation: it automatically queries your broker's … SYMBOL_TRADE_STOPS_LEVEL"
+  is not what the code does. It multiplies the enum constant by `_Point` and never asks the broker. In the diagnostic
+  run it refused only 6 days in 4.75 years, so it does not drive the result.
+- **The temporary diagnostic and re-check copies were removed** (MT5 files, profile entries).
