@@ -8,7 +8,7 @@ v||v||1||v||N. Unknown input names are refused instead of silently ignored.
 import os
 
 BLESSING_STRINGS = {"AlertSound", "DDorLevel", "GridSetArray", "HedgeSymbol", "Holidays", "LabelAcc", "LabelAdv", "LabelBBS", "LabelCCI", "LabelDisplay", "LabelEDD", "LabelEE", "LabelEH", "LabelES", "LabelEST", "LabelEST0", "LabelGS", "LabelGrid", "LabelGridOpt", "LabelHS", "LabelHS0", "LabelIchi", "LabelLS", "LabelMA", "LabelMACD", "LabelOS", "LabelOS0", "LabelOpt", "LabelSG", "LabelSto", "LabelTS", "LabelTST", "LabelUE", "Notes", "SetCountArray", "TP_SetArray", "TradeComment", "Version_3_9_6_23", "displayFont", "eopb", "eopb1", "s1", "s2", "s3"}
-STRING_INPUTS = {"InpComment", "comentar", "TimeStart", "TimeEnd", "TimeClose"} | BLESSING_STRINGS
+STRING_INPUTS = {"InpComment"} | BLESSING_STRINGS
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
 # stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.
@@ -161,10 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Indices_Tester_EA = Indices_Tester.mq5 (mql5.com 48139), unchanged; source defaults (spec 2026-10-24-indices-tester-ws30-prereg.md):
-    # buy 0.10 lot between 01:30 and 01:35 server time, close at 23:30, no stop or target, one trade a day
-    "Indices_Tester_EA": {"comentar": "Indices Tester", "TimeStart": "01:30", "TimeEnd": "01:35", "TimeClose": "23:30", "Lots": "0.10",
-                          "LimitOpenPosSym": "1", "DailyNumPositions": "1"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

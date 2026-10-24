@@ -46,3 +46,21 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/48139". Server: Darwinex-D
 - **S1 t:** daily index returns are noisy (about 1% a day), so the out-of-sample t is likely < 1.65 even if the net is
   positive.
 - **Most likely verdict:** closed on the out-of-sample t, as beta, not an edge.
+
+## Outcome (2026-10-24; log `reports/oct24/idx.log`): closed (out-of-sample check fails)
+| run (WS30, real ticks, 10k, 0.10 lot) | net USD | PF | max DD | trades | win | mean USD (t) | net by year | EA points vs buy-and-hold |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +776.28 | 1.05 | 7.8% | 1,224 | 52.0% | +0.63 (+0.62) | 22 -336, 23 +296, 24 +173, 25 +207, 26 +437 | +8,742 vs +14,530 (60%) |
+| S1 2019-01..2022-01, hq 99% | +1,032.02 | 1.13 | 7.3% | 776 | 53.7% | +1.33 (+1.10) | 19 +494, 20 +227, 21 +311 | +10,941 vs +13,119 (83%) |
+
+- **Gate A passes:** 2022-24 +132.76 USD and 2025-26 +643.52 USD.
+- **The out-of-sample check fails on t:** +1.10 against 1.65 (net and PF pass). Closed per the pre-registration.
+- **It is beta, as expected:**
+  - Every trade closes the same day (median hold 22 h, none past 24 h).
+  - It kept 60% (2022-26) and 83% (2019-21) of what simply holding WS30 made over the same windows.
+  - Holding the index beat it in both periods.
+- **Expectation check:**
+  - PF 1.05 in S0, inside the expected 1.0-1.1, positive in both halves.
+  - The out-of-sample t < 1.65, as expected.
+- **Removed** per the leftovers rule: `mql5/Indices_Tester_EA.mq5`, its profile and string inputs, and the MT5 copies
+  (the source is in git at 70206e6).
