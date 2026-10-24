@@ -60,8 +60,8 @@ None of these matter at the defaults on Darwinex: 0.01 lot is the minimum, and t
 | S0 2022-01..2026-10, hq 100% | **-4,355.09** | 0.90 | 4.4% | 30,275 | 32.6% | **-2,177.5** (-8.77) | 22 -408.1, 23 -309.8, 24 -482.6, 25 -408.4, 26 -568.7 |
 
 - **Gate A fails:** PF 0.90; 2022-24 is -1,200.5 R and 2025-26 -977.0 R. Every year loses. Closed.
-- **The loss is the cost:** about -0.07 R per trade, which is roughly the expected 0.7-1 pip of costs on a 20-pip stop.
-  The breakout itself adds nothing.
+- **The loss is more than the cost:** -0.07 R per trade is about 1.4 pips, above the expected 0.7-1 pip of costs. The
+  breakout adds nothing; the longs lose more than the costs alone explain.
   - Longs: -1,898.0 R (PF 0.84).
   - Shorts: -279.5 R (PF 0.97).
 - **Up to 82 positions were open at once**, because the EA has no position limit.
