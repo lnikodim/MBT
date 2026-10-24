@@ -75,3 +75,21 @@ That is about 1.6-2.9% a year at 0.5% risk.
   - Gate A passed; the out-of-sample check was the deciding risk, as expected.
 - **Removed** per the leftovers rule: `mql5/Stormbreaker_ADX_EA.mq5`, its profile and the MT5 copies (the source is in
   git at 6e9a669 and can be restored if the user wants it as a research item).
+
+## Amendment 1 (2026-10-24, after the XAGUSD outcome): XAUUSD H4
+- **User:** "restore Stormbreaker and test it on XAUUSD H4". The source is restored unchanged from 6e9a669 (MD5
+  4c606a17…) and compiles with 0 errors and 0 warnings. The profile is restored.
+- **Runs** (`reports/storm/storm_eval.py base XAUUSD`): same as above on XAUUSD H4, real ticks, 100k, 0.5% of equity.
+  - S0 2022-26;
+  - S1 2019-21 only if S0 passes;
+  - the four neighbours only if S1 passes.
+- **Checks:** unchanged (Gate A, the out-of-sample check, the plateau).
+- **Multiple testing:** this is the EA's second symbol, picked after seeing the first. A pass here is one of two tries,
+  so the out-of-sample check and the plateau both stay required.
+- **Portfolio note:** the live set already holds four gold EAs (MACD H1, Donchian_Breakout H4, RSI H6, MA_Channel H1). A
+  candidate here would need a joint simulation for correlation before any live use.
+- **Expectation, written now:**
+  - Gold trended strongly in 2022-26, most of all in 2024-26; MACD_Cross on XAUUSD H1 made +332 R there. So Gate A
+    likely passes, with PF 1.2-1.5 in R and about 200-300 trades.
+  - 2019-21: 2019-20 trended and 2021 was choppy; expect about PF 1.0-1.2, so the out-of-sample t is the main risk again.
+  - Darwinex gold real-tick quality before 2022 is not yet known; below 90% means inconclusive.

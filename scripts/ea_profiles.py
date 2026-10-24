@@ -161,6 +161,12 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # Stormbreaker_ADX_EA = Stormbreaker ADX.mq5 v1.10 (mql5.com 77718), unchanged; source defaults (spec
+    # 2026-10-24-stormbreaker-adx-xagusd-prereg.md, amendment 1: XAUUSD H4): Supertrend(10, 3) + ADX(14) >= 23 with DI,
+    # exit ADX < 18 or flip, 2 x ATR stop, no target, 0.5% of equity (a constant in the source)
+    "Stormbreaker_ADX_EA": {"SignalTimeframe": "16388", "SupertrendFactor": "3.0", "SupertrendATRPeriod": "10", "ADXPeriod": "14",
+                            "EntryADX": "23.0", "ExitADX": "18.0", "StopATRMultiple": "2.0", "MaxVolume": "100.0",
+                            "DeviationPoints": "20", "EnableBuy": "true", "EnableSell": "true", "MagicNumber": "51003"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
