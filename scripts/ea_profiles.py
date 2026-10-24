@@ -161,11 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # BreakRevertPro_EA = BreakRevertPro.mq5 (mql5.com 56773) + a logging-only amendment; defaults except the tester-only safety trade
-    # (spec 2026-10-24-breakrevertpro-eurusd-prereg.md): "breakout" buys / "mean-reversion" sells, 1.5 / 2 x ATR, 0.01 lot
-    "BreakRevertPro_EA": {"risk_per_trade": "1.0", "lookback_period": "1", "breakout_threshold": "0.4", "mean_reversion_threshold": "0.4",
-                          "TF_M1": "1", "TF_M15": "15", "TF_H1": "16385", "trade_delay_seconds": "10", "max_positions": "1",
-                          "enable_safety_trade": "false", "safety_trade_interval": "60", "Magic_Number": "123456"},
     # Easy_Range_Breakout_EA = Range_BreakOut_EA_1_02.mq5 (mql5.com 71460), unchanged; source defaults (spec
     # 2026-10-24-easy-range-breakout-eurusd-prereg.md): M1 range 01:00-06:00, M15 close breakout, 1:1, flat at 22:00, min lot
     "Easy_Range_Breakout_EA": {"RangeStartHour": "1", "RangeStartMin": "0", "RangeEndHour": "6", "RangeEndMin": "0",

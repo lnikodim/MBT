@@ -62,3 +62,21 @@ detection of validation environments" and a "safety trade mechanism".
 - **Trades:** very many, thousands.
 - **PF:** 0.80-0.95 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-24; logs `reports/oct24/brp_probe.log`, `reports/oct24/brp.log`): closed
+| run (EURUSD M15, real ticks, 100k, 0.01 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year |
+|---|---|---|---|---|---|---|---|
+| probe 2026-09 | +0.08 | 1.00 (R 0.98) | 0.0% | 303 (all sells) | 46.2% | -3.6 (-0.17) | |
+| S0 2022-01..2026-10, hq 100% | **-1,745.91** | 0.85 (R 0.82) | 1.8% | 16,099 (all sells) | 41.0% | **-1,898.5** (-12.64) | 22 -185.7, 23 -414.5, 24 -505.4, 25 -450.2, 26 -342.6 |
+
+- **Gate A fails:** PF 0.85; 2022-24 is -1,105.7 R and 2025-26 -792.8 R. Every year loses. Closed. The user also said
+  "skip breakrevertpro".
+- **Sells only, as the code reading predicted.** The "breakout" buy can never fire on EURUSD, because the Weibull
+  density of a price near 1.1 is about 0.13.
+- **Cost of trading:** -0.12 R a trade.
+  - Stops average -1.09 R and targets +1.29 R, with 9,500 stops against 6,598 targets.
+  - Costs: -939.74 USD.
+- **Log:** the amendment held the log at about 114M characters over 4.75 years.
+- **Expectation check:** PF 0.82 in R, inside the expected 0.80-0.95. Thousands of trades, as expected.
+- **Removed** per the leftovers rule: `mql5/BreakRevertPro_EA.mq5`, its profile and the MT5 copies (the source with the
+  amendment is in git at 2c18d6c).
