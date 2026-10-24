@@ -41,3 +41,20 @@ USD small; R is the measure.
 - **Trades:** about 100-200 a year, so about 500-900 in S0.
 - **PF:** 1.00-1.25 in R in S0; the out-of-sample check is the main risk again.
 - **Most likely verdict:** closed (Gate A borderline or the out-of-sample check fails).
+
+## Outcome (2026-10-24; log `reports/oct24/adxp.log`): closed
+| run (XAUUSD H1, real ticks, 100k, 0.01 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +210.83 | 1.10 (R 1.01) | 0.2% | 254 | 34.2% | **+1.5** (+0.06) | 22 -6.1, 23 +3.2, 24 -11.4, 25 +10.1, 26 +5.7 | stop 167 at -1.03 R, target 87 at +1.99 R |
+
+- **Gate A fails:** 2022-24 is -14.3 R (2025-26 +15.8 R). The edge is about zero, +0.006 R a trade. Closed.
+- **Sides:** in a strong gold uptrend the longs lost (-9.6 R, PF 0.89) and the shorts made +11.1 R. Neither is
+  significant.
+- **The USD vs R gap:** PF is 1.10 in USD but 1.01 in R, because the fixed lot puts more dollars on trades with wider
+  ATR stops.
+- **Expectation check:**
+  - PF 1.01 in R, at the low end of the expected 1.00-1.25.
+  - 254 trades, below the expected 500-900. The rising-ADX + pullback combination is rarer than estimated.
+  - Closed, as most likely.
+- **Removed** per the leftovers rule: `mql5/ADX_Trend_Pullback_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at e0165e9).
