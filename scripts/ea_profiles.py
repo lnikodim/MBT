@@ -161,6 +161,10 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # Silvios_Best26_EA = SilviosEAbest26.mq5 v1.77 (mql5.com 68934), unchanged; source defaults (spec 2026-10-24-silvios-best26-eurusd-prereg.md):
+    # buy near the 48-bar low (the RSI filter is a handle, not a value: buy-only), 25 / 75 pips, break-even 5, trail 15, 1% risk
+    "Silvios_Best26_EA": {"MagicNumber": "20260111", "RiskPercent": "1.0", "MaxSpreadPips": "3.0", "StopLossPips": "25", "TakeProfitPips": "75",
+                          "BreakEvenPips": "5", "TrailingStopPips": "15", "RSI_Period": "14", "LookbackPeriod": "48"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
