@@ -56,3 +56,26 @@ updated 2026-09-15), `CCI_and_Martin.mq5`, 667 lines, MD5 6b99a0d3….
 - **Martingale:** with a win rate of about 30-40%, streaks of 5+ losses happen several times over about 1,000-2,000
   trades. Each puts 8.1 lots on a 10k account. A **stop-out or a DD above 60% is likely**, at least on EURUSD.
 - **Most likely verdict:** closed in both cells.
+
+## Outcome (2026-10-24; logs `reports/oct24/cciA.log`, `cciB.log`): closed (both cells)
+| cell (M15, real ticks, 10k, martingale on) | net USD | PF | max DD | trades | win | net R (t) | traded until | max lot |
+|---|---|---|---|---|---|---|---|---|
+| A, EURGBP | **-983.05** | 0.16 (R 0.59) | 11.9% | **11** | 45.5% | -2.6 (-0.84) | 2022 | 2.70 |
+| B, EURUSD | +481.49 | 1.29 (R 1.38) | 7.4% | **63** | 60.3% | +10.1 (+1.19) | 2022 | 2.70 |
+
+- **Both cells fail Gate A on trades:** 11 and 63, all in 2022, and nothing in 2025-26. Closed.
+- **The cause is the martingale on Darwinex margin:**
+  - Four losses in a row raised the lot to 8.10.
+  - The about 9,000 USD account can carry only 2.56 lots at Darwinex's 1:30 FX margin.
+  - From then on every signal was refused: "OpenBuy / OpenSell, ERROR: method CheckVolume (2.56) < Lots (8.10)". This
+    happened 233,566 times in cell A's sampled log, about 0.5 GB of agent log per cell.
+  - Only a closed non-losing trade resets the lot, so **the EA never trades again** after such a streak. Live on an EU
+    retail account, it would freeze the same way.
+- **Cell B's 63 trades** (+10.1 R, t 1.19) are too few to say anything about the signal.
+  - 60 of them closed on the stop at +0.05 R on average, i.e. mostly trailing exits.
+  - Only 3 reached the 50-pip target.
+- **Not tested:** the signal with the martingale off was not pre-registered or run.
+- **Expectation check:** expected a stop-out or a large DD. The martingale instead froze the EA through the broker's
+  margin limit. Closed in both cells, as expected.
+- **Removed** per the leftovers rule: `mql5/CCI_And_Martin_EA.mq5`, its profile and the MT5 copies (the source is in git
+  at cd5ea2c).

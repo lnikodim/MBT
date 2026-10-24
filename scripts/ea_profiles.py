@@ -161,12 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # CCI_And_Martin_EA = CCI_and_Martin.mq5 (mql5.com 21511), unchanged; source defaults (spec 2026-10-24-cci-and-martin-prereg.md):
-    # CCI(27) + candle pattern, 20 / 50 pips, trail 5 + 15, martingale x3 up to 4 times, 0.1 lot start
-    "CCI_And_Martin_EA": {"InpLots": "0.1", "InpStopLoss": "20", "InpTakeProfit": "50", "InpTrailingStop": "5", "InpTrailingStep": "15",
-                          "Inp_ma_period": "27", "Inp_applied_price": "6", "InpMartin": "true", "InpMartinCoeff": "3.0",
-                          "InpMartinOrdinalNumber": "1", "InpMartinMaxMultiplications": "3", "InpStep": "false", "InpStepLots": "0.1",
-                          "InpStepLotsMax": "1.5", "InpStepProfit": "-1", "m_magic": "930873054"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
