@@ -55,8 +55,8 @@ Date: 2026-10-24. User: "https://www.mql5.com/en/code/63698". Server: Darwinex-D
 | S0 2022-01..2026-10, hq 100% | **-319.73** | 0.94 | 0.6% | 337 | 49.5% | **-10.7** (-0.58) | 22 -1.1, 23 -12.6, 24 +9.3, 25 -3.0, 26 -3.3 | stop 170 at -1.03 R, target 167 at +0.98 R |
 
 - **Gate A fails:** PF 0.94; 2022-24 is -4.4 R and 2025-26 -6.3 R. Closed.
-- **The shape:** the 1:1 stop and target split evenly (170 / 167). Costs (-245.33 USD, about -0.04 R a trade) are the
-  loss, so there is no signal edge.
+- **The shape:** the 1:1 stop and target split evenly (170 / 167). Costs (-245.33 USD, about -0.02 R a trade at 1 R =
+  30 USD) are most of the -0.03 R loss per trade, so there is no signal edge.
   - Longs: -7.3 R.
   - Shorts: -3.4 R.
 - **Expectation check:**
