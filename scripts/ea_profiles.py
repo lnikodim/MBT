@@ -161,13 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Enhanced_Range_Breakout_EA = Enhanced_Range_Breakout_EA_v1.67.ex5 (ForexFactory thread 1407952, no source, AVX2 build: runs need
-    # ROSETTA_ADVERTISE_AVX=1); compiled defaults from the tester log of a no-inputs run on 2026-10-24 (spec 2026-10-24-erb167-prereg.md)
-    "Enhanced_Range_Breakout_EA": {"RangeStartHour": "1", "RangeStartMin": "0", "RangeEndHour": "6", "RangeEndMin": "0",
-                                   "TradingEndHour": "22", "TradingEndMin": "0", "RangeTimeToServerOffsetHours": "2",
-                                   "RangeTimeToServerOffsetMin": "0", "BreakoutTimeframe": "15", "BreakoutBufferPips": "0.0",
-                                   "TradeDirection": "0", "LotMode": "1", "LotSize": "0.0", "RiskPercent": "1.0", "RiskMoney": "50.0",
-                                   "TakeProfitRR": "1.0", "MaxSpreadPips": "30", "MagicNumber": "20260708"},
     # Indices_Tester_EA = Indices_Tester.mq5 (mql5.com 48139), unchanged; source defaults (spec 2026-10-24-indices-tester-ws30-prereg.md):
     # buy 0.10 lot between 01:30 and 01:35 server time, close at 23:30, no stop or target, one trade a day
     "Indices_Tester_EA": {"comentar": "Indices Tester", "TimeStart": "01:30", "TimeEnd": "01:35", "TimeClose": "23:30", "Lots": "0.10",
