@@ -199,6 +199,13 @@ PROFILES = {
         "InpMagic": "261012", "InpComment": "VWAP_EMA", "InpTimeframe": "5",
         "InpAnchor": "0", "InpEMAPeriod": "9", "InpSLPercent": "0.5", "InpInvert": "false",
     }),
+    # VWAP_EMA_Pullback_EA v1.00 compiled defaults (M5, daily VWAP, EMA 9/21, pullback <= 8 bars, ATR stop with 0.2 buffer / 1.0 min / 3.0 max, RR 1.5)
+    "VWAP_EMA_Pullback_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "261026", "InpComment": "VWAP_PB", "InpTimeframe": "5",
+        "InpAnchor": "0", "InpEMAFast": "9", "InpEMASlow": "21", "InpMaxPullbackBars": "8",
+        "InpAllowBuys": "true", "InpAllowSells": "true", "InpVwapWarmupBars": "12", "InpMaxStopATR": "3.0",
+        "InpATRPeriod": "14", "InpSLBufferATR": "0.2", "InpMinStopATR": "1.0", "InpRR": "1.5",
+    }),
     "VWAP_RSI_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "261006", "InpComment": "VWAP_RSI", "InpSpreadWaitMin": "0",
         "InpAnchor": "0", "InpRSIPeriod": "21", "InpRR": "1.0", "InpSLBufferATR": "0.0", "InpMinStopATR": "0.1",
