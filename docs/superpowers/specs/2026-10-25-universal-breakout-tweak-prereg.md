@@ -53,3 +53,32 @@ Each variant changes one mechanism, chosen before looking at any result:
 - **Validation:** the selected variant will probably lose most of its edge on 2022-26 and fail on GBPUSD or USDJPY.
 - **Most likely verdict:** closed. A real result would be a variant that is profitable in 2019-21 and keeps its 2022-26
   PF above about 1.15 with a small drawdown.
+
+## Outcome (2026-10-25; log `reports/oct25/ubt_train.log`): no variant works, study ends, EA closed
+Training window EURUSD H1 2019-01..2022-01, real ticks, 10,000 USD, 1% risk, history quality 99%.
+
+| id | change | net USD | PF | max DD | trades | win | by year (2019 / 2020 / 2021) |
+|---|---|---|---|---|---|---|---|
+| v0 | source defaults (reproduces the earlier run to the cent) | -5,259.16 | 0.65 | 68.4% | 137 | 49.6% | -5,196 / -556 / +372 |
+| v1 | trailing stop off | -3,411.43 | 0.83 | 53.7% | 222 | 50.0% | -3,017 / -105 / -289 |
+| v2 | time exit off | -4,241.96 | 0.73 | 74.2% | 62 | 75.8% | -6,288 / +282 / +1,763 |
+| v3 | trailing stop and time exit off | -2,919.24 | 0.96 | 83.2% | 113 | 38.9% | -2,055 / +4,935 / -1,936 |
+| v4 | stop 1.0 x box | -5,009.30 | 0.76 | 71.8% | 338 | 48.8% | -2,842 / -1,334 / -833 |
+| v5 | box 24 bars | -1,059.24 | 0.94 | 31.4% | 189 | 50.3% | -2,068 / +782 / +227 |
+| v6 | box 72 bars | -1,014.25 | 0.95 | 49.0% | 314 | 50.3% | -2,302 / -1,077 / +950 |
+| v7 | entry 50 points beyond the box | -654.11 | 0.85 | 18.0% | 56 | 53.6% | -477 / +439 / -616 |
+| v8 | no profit target | -5,259.16 | 0.65 | 68.4% | 137 | 49.6% | identical to v0 |
+| v9 | Monday enabled | -6,105.22 | 0.64 | 73.4% | 157 | 45.2% | -4,280 / -2,208 / +273 |
+
+- **Selected: none.** No variant reaches PF 1.05 with net > 0. The validation (EURUSD 2022-26, GBPUSD, USDJPY) was therefore
+  never run, as pre-registered, and there was no second round of tuning.
+- **Findings:**
+  - **2019 loses in every variant** (-477 to -6,288). The loss is not a parameter setting.
+  - **The profit target is inert:** 0 of the baseline's 137 trades reach it (70 stop out, the rest leave via the
+    trail or the time exit), so v8 is identical to v0.
+  - **The best variants (v5, v6, v7) are closest to break-even, at PF 0.85-0.95.** They are still losing.
+  - **v3 is the most erratic:** PF 0.96, but 2020 +4,935 and 2021 -1,936, with an 83% drawdown.
+- **Expectation check:** expected one or two variants to clear PF 1.05 by chance. None did. The study ended at the training
+  stage, so the in-sample window never got a chance to flatter a variant.
+- **Removed** per the leftovers rule: `mql5/UniversalBreakout_EA.mq5` (in git at daac1d6), its profile and the MT5 copies,
+  including `CBoxSession.mqh`.
