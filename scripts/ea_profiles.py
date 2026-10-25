@@ -175,6 +175,9 @@ PROFILES = {
                           "InpMAs_Delta_Sell": "2", "InpATR_ma_period_Buy": "26", "InpATR_ma_period_Sell": "26", "InpATR_Level_Buy": "0.0016",
                           "InpATR_Level_Sell": "0.0016", "InpStdDev_ma_period_Buy": "54", "InpStdDev_ma_period_Sell": "54",
                           "InpStdDev_Level_Buy": "0.0051", "InpStdDev_Level_Sell": "0.0051", "m_magic": "518341490"},
+    # Nevalyashka_EA = Nevalyashka.mq5 (mql5.com 18841), unchanged; source defaults (spec 2026-10-25-nevalyashka-eurusd-prereg.md):
+    # always in the market, each new position opposite to the last, 50 / 50 pips, minimum lot
+    "Nevalyashka_EA": {"InpNumberMinimumLots": "1", "InpStopLoss": "50", "InpTakeProfit": "50"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
