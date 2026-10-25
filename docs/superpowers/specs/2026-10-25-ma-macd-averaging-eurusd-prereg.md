@@ -1,0 +1,46 @@
+# MA_MACD_Averaging_EA on Darwinex EURUSD H1 (pre-registration)
+
+Date: 2026-10-25. User: "https://www.mql5.com/en/code/22854". Server: Darwinex-Demo.
+
+**The EA:** "MA MACD Position averaging v2" (mql5.com code 22854, barabashkakvn, published 2018-12-28, page updated
+2026-09-15), `MA_MACD_Position_averaging_v2.mq5` (MD5 1dbf4280…, 667 lines).
+- **Copied unchanged to:** `mql5/MA_MACD_Averaging_EA.mq5`.
+- **Compile:** 0 errors, 0 warnings.
+- **Safety:** no DLL, web or file calls. It prints on trades and errors.
+
+**The author's claim:** none. No symbol, timeframe or results; one illustration. Commenters report that it "won't open
+the position" and does not trade commodity symbols.
+
+**What the code does** (new bar; `Bar Current` = 0, so the forming bar):
+- **Buy signal:** MACD(12, 26, 9, weighted) below 0, main above signal (with a main / signal ratio filter of 0.9), and
+  the price more than 4 pips above LWMA(15, weighted). Sell is the mirror image.
+- **Averaging:** if the worst position of one direction is more than **30 pips** in loss, another position opens in
+  the same direction at **2x** that position's lot. There is no cap except margin: 1, 2, 4, 8 … lots.
+- **Exits per position:** stop 50 pips, target 50 pips, trailing stop 5 pips (5-pip step).
+- **Clean-up:** if positions of both directions exist at once, all are closed.
+- **Size:** 1.0 lot start.
+
+**Symbol and timeframe choice** (none given): **EURUSD H1**, where 50-pip stops and targets fit the bar size. On 100k
+the default 1.0 lot is 0.5% risk on the first position.
+
+## Runs (`reports/oct24/avg_eval.py base`; Darwinex-Demo, EURUSD H1, real ticks, 100k USD, 1:100, defaults)
+1. **S0, 2022-01-01..2026-10-01.**
+2. **S1, out of sample, 2019-01-01..2022-01-01:** only if S0 passes.
+
+**Trades:** positions overlap, so the legs come from `deals_trades`.
+- **R per leg** = profit / (50 pips x volume x 10 USD), using each leg's own lot, so the averaging is normalised out.
+- **USD and the tester's PF / DD:** these show the EA as written.
+- **Also reported:** the largest lot and stop-outs.
+
+## Checks
+- **Gate A (S0):** legs >= 150, PF >= 1.00, net R > 0 in both 2022-24 and 2025-26, **no stop-out**.
+- **Out-of-sample check (S1):** net > 0, PF >= 1.05, mean-R t >= 1.65. If history quality is below 90%, it is
+  inconclusive.
+- **Candidate** = both pass.
+
+## Expectation (written before the runs)
+- **Exits:** the 5-pip trailing stop with a 50-pip target cuts winners short. Most winners end at about +5-10 pips,
+  while losers run to -50.
+- **Averaging:** it doubles into adverse moves. A 150-pip move adds 1+2+4+8 lots before stops hit, so DD can be large.
+- **PF:** 0.80-1.00 in R.
+- **Most likely verdict:** closed.

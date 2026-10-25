@@ -172,6 +172,13 @@ PROFILES = {
     # Dual_Trix_EA = tootrix.mq5 "Dual Trix" (mql5.com 165), unchanged; needs MQL5/Include/martingail.mqh + ontesterfunctions.mqh (spec
     # 2026-10-25-dual-trix-eurusd-prereg.md): TriX(9) turn on M5, 500 / 1500 points, 0.01 lot per 1,000, one doubling after a loss
     "Dual_Trix_EA": {"DML": "1000", "Ud": "1", "Stop": "500", "Tp": "1500", "Slipage": "50", "Fast": "9", "Slow": "9"},
+    # MA_MACD_Averaging_EA = MA_MACD_Position_averaging_v2.mq5 (mql5.com 22854), unchanged; source defaults (spec
+    # 2026-10-25-ma-macd-averaging-eurusd-prereg.md): LWMA(15) + MACD signal, 50 / 50 pips, trail 5, add x2 lot every 30 pips against
+    "MA_MACD_Averaging_EA": {"InpLots": "1.0", "InpStopLoss": "50", "InpTakeProfit": "50", "InpTrailingStop": "5", "InpTrailingStep": "5",
+                             "InpStepLossing": "30", "InpLotCoefficient": "2.0", "InpBarCurrent": "0", "InpReverse": "false",
+                             "Inp_MA_ma_period": "15", "Inp_MA_ma_shift": "0", "Inp_MA_ma_method": "3", "Inp_MA_applied_price": "7",
+                             "Inp_MA_Indent": "4", "Inp_MACD_fast_ema_period": "12", "Inp_MACD_slow_ema_period": "26",
+                             "Inp_MACD_signal_period": "9", "Inp_MACD_applied_price": "7", "Inp_MACD_ratio": "0.9", "m_magic": "837623162"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
