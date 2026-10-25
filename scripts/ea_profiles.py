@@ -164,12 +164,6 @@ PROFILES = {
     # Jolly_Roger_EA = champion.mq5 "Jolly Roger EA Version" (mql5.com 919), unchanged; source defaults (spec 2026-10-25-jolly-roger-eurusd-prereg.md):
     # RSI(14) < 30 / > 70 -> 3 stop orders at the price + stops level, 50 / 150 points, trailing, lots = free margin / 2000 (0.1..15) / 3
     "Jolly_Roger_EA": {"TP": "150", "SL": "50", "RSIPeriod": "14", "RSILevel": "30"},
-    # GDS_Renko_RSI_MACD_EA = GDS_Renko_RSI_MACD_4Mode_Demo_EA_v0.11.mq5 (mql5.com 78581), unchanged; source defaults (spec
-    # 2026-10-25-gds-renko-rsi-macd-xauusd-prereg.md); cell A sets the page's described preset on top
-    "GDS_Renko_RSI_MACD_EA": {"InpMode": "1", "InpBrickUnit": "0", "InpBrickSize": "100.0", "InpRSIPeriod": "14", "InpRSILower": "30.0",
-                              "InpMACDFast": "12", "InpMACDSlow": "26", "InpMACDSignal": "9", "InpTakeProfitBricks": "8.0",
-                              "InpStopLossBricks": "6.0", "InpMaxHoldMinutes": "1440", "InpCooldownBricks": "3", "InpMaxSpreadFraction": "0.35",
-                              "InpLots": "0.01", "InpMagic": "26101944"},
     # Trend_Follower_EA = Trend_Follower.mq5 v1.2 (mql5.com 77595), unchanged (older versions commented out in the file); source defaults
     # (spec 2026-10-25-trend-follower-xauusd-prereg.md): Parabolic SAR stop-and-reverse on the chart timeframe, 02-22 h, 0.01 lot, no SL / TP
     "Trend_Follower_EA": {"InpLotSize": "0.01", "InpMagicNumber": "20260831", "InpDeviation": "20", "InpMaxSpread": "200", "InpStartHour": "2",

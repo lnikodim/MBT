@@ -56,3 +56,23 @@ TP 8 / SL 6 bricks, 1,440 min, cooldown 3. They are not the preset.
   gold, so fewer trades and different behaviour, as with 77236.
 - **S0:** PF about 0.9-1.2, with 2022-24 near zero.
 - **Most likely verdict:** closed (the 2019-21 check, or 2022-24).
+
+## Outcome (2026-10-25; logs `reports/oct24/gds2A.log`, `gds2B.log`): closed
+| run (XAUUSD M1, real ticks, 10k, 0.01 lot) | net USD | PF | max DD | trades | win | mean USD (t) | net by year |
+|---|---|---|---|---|---|---|---|
+| A R0 2026-01..2026-10 (the author's window) | **+1,699.51** | 1.29 | 7.34% | 195 | 55.9% | +8.72 (+1.36) | 26 +1,700 |
+| A S0 2022-01..2026-10, hq 100% | **+576.88** | 1.07 | 9.40% | 419 | 47.7% | +1.38 (+0.44) | 22 -15, 23 -47, 24 -116, 25 -177, 26 +933 |
+| B S0 2022-01..2026-10, hq 100% | **-3,431.70** | 0.87 | 35.81% | 6,903 | 40.9% | -0.50 (-5.87) | 22 -274, 23 -414, 24 -963, 25 -1,388, 26 -392 |
+
+- **Cell A (the preset) fails Gate A:** 2022-24 is -178.94 USD (2025-26 +755.82), PF 1.07.
+  - All the profit is 2026, the author's window: 2022-25 together lost -355 USD.
+  - The R0 check came close to the author's figures (+1,700 against +2,349; PF 1.29 against 1.49; 195 trades against
+    178), so the preset was reconstructed about right.
+- **Cell B (the source defaults) fails Gate A:** every year loses, PF 0.87, with 6,903 trades on the 1 USD brick.
+- **Expectation check:**
+  - R0 was near the author's, somewhat below.
+  - Fewer trades before 2026 for cell A (224 in 2022-25), as expected.
+  - S0 PF: A at 1.07 is inside the expected 0.9-1.2; B at 0.87 is below it.
+  - 2022-24 near zero for A. Closed, as expected. The same pattern as the author's 77236 (fitted to its window).
+- **Removed** per the leftovers rule: `mql5/GDS_Renko_RSI_MACD_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 9bbe9fb).
