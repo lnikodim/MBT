@@ -41,3 +41,20 @@ the result measured against the 100-pip stop.
 - **USDJPY:** trended strongly in 2022-24 (up) and was choppier in 2025-26.
 - **PF:** 0.90-1.10 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/cmo.log`): closed (out-of-sample check fails)
+| run (USDJPY H4, real ticks, 10k, 0.1 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +809.38 | 1.08 (R 1.09) | 14.5% | 267 | 37.5% | +12.8 (+0.62) | 22 -1.3, 23 -8.9, 24 +16.2, 25 +5.8, 26 +0.9 | stop 111 at -1.03 R, target 73 at +1.99 R, signal 83 at -0.22 R |
+| S1 2019-01..2022-01, hq 99% | **-1,158.88** | 0.77 | 16.4% | 193 | 34.7% | **-12.5** (-1.33) | 19 -6.7, 20 +2.7, 21 -8.5 | stop 12, target 10, signal 171 at -0.11 R |
+
+- **Gate A passes, narrowly:** 2022-24 +6.0 R, 2025-26 +6.8 R, PF 1.08.
+  - **The longs carry it:** +28.2 R, PF 1.46, in USDJPY's 2022-24 rally. The shorts lost 15.4 R.
+- **The out-of-sample check fails:** 2019-21 -1,158.88 USD, PF 0.77, -12.5 R. The shorts lost 13.7 R (PF 0.56).
+- **So:** the 2022-26 result is the yen trend, not an edge. Closed.
+- **Expectation check:**
+  - PF 1.09 in R, inside the expected 0.90-1.10.
+  - 267 trades (about 56 a year), below the expected 100-150 a year.
+  - Closed, as expected.
+- **Removed** per the leftovers rule: `mql5/Exp_CMO_Duplex_EA.mq5`, its profile, the MT5 copies, and the `CMO` indicator
+  and `TradeAlgorithms.mqh` installed for it (the source is in git at d0a5480).

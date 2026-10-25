@@ -161,14 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Exp_CMO_Duplex_EA = Exp_CMO_Duplex.mq5 (mql5.com 19502), unchanged; needs MQL5/Indicators/CMO.ex5 and MQL5/Include/TradeAlgorithms.mqh
-    # (spec 2026-10-24-exp-cmo-duplex-usdjpy-prereg.md): CMO(14) zero-line long / short systems on H4, 1000 / 2000 points, 0.1 lot
-    "Exp_CMO_Duplex_EA": {"L_Magic": "777", "L_MM": "0.1", "L_MMMode": "4", "L_StopLoss_": "1000", "L_TakeProfit_": "2000", "L_Deviation_": "10",
-                          "L_PosOpen": "true", "L_PosClose": "true", "L_InpInd_Timeframe": "16388", "L_Length": "14", "L_Method": "0",
-                          "L_Price": "1", "L_SignalBar": "1",
-                          "S_Magic": "555", "S_MM": "0.1", "S_MMMode": "4", "S_StopLoss_": "1000", "S_TakeProfit_": "2000", "S_Deviation_": "10",
-                          "S_PosOpen": "true", "S_PosClose": "true", "S_InpInd_Timeframe": "16388", "S_Length": "14", "S_Method": "0",
-                          "S_Price": "1", "S_SignalBar": "1"},
     # Dual_Trix_EA = tootrix.mq5 "Dual Trix" (mql5.com 165), unchanged; needs MQL5/Include/martingail.mqh + ontesterfunctions.mqh (spec
     # 2026-10-25-dual-trix-eurusd-prereg.md): TriX(9) turn on M5, 500 / 1500 points, 0.01 lot per 1,000, one doubling after a loss
     "Dual_Trix_EA": {"DML": "1000", "Ud": "1", "Stop": "500", "Tp": "1500", "Slipage": "50", "Fast": "9", "Slow": "9"},
