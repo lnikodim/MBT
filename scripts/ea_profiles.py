@@ -161,39 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Butterfly_Harmonic_EA = Cypher_EA.mq5 "Butterfly Strategy EA" (mql5.com 59529), unchanged; source defaults (spec
-    # 2026-10-25-butterfly-harmonic-eurusd-prereg.md): Butterfly on M2 only, pivots 1 / 1, three 0.01-lot legs at TP1 / TP2 / TP3
-    "Butterfly_Harmonic_EA": {"PivotLeft": "1", "PivotRight": "1", "Tolerance": "0.10", "AllowTrading": "true",
-                              "UseFixedLots": "true", "LotSize": "0.01", "RiskPercent": "1.0", "AdjustLotsForTP":
-                              "true", "TP1Percent": "50.0", "TP2Percent": "30.0", "TP3Percent": "20.0",
-                              "MinPatternQuality": "0.1", "UseSessionFilter": "false", "SessionStartHour": "8",
-                              "SessionEndHour": "16", "RevalidatePattern": "false", "Use_M2": "true", "Use_M5":
-                              "false", "Use_M10": "false", "Use_M15": "false", "Use_M30": "false", "Use_H1": "false",
-                              "Use_H2": "false", "Use_H4": "false", "Use_D1": "false", "MagicNumber": "123456",
-                              "M2_UseBreakEven": "false", "M2_BreakEvenAfterTP": "1", "M2_BreakEvenTrigger": "30",
-                              "M2_BreakEvenProfit": "5", "M2_UseTrailingStop": "false", "M2_TrailAfterTP": "2",
-                              "M2_TrailStart": "20.0", "M2_TrailStep": "5.0", "M5_UseBreakEven": "false",
-                              "M5_BreakEvenAfterTP": "1", "M5_BreakEvenTrigger": "30", "M5_BreakEvenProfit": "5",
-                              "M5_UseTrailingStop": "false", "M5_TrailAfterTP": "2", "M5_TrailStart": "20.0",
-                              "M5_TrailStep": "5.0", "M10_UseBreakEven": "false", "M10_BreakEvenAfterTP": "1",
-                              "M10_BreakEvenTrigger": "30", "M10_BreakEvenProfit": "5", "M10_UseTrailingStop":
-                              "false", "M10_TrailAfterTP": "2", "M10_TrailStart": "20.0", "M10_TrailStep": "5.0",
-                              "M15_UseBreakEven": "false", "M15_BreakEvenAfterTP": "1", "M15_BreakEvenTrigger": "30",
-                              "M15_BreakEvenProfit": "5", "M15_UseTrailingStop": "false", "M15_TrailAfterTP": "2",
-                              "M15_TrailStart": "20.0", "M15_TrailStep": "5.0", "M30_UseBreakEven": "false",
-                              "M30_BreakEvenAfterTP": "1", "M30_BreakEvenTrigger": "30", "M30_BreakEvenProfit": "5",
-                              "M30_UseTrailingStop": "false", "M30_TrailAfterTP": "2", "M30_TrailStart": "20.0",
-                              "M30_TrailStep": "5.0", "H1_UseBreakEven": "false", "H1_BreakEvenAfterTP": "1",
-                              "H1_BreakEvenTrigger": "30", "H1_BreakEvenProfit": "5", "H1_UseTrailingStop": "false",
-                              "H1_TrailAfterTP": "2", "H1_TrailStart": "20.0", "H1_TrailStep": "5.0",
-                              "H2_UseBreakEven": "false", "H2_BreakEvenAfterTP": "1", "H2_BreakEvenTrigger": "30",
-                              "H2_BreakEvenProfit": "5", "H2_UseTrailingStop": "false", "H2_TrailAfterTP": "2",
-                              "H2_TrailStart": "20.0", "H2_TrailStep": "5.0", "H4_UseBreakEven": "false",
-                              "H4_BreakEvenAfterTP": "1", "H4_BreakEvenTrigger": "30", "H4_BreakEvenProfit": "5",
-                              "H4_UseTrailingStop": "false", "H4_TrailAfterTP": "2", "H4_TrailStart": "20.0",
-                              "H4_TrailStep": "5.0", "D1_UseBreakEven": "false", "D1_BreakEvenAfterTP": "1",
-                              "D1_BreakEvenTrigger": "30", "D1_BreakEvenProfit": "5", "D1_UseTrailingStop": "false",
-                              "D1_TrailAfterTP": "2", "D1_TrailStart": "20.0", "D1_TrailStep": "5.0"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

@@ -42,3 +42,18 @@ come from `deals_trades`, since they overlap.
 - **Trade shape:** a stop 3x the TP2 distance needs a high win rate. Costs on M2-scale targets (a few pips) are large.
 - **PF:** 0.70-0.95.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25): stopped by the user ("skip it") before a result
+- **What happened:** the S0 run was very slow, about 40 market days per 6 minutes (M2 pattern scans, three legs a
+  signal), so the full window would have taken about 4.5 hours. The user stopped it at 2022-08.
+- **Partial tally from the tester log** (not a report; commission estimated at 0.05 USD a 0.01-lot leg):
+
+| 2022-01..2022-08, EURUSD, 0.01 lot a leg | legs | take profit | stop loss | net before commission | about net after commission |
+|---|---|---|---|---|---|
+| partial | 208 | 159 (+693 pips) | 49 (-501 pips) | +192 pips (+19.23 USD) | +8.80 USD |
+
+- **By month** (pips, after about 0.5 pip of commission a leg): Jan +13, Feb +66, Mar -95, Apr +34, May -82, Jun +40,
+  Jul +77, Aug +35 (partial).
+- **No Gate A verdict:** 7 of 57 months is too short. Closed at the user's request.
+- **Removed** per the leftovers rule: `mql5/Butterfly_Harmonic_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at bc43669).
