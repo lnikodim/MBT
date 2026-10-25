@@ -70,7 +70,7 @@ Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, source defaults, no st
 
 | cell | net USD (sizing) | PF | max DD | trades | verdict |
 |---|---|---|---|---|---|
-| pf Breakout_PropFirm 49713, EURUSD H1 | **-3,928.87** (1% risk, up to 0.51 lot), -40.1 R | 0.81 | 43.9% | 631 | rejected: 2024 -2,002, 2025 -783, 2026 -433 |
+| pf Breakout_PropFirm 49713, EURUSD H1 | **-3,928.87** (1% risk, up to 0.51 lot), -40.1 R | 0.81 | 43.9% | 631 | rejected: 2024 -2,643, 2025 -591, 2026 -695 |
 | lbE LazyBot 41732, EURUSD H1 | **-43.21** (0.01 lot) | 0.70 | 0.4% | 538 | rejected: t -3.23 |
 | lbG LazyBot 41732, GBPUSD H1 | **-107.99** (0.01 lot) | 0.47 | 1.1% | 569 | rejected: every year loses |
 | ub UniversalBreakout 73711, EURUSD H1 | **+12,905.15** (risk sizing, up to 4.78 lots), +13.4 R | 1.48 | 23.9% | 353 | **passed the screen** |
@@ -83,7 +83,7 @@ Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, source defaults, no st
 | | S0 2022-01..2026-10 | S1 2019-01..2022-01 | verdict |
 |---|---|---|---|
 | ub, EURUSD H1 | +12,891.81 USD, PF 1.26, DD 39.3%, 641 trades. 22 -573, 23 +560, 24 +7,664, 25 +11, 26 +5,231. **Gate A passes.** | **-5,259.16 USD**, PF 0.65, DD 68.4%, 135 trades, -5.3 R. 2019 -5,196. **Fails.** | closed |
-| pin, EURUSD H4 | +969.48 USD, PF 1.11, DD 12.1%, 297 trades. 22 +1,185, 23 -567, 24 +719, 25 +900, 26 +170. **Gate A passes.** | **-742.30 USD**, PF 0.88, DD 10.9%, 187 trades, t +0.12. **Fails.** | closed |
+| pin, EURUSD H4 | +969.48 USD, PF 1.11, DD 12.1%, 297 trades. 22 +800, 23 -577, 24 +27, 25 +620, 26 +98 (22-24 +251, 25-26 +718). **Gate A passes.** | **-742.30 USD**, PF 0.88, DD 10.9%, 187 trades, t +0.12. **Fails.** | closed |
 
 - **Universal Breakout:** the 2022-26 profit sat in 2024 and 2026 at a default size of up to 4.78 lots. 2019-21 lost 68% of the
   account. The 39% drawdown at default size would also breach the prop-firm limits.
@@ -126,7 +126,7 @@ Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, EURUSD H1, source defa
 
 | cell | net USD (sizing) | PF | max DD | trades | verdict |
 |---|---|---|---|---|---|
-| ma2 MATrend2 23632 | **-9,237.56** (3% risk, up to 0.07 lot) | 0.84 | **93.6%** | 12,325 | rejected: 2024 -6,420, 2025 -1,891, 2026 -591 |
+| ma2 MATrend2 23632 | **-9,237.56** (3% risk, up to 0.07 lot) | 0.84 | **93.6%** | 12,325 | rejected: 2024 -6,994, 2025 -2,049, 2026 -194 |
 | rsim RSIMomentum 59303 | **-625.21** (0.10 lot) | 0.71 | 18.8% | 24 | rejected: under 40 trades |
 | dom Dominance 71195 | **+12.60** (0.01 lot), -5.2 R | 1.02 | 1.1% | 204 | passed the screen at break-even; **S0 -50.49, PF 0.96, -19.1 R, 22-24 -138: Gate A fails** |
 | vrr VRRsiRobot 70465 | **-156.32** (0.01 lot) | 0.82 | 2.0% | 357 | rejected: every year loses |
@@ -149,3 +149,11 @@ Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, EURUSD H1, source defa
   16866 (refuses hedging accounts).
 - **Passed the screen, then failed:** 73711 and 63971 (2019-21), 71195 (Gate A).
 - **None fits the live portfolio.**
+
+## Correction (2026-10-25, later the same day): by-year figures
+The per-year figures first posted for the cells with overlapping positions (49713, 63971, 23632) came from a parser that
+mispairs overlapping positions. They are replaced above with figures from the report's deals table, which matches each cell's
+tester net. **No verdict changes** (each verdict rests on the tester's net, PF and trade count), but two statements change:
+- **ExpPinBar (63971), 2022-26:** the Gate A halves were 22-24 **+251** and 25-26 +718 (not +1,337 and +1,069). It still
+  passes Gate A, but on a much thinner 2022-24 half. 2024 was +27, not +719.
+- **49713:** the loss in 2024 was -2,643 (not -2,002).
