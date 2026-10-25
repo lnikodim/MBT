@@ -44,3 +44,19 @@ the default 1.0 lot is 0.5% risk on the first position.
 - **Averaging:** it doubles into adverse moves. A 150-pip move adds 1+2+4+8 lots before stops hit, so DD can be large.
 - **PF:** 0.80-1.00 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/avg.log`): closed
+| run (EURUSD H1, real ticks, 100k, 1.0 lot start) | net USD | PF | max DD | legs | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-8,448.77** | 0.87 | 11.5% | 427 | 71.2% | **-16.9** (-1.23) | 22 -3.4, 23 -10.0, 24 +3.9, 25 -7.0, 26 -0.3 | stop 121 at -1.03 R, target 39 at +0.99 R, other 267 at +0.26 R |
+
+- **Gate A fails:** PF 0.87; 2022-24 is -9.5 R and 2025-26 -7.4 R. Closed.
+- **The shape is as expected:** a 71% win rate from the 5-pip trailing stop (267 trailing exits at +0.26 R) against 121
+  full stops at -1.03 R.
+- **The averaging never fired:** at most 1 position was open and the largest lot was the base 1.0. No position reached
+  the 30-pip "step lossing" add on a new H1 bar before its stop or trail closed it. So the result is the MA / MACD
+  signal at a fixed lot, and the averaging risk was never tested.
+- **Expectation check:** PF 0.86 in R, inside the expected 0.80-1.00. Closed, as expected. The expected averaging DD did
+  not happen because the adds never triggered.
+- **Removed** per the leftovers rule: `mql5/MA_MACD_Averaging_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 0b412a4).
