@@ -53,9 +53,8 @@ the default 1.0 lot is 0.5% risk on the first position.
 - **Gate A fails:** PF 0.87; 2022-24 is -9.5 R and 2025-26 -7.4 R. Closed.
 - **The shape is as expected:** a 71% win rate from the 5-pip trailing stop (267 trailing exits at +0.26 R) against 121
   full stops at -1.03 R.
-- **The averaging never fired:** at most 1 position was open and the largest lot was the base 1.0. No position reached
-  the 30-pip "step lossing" add on a new H1 bar before its stop or trail closed it. So the result is the MA / MACD
-  signal at a fixed lot, and the averaging risk was never tested.
+- **The averaging never fired:** at most 1 position was open and the largest lot was the base 1.0. The cause was not
+  traced. So the result is the MA / MACD signal at a fixed lot, and the averaging risk was never tested.
 - **Expectation check:** PF 0.86 in R, inside the expected 0.80-1.00. Closed, as expected. The expected averaging DD did
   not happen because the adds never triggered.
 - **Removed** per the leftovers rule: `mql5/MA_MACD_Averaging_EA.mq5`, its profile and the MT5 copies (the source is in
