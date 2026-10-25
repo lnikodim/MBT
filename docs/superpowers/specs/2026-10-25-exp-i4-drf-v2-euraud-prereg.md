@@ -38,3 +38,22 @@ Date: 2026-10-25. User: "https://www.mql5.com/en/code/16418". Server: Darwinex-D
   Exp_CMO_Duplex (the same author's template, closed on 2026-10-25), expect PF 0.90-1.10 in R.
 - **Trades:** about 50-120 a year.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/drf.log`, report `reports/drf_s0_20261025_094933.htm`): closed (stop-out)
+| run (EURAUD H4, real ticks, 10k, 0.1 lot) | net USD | PF | max DD | deals | win | ended |
+|---|---|---|---|---|---|---|
+| S0 from 2022-01-01 | **-4,336.07** | 0.20 | 52.4% | 51 (25 entries) | 16.0% | **broker stop-out 2022-02-04 12:07, margin level 49.9%** |
+
+- **Gate A fails: a stop-out after 5 weeks.** The tester ended the run there. Closed.
+- **What happened:**
+  - The EA opened a new position on each signal **without checking open ones**: 21 sells and 4 buys in
+    January-February 2022.
+  - Many had no working stop. The stop-out closes show 0.1-lot losses of -233 to -357 USD, i.e. 230-360 pips against the
+    100-pip stop setting.
+  - EURAUD's January 2022 rally against the stacked sells took the 10k account to the margin call.
+- **Parser note:** the run log shows "0 trades" because the one-position parser (`crabel_eval.trades`) cannot pair
+  stacked positions. The tester's figures and the deals table above are the record.
+- **Expectation check:** expected PF 0.90-1.10 and a clean reversal system. The EA as shipped, with its own
+  `TradeAlgorithms.mqh`, stacked unprotected positions instead. Closed.
+- **Removed** per the leftovers rule: `mql5/Exp_i4_DRF_v2_EA.mq5`, its profile, the MT5 copies, and the `i4_DRF_v2`
+  indicator, `TradeAlgorithms.mqh` and `SmoothAlgorithms.mqh` installed for it (the source is in git at 68f2ca0).

@@ -161,11 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Exp_i4_DRF_v2_EA = Exp_i4_DRF_v2.mq5 (mql5.com 16418), unchanged; needs MQL5/Indicators/i4_DRF_v2.ex5 and its own
-    # TradeAlgorithms.mqh / SmoothAlgorithms.mqh in MQL5/Include (spec 2026-10-25-exp-i4-drf-v2-euraud-prereg.md): H4 colour change, 1000 / 2000, 0.1 lot
-    "Exp_i4_DRF_v2_EA": {"MM": "0.1", "MMMode": "4", "StopLoss_": "1000", "TakeProfit_": "2000", "Deviation_": "10", "BuyPosOpen": "true",
-                         "SellPosOpen": "true", "BuyPosClose": "true", "SellPosClose": "true", "TrendMode": "1", "InpInd_Timeframe": "16388",
-                         "iPeriod": "11", "SignalBar": "1"},
     # KA_Gold_Bot_EA = KA-Gold_Bot.mq5 v1.00 (mql5.com 48251), unchanged; source defaults, label strings left at their defaults (spec
     # 2026-10-25-ka-gold-bot-xauusd-prereg.md): Keltner(50) + EMA10 / EMA200 breakout, 500 / 500 points, trail 300 / 300 / 100, 1% risk
     "KA_Gold_Bot_EA": {"InpKeltnerPeriod": "50", "InpEMA10": "10", "InpEMA200": "200", "Inpuser_lot": "0.01", "InpSL_Pips": "500",
