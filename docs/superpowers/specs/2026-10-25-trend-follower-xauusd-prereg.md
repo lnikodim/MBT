@@ -67,8 +67,8 @@ Date: 2026-10-25. User: "https://www.mql5.com/en/code/77595". Server: Darwinex-D
   - The 100 trades held over a day made +2,400.67 USD after -320 of costs.
 - **The out-of-sample check fails:** -258.60 USD, PF 0.81, t -0.67. Gold rose about +547 USD over the trades' span, and the
   EA's net points were -48. 2019 and 2020 lost despite gold's 2019-20 rise. Closed.
-- **Read:** a stop-and-reverse that rode gold's 2023-26 trend (111% of buy-and-hold in S0). It was no better than holding
-  gold, and it failed in 2019-21.
+- **Read:** a stop-and-reverse that rode gold's 2023-26 trend. In S0 it took 111% of the buy-and-hold move, about the
+  same as holding gold. In 2019-21 it was far behind (-48 points against +547).
 - **Expectation check:**
   - R0: expected more trades than 42 and a lower PF. It had fewer trades (34) and a higher PF (2.43).
   - S0 trades: 228, inside the expected 120-250 only thanks to the one-day whipsaw burst. PF 1.77 is above the expected
