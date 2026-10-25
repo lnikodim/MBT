@@ -45,3 +45,26 @@ All inputs follow the EA inputs guide (groups 5-7 after EACore's 1-4).
   much lower trade count and a defined stop, but the stop can be only about 1 ATR, so costs are still a noticeable share of R.
 - **Expected PF:** about 0.90 to 1.10, near zero net R on forex, and a better chance on gold in 2024-26.
 - **Most likely verdict:** closed on forex; at most one gold cell reaching the later stages.
+
+## Outcome (2026-10-26; log `reports/oct25/vpb.log`): closed, all four cells rejected at the screen
+Real ticks, 2024-01..2026-10, 10,000 USD, 1% risk, compiled defaults, no stop-outs. R from the stop on each order (no overlapping positions).
+
+| cell | net USD | PF | max DD | trades | win | net R (mean, t) | gross P&L (gross PF) | costs | by year (24 / 25 / 26) | max lot |
+|---|---|---|---|---|---|---|---|---|---|---|
+| vpb_X XAUUSD M5 | **-9,405.05** | 0.82 | 94.9% | 2,742 | 37.5% | **-306.5** (-0.112, t -4.49) | -4,397 (0.91) | -5,008 | -7,529 / -1,437 / -439 | 0.98 |
+| vpb_E EURUSD M5 | **-9,826.57** | 0.65 | 98.3% | 1,904 | 34.9% | **-564.2** (-0.296, t -10.31) | -4,442 (0.81) | -5,385 | -7,796 / -1,629 / -401 | 2.69 |
+| vpb_G GBPUSD M5 | **-9,871.45** | 0.61 | 98.8% | 1,691 | 32.4% | **-576.6** (-0.341, t -11.10) | -5,584 (0.74) | -4,287 | -7,952 / -1,625 / -294 | 2.29 |
+| vpb_J USDJPY M5 | **-9,821.35** | 0.72 | 98.3% | 1,895 | 34.8% | **-475.3** (-0.251, t -8.61) | -5,229 (0.83) | -4,592 | -7,104 / -2,310 / -407 | 2.94 |
+
+- **Gate:** every cell fails the screen (PF < 1.00, net < 0). S0 and S1 were not run.
+- **The strategy loses before costs.** Gross PF is 0.74 to 0.91 in all four cells, so the rule has no edge on M5 in 2024-26
+  to rescue. Costs (spread, commission, swap) then roughly double the loss (-4,300 to -5,400 USD each).
+- **The win rate is below the break-even.** With a 1.5 target the break-even win rate is 40% before costs; the cells won
+  32.4% to 37.5%. Exits: about 60% stops, 37% targets, 2% the time guard.
+- **Both sides lose:** longs 1,459 / buys and shorts 1,283 on gold, similar elsewhere. No direction problem was found.
+- **The yearly split is the shrinking account,** not a regime change: each cell lost about 75-80% in 2024 and the
+  remaining equity then lost less in dollars at the same 1% risk.
+- **Expectation check:** expected PF about 0.90 to 1.10 and a closed verdict on forex, with gold the best chance. Got PF 0.61 to
+  0.82, worse than expected on every cell, gold included.
+- **The EA stays in the repo** (`mql5/VWAP_EMA_Pullback_EA.mq5`, as its two VWAP siblings did), not removed under the failed-EA rule,
+  because it is the user's own rule built here. Any new version needs a new pre-registration.
