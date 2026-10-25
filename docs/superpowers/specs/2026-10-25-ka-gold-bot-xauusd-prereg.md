@@ -49,8 +49,9 @@ updated 2026-09-15), `KA-Gold_Bot.mq5` (MD5 fe305f10…, 619 lines).
 
 - **Gate A fails:** PF 0.92; 2022-24 is -2.8 R and 2025-26 -61.3 R. Closed.
 - **Costs are most of the loss:** commission plus swap was -20,842.33 USD of the -28,680.71.
-- **The 5 USD stop got tighter as gold rose:** it was fixed while gold's M15 ranges grew, which is why 2025-26 is the worst
-  part. The stop exits average -0.78 R because the trailing stop closes some trades between the entry and the stop.
+- **The 5 USD stop got tighter as gold rose:** it was fixed while gold's M15 ranges grew, consistent with 2025-26 being
+  the worst part (not tested further). The stop exits average -0.78 R because the trailing stop closes some trades
+  between the entry and the stop.
 - **Sides:** longs -23.1 R, shorts -40.9 R.
 - **Expectation check:** PF 0.92 in R, inside the expected 0.80-1.00. 2025-26 was the weak period, as expected. Closed.
 - **Removed** per the leftovers rule: `mql5/KA_Gold_Bot_EA.mq5`, its profile and the MT5 copies (the source is in git at
