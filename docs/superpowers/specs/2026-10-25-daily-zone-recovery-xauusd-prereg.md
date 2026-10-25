@@ -48,3 +48,23 @@ signal timeframe.
 - **Risk:** the 1.5% series stops are 10-25x the targets, so a few stops cancel many wins.
 - **Expected:** far below the author's curve; k-scaled return < 10% a year.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/dzr.log`): closed (gate fails)
+| run (XAUUSD M15, real ticks, 10k, 0.01-lot legs) | net USD | PF | max equity DD | worst day | trades | win | most open | net by year |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **+2,230.18** | 2.12 | **4.56%** | -5.3% of 10k | 902 | 79.4% | 20 | 22 +340, 23 +254, 24 +282, 25 +841, 26 +513 |
+
+- **Gate fails on 2022-24:**
+  - k = 8 / 4.56 = 1.75.
+  - Scaled return: **+5.1% a year in 2022-24** (needs 10%) and +13.6% in 2025-26.
+  - No stop-out, 902 trades. Closed.
+- **A clean but small curve:**
+  - Every year is positive, with a 4.56% max equity DD.
+  - Trades closed before the end made +2,268.85; the test-end close-out was -38.67.
+  - Raw return on 10k: about +2.9% a year in 2022-24 and +7.7% in 2025-26.
+  - The worst day, -5.3% of the deposit (closed trades by day), is about the size of the max DD.
+- **Expectation check:** expected costs to eat the targets and a result far below the author's curve. Instead, real
+  ticks gave +2,230 against the author's about +3,000 over 2022-26, at PF 2.12: better than expected. The k-scaled
+  return was still below 10% a year in 2022-24, as expected.
+- **Removed** per the leftovers rule: `mql5/Daily_Zone_Recovery_EA.mq5`, its profile and the MT5 copies (the source is
+  in git at dc90041).
