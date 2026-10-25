@@ -44,3 +44,22 @@ Date: 2026-10-25. User: "https://www.mql5.com/en/code/13315". Server: Darwinex-D
   needs about 12k. So expect a margin refusal or freeze like CCI and Martin, or a stop-out.
 - **PF:** 0.85-1.05 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/wm.log`): closed
+| run (EURUSD M15, real ticks, 10k, martingale on) | net USD | PF | max DD | trades | win | net R (t) | R by year | max lot |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | +1,379.86 | 1.07 (R 0.92) | 28.3% | 142 | 52.8% | **-5.7** (-0.52) | 22 +3.2, 23 +1.2, 24 -2.4, 25 -7.7, 26 none | 1.60 |
+
+- **Gate A fails:** 142 trades (< 150), PF 0.92 in R, 2025-26 -7.7 R. Closed.
+- **The signal loses:** -5.7 R in total. The USD profit (+1,379.86) comes from the martingale's doubled lots landing on
+  some winners, not from the entries.
+- **It froze in 2025, like CCI and Martin:**
+  - After a 1.6-lot loss the next lot was 3.2, which the about 10k account cannot margin at 1:30.
+  - The broken new-bar check retries on **every tick**: "CTrade::OrderSend: market buy 3.2 EURUSD … [not enough money]",
+    5.86 million times.
+  - That produced a 10.1 GB agent log (5.04 billion characters, which the eval loaded into memory).
+  - No trades after 2025.
+- **Expectation check:** the trade count was borderline, PF 0.92 in R inside the expected 0.85-1.05, and a margin freeze
+  as expected.
+- **Removed** per the leftovers rule: `mql5/Well_Martin_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  d68347c).

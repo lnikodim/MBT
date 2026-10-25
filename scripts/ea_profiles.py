@@ -161,10 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Well_Martin_EA = wellmartin.mq5 "Well Martin" (mql5.com 13315), unchanged; source defaults (spec 2026-10-25-well-martin-eurusd-prereg.md):
-    # Bollinger(84, 1.8) fade with ADX(40) < 45, alternating sides, 1400 / 1200 points, lot x2 after a loss up to 5 (then 0.1)
-    "Well_Martin_EA": {"BBPeriod": "84", "BBShift": "0", "BBDev": "1.8", "ADXPeriod": "40", "ADXLevel": "45", "TP": "1200", "SL": "1400",
-                       "Slip": "50", "Stelth": "0", "KLot": "2", "MaxLot": "5", "Lot": "0.1", "LableClr": "32768"},
     # Exp_i4_DRF_v2_EA = Exp_i4_DRF_v2.mq5 (mql5.com 16418), unchanged; needs MQL5/Indicators/i4_DRF_v2.ex5 and its own
     # TradeAlgorithms.mqh / SmoothAlgorithms.mqh in MQL5/Include (spec 2026-10-25-exp-i4-drf-v2-euraud-prereg.md): H4 colour change, 1000 / 2000, 0.1 lot
     "Exp_i4_DRF_v2_EA": {"MM": "0.1", "MMMode": "4", "StopLoss_": "1000", "TakeProfit_": "2000", "Deviation_": "10", "BuyPosOpen": "true",
