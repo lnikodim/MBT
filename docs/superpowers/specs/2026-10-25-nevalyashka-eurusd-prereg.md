@@ -37,3 +37,21 @@ image is EURUSD H1; no numbers.
 - **Trades:** about 2-3 a day, so about 2,500-3,500 in S0.
 - **PF:** about 0.95-1.00 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/nev.log`): closed
+| run (EURUSD, real ticks, 100k, 0.01 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-155.59** | 0.96 (R 0.95) | 0.4% | 1,337 | 50.0% | **-31.3** (-0.85) | 22 -25.8, 23 -2.9, 24 -28.1, 25 +22.8, 26 +2.6 | stop 669 at -1.03 R, target 667 at +0.99 R |
+
+- **Gate A fails:** 2022-24 is -56.7 R (2025-26 +25.4 R), PF 0.96. Closed.
+- **A coin flip minus costs, as predicted:**
+  - 669 stops against 667 targets, a 50.0% win rate at 1:1.
+  - Costs (commission and swap -139.12 USD) are almost all of the -155.59 USD.
+  - Longs -23.5 R, shorts -7.7 R.
+- **Expectation check:**
+  - PF 0.95 in R, inside the expected 0.95-1.00.
+  - -0.023 R a trade against the expected about -0.015.
+  - 1,337 trades, below the expected 2,500-3,500: 50-pip moves take longer than estimated.
+  - Closed, as expected.
+- **Removed** per the leftovers rule: `mql5/Nevalyashka_EA.mq5`, its profile and the MT5 copies (the source is in git
+  at b3362a7).

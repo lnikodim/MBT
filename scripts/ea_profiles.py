@@ -161,9 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Nevalyashka_EA = Nevalyashka.mq5 (mql5.com 18841), unchanged; source defaults (spec 2026-10-25-nevalyashka-eurusd-prereg.md):
-    # always in the market, each new position opposite to the last, 50 / 50 pips, minimum lot
-    "Nevalyashka_EA": {"InpNumberMinimumLots": "1", "InpStopLoss": "50", "InpTakeProfit": "50"},
     # Daily_Zone_Recovery_EA = DailyZoneRecovery.mq5 (mql5.com 75922), unchanged; source defaults (spec 2026-10-25-daily-zone-recovery-xauusd-prereg.md):
     # three previous-day-level strategies on gold (M15 / M12 / M6), each with a fixed-lot grid closed at the average price, 0.01 lot
     "Daily_Zone_Recovery_EA": {"InpLot": "0.01", "InpMagic": "180187", "InpStrategyLock": "false", "InpComment":
@@ -183,6 +180,12 @@ PROFILES = {
     # Jolly_Roger_EA = champion.mq5 "Jolly Roger EA Version" (mql5.com 919), unchanged; source defaults (spec 2026-10-25-jolly-roger-eurusd-prereg.md):
     # RSI(14) < 30 / > 70 -> 3 stop orders at the price + stops level, 50 / 150 points, trailing, lots = free margin / 2000 (0.1..15) / 3
     "Jolly_Roger_EA": {"TP": "150", "SL": "50", "RSIPeriod": "14", "RSILevel": "30"},
+    # GDS_Renko_RSI_MACD_EA = GDS_Renko_RSI_MACD_4Mode_Demo_EA_v0.11.mq5 (mql5.com 78581), unchanged; source defaults (spec
+    # 2026-10-25-gds-renko-rsi-macd-xauusd-prereg.md); cell A sets the page's described preset on top
+    "GDS_Renko_RSI_MACD_EA": {"InpMode": "1", "InpBrickUnit": "0", "InpBrickSize": "100.0", "InpRSIPeriod": "14", "InpRSILower": "30.0",
+                              "InpMACDFast": "12", "InpMACDSlow": "26", "InpMACDSignal": "9", "InpTakeProfitBricks": "8.0",
+                              "InpStopLossBricks": "6.0", "InpMaxHoldMinutes": "1440", "InpCooldownBricks": "3", "InpMaxSpreadFraction": "0.35",
+                              "InpLots": "0.01", "InpMagic": "26101944"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
