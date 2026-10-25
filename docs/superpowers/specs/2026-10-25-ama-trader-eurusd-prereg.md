@@ -44,3 +44,24 @@ updated 2026-09-15), `AMA_Trader.mq5` (MD5 d6d36b36…, 450 lines).
 - **Risk:** a sustained EURUSD trend against one side (for example 2022's fall for the buys) piles up losing positions.
   Expect a large equity DD and possibly a stop-out.
 - **Most likely verdict:** closed (k too small, or a stop-out).
+
+## Outcome (2026-10-25; log `reports/oct24/ama.log`): closed (gate fails)
+| run (EURUSD M5, real ticks, 50k, 0.1 lot) | net USD | PF | max equity DD | worst day | trades | most open | net by year |
+|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **+22,595.45** | 1.34 | **22.6%** | -1.9% of 50k | 4,071 | **129** | 22 +5,612, 23 +4,515, 24 +4,356, 25 +5,200, 26 +2,914 |
+
+- **Gate fails:**
+  - k = 8 / 22.6 = 0.35, so the scaled return is +3.4% a year (2022-24) and +3.3% (2025-26), against the needed 10%.
+  - No stop-out, 4,071 trades. Closed.
+- **Every year is positive:** about +9.5% a year raw on 50k. But that needs a 22.6% equity drawdown, and up to **129
+  stop-less positions open at once**.
+  - The +50 USD close-all and the +1,000 balance close-all bank the small wins.
+  - The losers are held until the basket turns.
+  - The tester made about 23 withdrawals of 1,000.
+  - The positions still open at the end lost -953.56 USD.
+- **Read:** a stop-less averaging book with a good 2022-26 record and an unbounded tail. The return per unit of drawdown
+  is about a third of the gate.
+- **Expectation check:** expected a large DD or a stop-out. A large DD (22.6%), no stop-out, and positive every year,
+  which was better than expected. Still closed on the gate.
+- **Removed** per the leftovers rule: `mql5/AMA_Trader_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  8822093).
