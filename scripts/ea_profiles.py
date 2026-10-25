@@ -161,13 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # 2026-10-25 mql5.com 'best' list screen (spec 2026-10-25-mql5-best-screen-prereg.md): six EAs unchanged, numeric/bool source defaults only
-    "Breakout_PropFirm_EA": {"EXPERT_MAGIC": "1", "ENTRY_PERIOD": "20", "ENTRY_SHIFT": "1", "EXIT_PERIOD": "20", "EXIT_SHIFT": "1", "isChallenge": "false", "PASS_CRITERIA": "110100.", "DAILY_LOSS_LIMIT": "4500.", "RISK_PER_TRADE": "1.0"},
-    "LazyBot_EA": {"InpMagicNumber": "123456", "Inpuser_lot": "0.01", "Inpuser_SL": "5.0", "InpAddPrice_pip": "0", "Inpuser_SLippage": "3", "InpMax_spread": "0", "isTradingTime": "true", "InpStartHour": "7", "InpEndHour": "22", "isVolume_Percent": "false", "InpRisk": "1"},
-    "UniversalBreakout_EA": {"StartHourBox": "0", "TotalBarBox": "48", "Shift": "0", "Expiration_Minute": "1110", "StopLoss": "62", "k_StopLoss": "0.61", "TakeProfit": "30", "k_TakeProfit": "1.0", "Paritet": "22", "Pips": "10", "TraillingStop": "12", "TraillingStep": "1", "TraillingStart": "10", "Market_Minute": "70", "Close_Level": "0", "RiskPercent": "1.0"},
-    "SessionORB_EA": {"InpSessionStartHour": "8", "InpSessionStartMinute": "0", "InpOpeningRangeMinutes": "30", "InpTradingWindowMinutes": "120", "InpMagicNumber": "20260815", "InpMaxTradesPerSession": "1", "InpAllowLongTrades": "true", "InpAllowShortTrades": "true", "InpBreakoutBufferPoints": "20", "InpRiskPercent": "1.0", "InpStopLossBufferPoints": "30", "InpRewardToRiskRatio": "2.0", "InpUseFixedLot": "false", "InpFixedLotSize": "0.10", "InpDrawObjects": "true"},
-    "ExpPinBar_EA": {"InpMinCandleSizePT": "10", "InpMaxCandleBodySize": "0.33", "InpRelativeToPrevCandle": "0.33", "InpAspectRatioShadows": "2.0", "InpVolume": "0.1", "InpDeviation": "10", "InpMagic": "1234567", "InpStopLoss": "-1", "InpTakeProfit": "500", "InpSLDev": "600", "InpTrailingStart": "150", "InpTrailingStep": "50", "InpTrailingOffset": "50", "InpMAPeriod": "0", "InpMAShift": "0", "InpFastEMAPeriod": "2", "InpSlowEMAPeriod": "30", "InpCMOPeriod": "9", "InpSARStep": "0.02", "InpSARMax": "0.2", "InpDataIndex": "1"},
-    "TurtleTrader_EA": {"NExit": "10", "NST": "20", "NLT": "55", "MaxRisk": "0.01", "VolumeLimit": "4", "AddingInterval": "1", "StopLoss": "1", "TakeProfit": "1", "Deviation": "3", "SARFlag": "false", "AFStep": "0.02", "AFCap": "0.2"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {

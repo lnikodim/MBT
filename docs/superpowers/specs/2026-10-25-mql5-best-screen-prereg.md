@@ -64,3 +64,37 @@ intraday systems. Two of the screened EAs (49713 and 16866) are Donchian systems
 - **Possible survivors:** the session ORB (a rule with an edge on indices more than on EURUSD) and the Donchian pair, if
   2024-26 trended.
 - **Most likely outcome:** zero or one survivor, and no candidate.
+
+## Outcome (2026-10-25; log `reports/oct25/screen.log`): all six EAs closed, no candidate
+Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, source defaults, no stop-outs in any cell.
+
+| cell | net USD (sizing) | PF | max DD | trades | verdict |
+|---|---|---|---|---|---|
+| pf Breakout_PropFirm 49713, EURUSD H1 | **-3,928.87** (1% risk, up to 0.51 lot), -40.1 R | 0.81 | 43.9% | 631 | rejected: 2024 -2,002, 2025 -783, 2026 -433 |
+| lbE LazyBot 41732, EURUSD H1 | **-43.21** (0.01 lot) | 0.70 | 0.4% | 538 | rejected: t -3.23 |
+| lbG LazyBot 41732, GBPUSD H1 | **-107.99** (0.01 lot) | 0.47 | 1.1% | 569 | rejected: every year loses |
+| ub UniversalBreakout 73711, EURUSD H1 | **+12,905.15** (risk sizing, up to 4.78 lots), +13.4 R | 1.48 | 23.9% | 353 | **passed the screen** |
+| orb SessionORB 76153, EURUSD M15 | **-5,564.65** (1% risk, up to 1.12 lots), -75.2 R | 0.83 | 60.6% | 659 | rejected: every year loses |
+| pin ExpPinBar 63971, EURUSD H4 | **+745.84** (0.10 lot) | 1.15 | 7.2% | 177 | **passed the screen** |
+| turtle TurtleTrader 16866, EURUSD H4 | n/a | n/a | n/a | 0 | not runnable: "This EA doesn't work in HEDGING mode" |
+
+**The two screen survivors**
+
+| | S0 2022-01..2026-10 | S1 2019-01..2022-01 | verdict |
+|---|---|---|---|
+| ub, EURUSD H1 | +12,891.81 USD, PF 1.26, DD 39.3%, 641 trades. 22 -573, 23 +560, 24 +7,664, 25 +11, 26 +5,231. **Gate A passes.** | **-5,259.16 USD**, PF 0.65, DD 68.4%, 135 trades, -5.3 R. 2019 -5,196. **Fails.** | closed |
+| pin, EURUSD H4 | +969.48 USD, PF 1.11, DD 12.1%, 297 trades. 22 +1,185, 23 -567, 24 +719, 25 +900, 26 +170. **Gate A passes.** | **-742.30 USD**, PF 0.88, DD 10.9%, 187 trades, t +0.12. **Fails.** | closed |
+
+- **Universal Breakout:** the 2022-26 profit sat in 2024 and 2026 at a default size of up to 4.78 lots. 2019-21 lost 68% of the
+  account. The 39% drawdown at default size would also breach the prop-firm limits.
+- **ExpPinBar:** a small, shallow-drawdown edge that does not survive 2019-21 (PF 0.88).
+- **The Turtle EA:** it exits at `OnInit` on a hedging account. Its edge was not measured. It would need a netting-account
+  port, and the live Donchian EAs already cover this style.
+- **R figures** for ExpPinBar and Lazy Bot are unreliable: overlapping positions broke the one-position pairing, so
+  PF and USD from the tester are the figures to read.
+- **Expectation check:** expected zero or one survivor and no candidate. Got two survivors of the screen, none after the
+  out-of-sample check. The session ORB on EURUSD rejected, as the spec warned it might.
+- **Removed** per the leftovers rule: the six `mql5/*.mq5` sources (in git at daac1d6), their profiles, the MT5 copies,
+  `.set` files, `CBoxSession.mqh`, `Trailings.mqh`, and the `PriceAction\iPinBars` indicator.
+- **Not yet screened:** 122 candidate pages not downloaded (mql5.com throttled) and the rest of the shortlisted EAs from the
+  119 pages read.
