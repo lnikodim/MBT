@@ -40,3 +40,18 @@ page updated 2026-09-15), `Separate_trade.mq5` (MD5 14a8377c…, 651 lines).
 - **Trades:** frequent, since the EMA side is always defined and the ATR / StdDev filters pass most H1 bars.
 - **PF:** 0.80-1.00 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/sep.log`): closed
+| run (EURUSD H1, real ticks, 100k, 0.1 lot) | net USD | PF | max DD | legs | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-6,144.22** | 0.85 | 6.7% | 4,303 | 81.9% | **-122.9** (-3.88) | 22 -17.9, 23 -50.4, 24 -31.8, 25 -16.7, 26 -6.1 | stop 617 at -1.03 R, target 30 at +0.74 R, trail 3,656 at +0.13 R |
+
+- **Gate A fails:** PF 0.85; 2022-24 is -100.0 R and 2025-26 -22.9 R. Every year loses. Closed.
+- **The same shape as MA MACD averaging (22854):**
+  - An 82% win rate from the 5-pip trailing stop (3,656 trailing exits at +0.13 R).
+  - 617 full stops at -1.03 R.
+  - The target was reached only 30 times.
+- **Sides:** longs -79.0 R, shorts -43.9 R. At most 2 positions were open, as the `>` check allows.
+- **Expectation check:** PF 0.84 in R, inside the expected 0.80-1.00. Many trades. Closed, as expected.
+- **Removed** per the leftovers rule: `mql5/Separate_Trade_EA.mq5`, its profile and the MT5 copies (the source is in
+  git at 5c760a7).

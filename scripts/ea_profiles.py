@@ -161,14 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Separate_Trade_EA = Separate_trade.mq5 (mql5.com 21523), unchanged; source defaults (spec 2026-10-25-separate-trade-eurusd-prereg.md):
-    # EMA 14 / 65 trend + ATR(26) / StdDev(54) low-volatility filters, 50 / 50 pips, trail 5 / 5, up to 2 positions, 0.1 lot
-    "Separate_Trade_EA": {"InpLots": "0.1", "InpStopLossBuy": "50", "InpStopLossSell": "50", "InpTakeProfitBuy": "50", "InpTakeProfitSell": "50",
-                          "InpTrailingStop": "5", "InpTrailingStep": "5", "InpMaxPositions": "1", "InpMA_First_ma_period": "65",
-                          "InpMA_Second_ma_period": "14", "InpMA_ma_method": "1", "InpMA_applied_price": "1", "InpMAs_Delta_Buy": "2",
-                          "InpMAs_Delta_Sell": "2", "InpATR_ma_period_Buy": "26", "InpATR_ma_period_Sell": "26", "InpATR_Level_Buy": "0.0016",
-                          "InpATR_Level_Sell": "0.0016", "InpStdDev_ma_period_Buy": "54", "InpStdDev_ma_period_Sell": "54",
-                          "InpStdDev_Level_Buy": "0.0051", "InpStdDev_Level_Sell": "0.0051", "m_magic": "518341490"},
     # Nevalyashka_EA = Nevalyashka.mq5 (mql5.com 18841), unchanged; source defaults (spec 2026-10-25-nevalyashka-eurusd-prereg.md):
     # always in the market, each new position opposite to the last, 50 / 50 pips, minimum lot
     "Nevalyashka_EA": {"InpNumberMinimumLots": "1", "InpStopLoss": "50", "InpTakeProfit": "50"},
