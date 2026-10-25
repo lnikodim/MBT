@@ -43,3 +43,39 @@ at 09:00 (inside DAX hours in any broker clock) and the orders can be placed. No
   re-timed: they show no order-placement problem, and re-timing them would be tuning.
 - **Expectation:** a few hundred trades on GDAXI. Given the other indices (two cells passed the screen, both failed Gate A
   or 2019-21), expect the same: closed.
+
+## Outcome (2026-10-25; logs `reports/oct25/uba.log`, `uba2.log`): no candidate; one cell passes every edge check but is too small
+Real ticks, 10,000 USD, 1% risk, H1. Screen = 2024-01..2026-10. A = source defaults, B = trailing stop off, A9 / B9 = box ending at 09:00 (GDAXI only).
+
+| market, cell | screen (net USD, PF, DD, trades) | 2022-26 Gate A | 2019-21 |
+|---|---|---|---|
+| XAUUSD A | -110.86, 0.79, 2.8%, 360: **rejected** | not run | not run |
+| XAUUSD B | +452.90, 1.15, 4.2%, 355: pass | **fail**: -576.18, PF 0.92, 22-24 -1,085 | not run |
+| WS30 A | +257.55, 1.16, 4.0%, 401: pass | pass: +419.83, PF 1.14, 22-24 +337, 25-26 +43 | **fail**: -593.68, PF 0.79 |
+| WS30 B | +988.62, 1.28, 4.1%, 398: pass | **fail**: -637.76, PF 0.92, 22-24 -1,211 | not run |
+| SP500 A | -785.87, 0.65, 8.6%, 409: **rejected** | not run | not run |
+| SP500 B | -1,066.25, 0.76, 14.5%, 408: **rejected** | not run | not run |
+| GDAXI A, B | 26 trades each: not a test | - | - |
+| GDAXI A9 | -51.01, 0.90, 3.0%, 332: **rejected** | not run | not run |
+| **GDAXI B9** | **+555.43**, 1.23, 5.4%, 330: pass | **pass**: +751.11, PF 1.17, DD 6.3%, 582 trades; 2022 +52, 2023 +144, 2024 -47, 2025 +449, 2026 +153 | **pass**: +244.00, PF 1.11, DD 6.0%, 309 trades; 2019 +229, 2020 +92, 2021 -46 |
+
+- **GDAXI B9 passes every edge check:** the screen, Gate A (22-24 +149, 25-26 +602) and the 2019-21 out-of-sample window
+  (never used for tuning on this market). Positive in 6 of 8 years (2019 to 2026); 2021 -46 and 2024 -47 are the small
+  losers.
+- **It fails the sizing gate.** At the default 1% risk the max DD is 6.3%, so k = 8 / 6.3 = 1.27:
+  - raw return +0.5% a year in 2022-24 and +3.4% in 2025-26;
+  - scaled to the 8% drawdown budget: **+0.6% and +4.4% a year**, against the >= +10% required in both regimes.
+- **Not a prop-account fit as built.** The edge is real-looking but about a fifth of the size needed. The return per trade is
+  small: about +1.3 USD on a 10k account.
+- **Caveats on the one pass:**
+  - 1 of 10 cells passes everything, and it was re-timed after its first cells failed, for a demonstrated order-placement
+    reason (about 1,950 refused "market closed" orders), not for a result.
+  - The out-of-sample PF is 1.11 on 309 trades; no significance test was run for it. More than 70% of the 2022-26 profit is 2025.
+- **Other findings:**
+  - **Gold, WS30, SP500:** every cell that passed the 2024-26 screen failed on older years, so those passes are the strong 2024-26 trends.
+  - **Trailing stop:** at the defaults it is point-sized (12 points), which breaks gold and the indices: win rates of 75-87% with tiny net results.
+  - **GDAXI timing:** the source defaults trade only 26 times because the box ends when the DAX is closed.
+- **Expectation check:** expected one or two screen passes and none surviving 2019-21 with a usable drawdown. Got five screen
+  passes, one full pass, and a result too small for the sizing gate, so closed as a prop-portfolio EA.
+- **Removed** per the leftovers rule: `mql5/UniversalBreakout_EA.mq5` (in git at daac1d6 and 31ba047), its profile and the
+  MT5 copies, including `CBoxSession.mqh`. The GDAXI B9 settings are `StartHourBox` 9 and `OnTraillingStop` 0.
