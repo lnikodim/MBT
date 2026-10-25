@@ -98,3 +98,25 @@ Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, source defaults, no st
   `.set` files, `CBoxSession.mqh`, `Trailings.mqh`, and the `PriceAction\iPinBars` indicator.
 - **Not yet screened:** 122 candidate pages not downloaded (mql5.com throttled) and the rest of the shortlisted EAs from the
   119 pages read.
+
+## Batch 2 (pre-registration, 2026-10-25, written before its runs)
+Ten more sources were downloaded from the shortlist (no DLL or web calls in any).
+
+**Rejected on inspection, no run:**
+- **53022 Smart Trend Follower:** a lot multiplier of 2.0 with 200-pip layers is a martingale.
+- **61921 Seven Strategies in One:** grid / martingale heavy (45 matches).
+- **37799 iCHO Trend:** needs custom indicators (7 `iCustom` calls) that the download does not include.
+- **77009 SuperTrend TV:** needs a custom indicator and writes a CSV log file.
+- **70796 OHLCMTF Scalper:** states no symbol or timeframe. Not screened.
+
+**Screen cells, same rules and gates as above** (real ticks, 10,000 USD, 1:100, source numeric / bool defaults, sources unchanged):
+| cell | EA (mql5.com code) | symbol, timeframe | default sizing |
+|---|---|---|---|
+| ma2 | MATrend2_EA (23632) | EURUSD H1 | 3% risk, 50 / 140 pip stop and target, trailing 15 / 5 |
+| rsim | RSIMomentum_EA (59303) | EURUSD H1 | 0.10 lot (fixed), ATR stop 2 x and target 3 x |
+| dom | Dominance_EA (71195) | EURUSD H1 | ATR 2.5 x stop |
+| vrr | VRRsiRobot_EA (70465) | EURUSD H1 | 0.01 lot, RSI H1 / D1 at 80 / 20 |
+| emr | EMARSIRisk_EA (62732) | EURUSD H1 | 1% risk, 30 / 60 pip stop and target, hours 01-23 |
+
+- **Multiple testing:** 12 cells in total with batch 1.
+- **Expectation:** the same as batch 1, mostly rejections. The 3% default risk of 23632 will make any loss large.
