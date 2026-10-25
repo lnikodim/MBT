@@ -161,6 +161,8 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # UniversalBreakout_EA (mql5.com 73711) restored for the tweak study (spec 2026-10-25-universal-breakout-tweak-prereg.md)
+    "UniversalBreakout_EA": {"StartHourBox": "0", "TotalBarBox": "48", "Shift": "0", "Expiration_Minute": "1110", "StopLoss": "62", "k_StopLoss": "0.61", "TakeProfit": "30", "k_TakeProfit": "1.0", "Paritet": "22", "Pips": "10", "TraillingStop": "12", "TraillingStep": "1", "TraillingStart": "10", "Market_Minute": "70", "Close_Level": "0", "RiskPercent": "1.0", "StopLoss_Type": "2", "TakeProfit_Type": "2", "Paritet_Type": "0", "OnTraillingStop": "1", "Close_Type": "1", "CancelOpposite": "1", "Monday": "0", "Tuesday": "1", "Wednesday": "1", "Thursday": "1", "Friday": "1"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
