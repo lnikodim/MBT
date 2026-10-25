@@ -169,6 +169,9 @@ PROFILES = {
                           "S_Magic": "555", "S_MM": "0.1", "S_MMMode": "4", "S_StopLoss_": "1000", "S_TakeProfit_": "2000", "S_Deviation_": "10",
                           "S_PosOpen": "true", "S_PosClose": "true", "S_InpInd_Timeframe": "16388", "S_Length": "14", "S_Method": "0",
                           "S_Price": "1", "S_SignalBar": "1"},
+    # Dual_Trix_EA = tootrix.mq5 "Dual Trix" (mql5.com 165), unchanged; needs MQL5/Include/martingail.mqh + ontesterfunctions.mqh (spec
+    # 2026-10-25-dual-trix-eurusd-prereg.md): TriX(9) turn on M5, 500 / 1500 points, 0.01 lot per 1,000, one doubling after a loss
+    "Dual_Trix_EA": {"DML": "1000", "Ud": "1", "Stop": "500", "Tp": "1500", "Slipage": "50", "Fast": "9", "Slow": "9"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
