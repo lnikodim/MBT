@@ -161,12 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # KA_Gold_Bot_EA = KA-Gold_Bot.mq5 v1.00 (mql5.com 48251), unchanged; source defaults, label strings left at their defaults (spec
-    # 2026-10-25-ka-gold-bot-xauusd-prereg.md): Keltner(50) + EMA10 / EMA200 breakout, 500 / 500 points, trail 300 / 300 / 100, 1% risk
-    "KA_Gold_Bot_EA": {"InpKeltnerPeriod": "50", "InpEMA10": "10", "InpEMA200": "200", "Inpuser_lot": "0.01", "InpSL_Pips": "500",
-                       "InpTP_Pips": "500", "InpMax_slippage": "3", "InpMax_spread": "65", "InpTrailingTrigger": "300", "InpTrailingStop": "300",
-                       "InpTrailingStep": "100", "InpTimeFilter": "true", "InpStartHour": "2", "InpStartMinute": "30", "InpEndHour": "21",
-                       "InpEndMinute": "0", "isVolume_Percent": "true", "InpRisk": "1", "InpMagic": "240219"},
     # Butterfly_Harmonic_EA = Cypher_EA.mq5 "Butterfly Strategy EA" (mql5.com 59529), unchanged; source defaults (spec
     # 2026-10-25-butterfly-harmonic-eurusd-prereg.md): Butterfly on M2 only, pivots 1 / 1, three 0.01-lot legs at TP1 / TP2 / TP3
     "Butterfly_Harmonic_EA": {"PivotLeft": "1", "PivotRight": "1", "Tolerance": "0.10", "AllowTrading": "true",

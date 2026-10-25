@@ -41,3 +41,17 @@ updated 2026-09-15), `KA-Gold_Bot.mq5` (MD5 fe305f10…, 619 lines).
 - **Spread cap:** 65 points binds in 2026 (Darwinex 46-89 points), skipping trades.
 - **PF:** 0.80-1.00 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/kag.log`): closed
+| run (XAUUSD M15, real ticks, 100k, 1% risk) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-28,680.71** | 0.92 | 31.2% | 1,667 | 54.3% | **-64.0** (-1.63) | 22 -1.0, 23 -13.2, 24 +11.4, 25 -34.6, 26 -26.7 | stop 971 at -0.78 R, target 696 at +1.00 R |
+
+- **Gate A fails:** PF 0.92; 2022-24 is -2.8 R and 2025-26 -61.3 R. Closed.
+- **Costs are most of the loss:** commission plus swap was -20,842.33 USD of the -28,680.71.
+- **The 5 USD stop got tighter as gold rose:** it was fixed while gold's M15 ranges grew, which is why 2025-26 is the worst
+  part. The stop exits average -0.78 R because the trailing stop closes some trades between the entry and the stop.
+- **Sides:** longs -23.1 R, shorts -40.9 R.
+- **Expectation check:** PF 0.92 in R, inside the expected 0.80-1.00. 2025-26 was the weak period, as expected. Closed.
+- **Removed** per the leftovers rule: `mql5/KA_Gold_Bot_EA.mq5`, its profile and the MT5 copies (the source is in git at
+  43ad4c1).
