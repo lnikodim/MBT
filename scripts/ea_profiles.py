@@ -165,6 +165,11 @@ PROFILES = {
     # Bollinger(84, 1.8) fade with ADX(40) < 45, alternating sides, 1400 / 1200 points, lot x2 after a loss up to 5 (then 0.1)
     "Well_Martin_EA": {"BBPeriod": "84", "BBShift": "0", "BBDev": "1.8", "ADXPeriod": "40", "ADXLevel": "45", "TP": "1200", "SL": "1400",
                        "Slip": "50", "Stelth": "0", "KLot": "2", "MaxLot": "5", "Lot": "0.1", "LableClr": "32768"},
+    # Exp_i4_DRF_v2_EA = Exp_i4_DRF_v2.mq5 (mql5.com 16418), unchanged; needs MQL5/Indicators/i4_DRF_v2.ex5 and its own
+    # TradeAlgorithms.mqh / SmoothAlgorithms.mqh in MQL5/Include (spec 2026-10-25-exp-i4-drf-v2-euraud-prereg.md): H4 colour change, 1000 / 2000, 0.1 lot
+    "Exp_i4_DRF_v2_EA": {"MM": "0.1", "MMMode": "4", "StopLoss_": "1000", "TakeProfit_": "2000", "Deviation_": "10", "BuyPosOpen": "true",
+                         "SellPosOpen": "true", "BuyPosClose": "true", "SellPosClose": "true", "TrendMode": "1", "InpInd_Timeframe": "16388",
+                         "iPeriod": "11", "SignalBar": "1"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
