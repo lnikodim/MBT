@@ -29,3 +29,17 @@ Follows the closed tweak study (spec 2026-10-25-universal-breakout-tweak-prereg.
   the 2024-26 screen on the strong 2024-26 trends in gold and US indices.
 - **Cell A on gold and indices:** probably distorted by the point-sized trail (stops out almost at once).
 - **Most likely verdict:** one or two cells pass the screen, and none passes 2019-21 with a drawdown that fits a prop account.
+
+## Addendum A (2026-10-25, written after the GDAXI screen cells and before their rerun)
+**Finding:** GDAXI cells A and B traded only 26 times in 2024-26 (WS30 about 400). The agent log shows about **1,950
+"failed -- market closed" order placements** on GDAXI, against 1 to 31 failed or skipped placements each on XAUUSD, WS30 and
+SP500. The EA places its stop orders when the box ends (00:00 in its GMT+3 frame), and the DAX is closed then. So the
+GDAXI cells measured an order-timing failure, not the strategy.
+
+**Fix, on GDAXI only, chosen for the demonstrated failure and not for any performance:** `StartHourBox` = 9, so the box ends
+at 09:00 (inside DAX hours in any broker clock) and the orders can be placed. Nothing else changes.
+- **A9:** the source defaults with `StartHourBox` = 9. **B9:** the same with `OnTraillingStop` = 0.
+- **Multiple testing:** 10 cells in total. The same screen, Gate A and 2019-21 rules apply. The other symbols are not
+  re-timed: they show no order-placement problem, and re-timing them would be tuning.
+- **Expectation:** a few hundred trades on GDAXI. Given the other indices (two cells passed the screen, both failed Gate A
+  or 2019-21), expect the same: closed.
