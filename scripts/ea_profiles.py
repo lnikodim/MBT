@@ -170,6 +170,12 @@ PROFILES = {
     "Exp_i4_DRF_v2_EA": {"MM": "0.1", "MMMode": "4", "StopLoss_": "1000", "TakeProfit_": "2000", "Deviation_": "10", "BuyPosOpen": "true",
                          "SellPosOpen": "true", "BuyPosClose": "true", "SellPosClose": "true", "TrendMode": "1", "InpInd_Timeframe": "16388",
                          "iPeriod": "11", "SignalBar": "1"},
+    # KA_Gold_Bot_EA = KA-Gold_Bot.mq5 v1.00 (mql5.com 48251), unchanged; source defaults, label strings left at their defaults (spec
+    # 2026-10-25-ka-gold-bot-xauusd-prereg.md): Keltner(50) + EMA10 / EMA200 breakout, 500 / 500 points, trail 300 / 300 / 100, 1% risk
+    "KA_Gold_Bot_EA": {"InpKeltnerPeriod": "50", "InpEMA10": "10", "InpEMA200": "200", "Inpuser_lot": "0.01", "InpSL_Pips": "500",
+                       "InpTP_Pips": "500", "InpMax_slippage": "3", "InpMax_spread": "65", "InpTrailingTrigger": "300", "InpTrailingStop": "300",
+                       "InpTrailingStep": "100", "InpTimeFilter": "true", "InpStartHour": "2", "InpStartMinute": "30", "InpEndHour": "21",
+                       "InpEndMinute": "0", "isVolume_Percent": "true", "InpRisk": "1", "InpMagic": "240219"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
