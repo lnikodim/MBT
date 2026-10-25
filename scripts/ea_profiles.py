@@ -161,9 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Jolly_Roger_EA = champion.mq5 "Jolly Roger EA Version" (mql5.com 919), unchanged; source defaults (spec 2026-10-25-jolly-roger-eurusd-prereg.md):
-    # RSI(14) < 30 / > 70 -> 3 stop orders at the price + stops level, 50 / 150 points, trailing, lots = free margin / 2000 (0.1..15) / 3
-    "Jolly_Roger_EA": {"TP": "150", "SL": "50", "RSIPeriod": "14", "RSILevel": "30"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
