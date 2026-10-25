@@ -168,6 +168,16 @@ PROFILES = {
     "BM_NinjaTurtle_EA": {},
     "BM_Fisherman_EA": {},
     "BM_ATRCandle_EA": {},
+    # 2026-10-25 free mql5.com Market EAs (no source, account-bound .ex5 copied from MQL5/Experts/Market; spec 2026-10-25-market-ea-screen-prereg.md): compiled defaults, empty profiles
+    "MK_GoldZone_EA": {},
+    "MK_SuperScalp_EA": {},
+    "MK_XAU5min_EA": {},
+    "MK_RangeBreakout_EA": {},
+    "MK_SupertrendG5_EA": {},
+    "MK_Surfer_EA": {},
+    "MK_GoldSniping_EA": {},
+    "MK_GridScalperMA_EA": {},
+    "MK_DiagonalRes_EA": {},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
