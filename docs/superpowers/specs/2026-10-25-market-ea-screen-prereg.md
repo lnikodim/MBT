@@ -47,3 +47,16 @@ Date: 2026-10-25. User: "i've installed the most high rated free EAs from the ma
 - **Possible survivors:** Gold Zone and XAUUSD 5 minute on the 2024-26 gold rally. Any gold result needs the 2022-24 half to
   pass, as gold's 2022 was a range year.
 - **Most likely outcome:** zero candidates, and any gold survivor failing 2022-24 or 2019-21.
+
+## Outcome (2026-10-25): stopped by the user, no cell completed
+User: "ok, skip the rest of the free EAs".
+- **Probe:** Gold Zone (XAUUSD M15, September 2026) placed 543 trades and lost -309.40 USD, PF 0.84. It shows that the tester
+  accepts a Market `.ex5` copied to a space-free name in the Advisors folder. A single month is not a verdict.
+- **Gold Zone, XAUUSD M15, 2024-01..2026-10:** stopped after about 1 hour 10 minutes, at August 2025 in the simulation
+  (about 20 of 33 months). It was by far the slowest EA so far, because it logs on every bar (a tester log of 800 MB by then).
+  **No result was produced.**
+- **Not run:** the other 12 cells (Gold Zone on EURUSD and WS30, SuperScalp Pro, XAUUSD 5 minute, RangeBreakout EA MT5 on two
+  symbols, Supertrend G5 and the four grids). The four grids (Surfer, Gold Sniping, Grid Scalper MA, Diagonal Resistance)
+  stay unscreened beyond the descriptions read earlier: recovery grids, two with a lot multiplier.
+- **Removed** per the leftovers rule: the nine `MK_*_EA.ex5` copies in Advisors, their profiles and `.set` files. The
+  originals in the terminal's `MQL5/Experts/Market` folder are the user's installs and were left in place.
