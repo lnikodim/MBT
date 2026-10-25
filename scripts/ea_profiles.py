@@ -178,6 +178,22 @@ PROFILES = {
     # Nevalyashka_EA = Nevalyashka.mq5 (mql5.com 18841), unchanged; source defaults (spec 2026-10-25-nevalyashka-eurusd-prereg.md):
     # always in the market, each new position opposite to the last, 50 / 50 pips, minimum lot
     "Nevalyashka_EA": {"InpNumberMinimumLots": "1", "InpStopLoss": "50", "InpTakeProfit": "50"},
+    # Daily_Zone_Recovery_EA = DailyZoneRecovery.mq5 (mql5.com 75922), unchanged; source defaults (spec 2026-10-25-daily-zone-recovery-xauusd-prereg.md):
+    # three previous-day-level strategies on gold (M15 / M12 / M6), each with a fixed-lot grid closed at the average price, 0.01 lot
+    "Daily_Zone_Recovery_EA": {"InpLot": "0.01", "InpMagic": "180187", "InpStrategyLock": "false", "InpComment":
+                               "Daily Zone Recovery", "InpMaxSpread": "3000", "InpAtrFilterEnabled": "true",
+                               "InpAtrPeriod": "4", "InpAtrMinRangePct": "25.0", "InpAtrMaxRangePct": "150.0",
+                               "InpStrategy1Enabled": "true", "InpStrategy1ZonePct": "0.13",
+                               "InpStrategy1DistancePct": "0.25", "InpStrategy1Timeframe": "15",
+                               "InpStrategy1GridEnabled": "true", "InpStrategy1GridStepPct": "0.34",
+                               "InpStrategy1TpPct": "0.15", "InpStrategy1SlPct": "1.5", "InpStrategy2Enabled": "true",
+                               "InpStrategy2ZonePct": "0.31", "InpStrategy2DistancePct": "0.4",
+                               "InpStrategy2Timeframe": "12", "InpStrategy2GridEnabled": "true",
+                               "InpStrategy2GridStepPct": "0.01", "InpStrategy2TpPct": "0.01", "InpStrategy2SlPct":
+                               "1.5", "InpStrategy3Enabled": "true", "InpStrategy3ZonePct": "0.28",
+                               "InpStrategy3DistancePct": "0.4", "InpStrategy3Timeframe": "6",
+                               "InpStrategy3GridEnabled": "true", "InpStrategy3GridStepPct": "0.32",
+                               "InpStrategy3TpPct": "0.06", "InpStrategy3SlPct": "1.5"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
