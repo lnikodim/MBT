@@ -167,6 +167,14 @@ PROFILES = {
                       "Inp_AMA_fast_ma_period": "2", "Inp_AMA_slow_ma_period": "30", "Inp_AMA_ama_shift": "0", "Inp_AMA_applied_price": "1",
                       "Inp_RSI_level_up": "70.0", "Inp_RSI_level_down": "30.0", "InpStepLength": "3", "InpProfit": "50.0",
                       "InpWithdrawal": "1000.0", "m_magic": "248845656"},
+    # Separate_Trade_EA = Separate_trade.mq5 (mql5.com 21523), unchanged; source defaults (spec 2026-10-25-separate-trade-eurusd-prereg.md):
+    # EMA 14 / 65 trend + ATR(26) / StdDev(54) low-volatility filters, 50 / 50 pips, trail 5 / 5, up to 2 positions, 0.1 lot
+    "Separate_Trade_EA": {"InpLots": "0.1", "InpStopLossBuy": "50", "InpStopLossSell": "50", "InpTakeProfitBuy": "50", "InpTakeProfitSell": "50",
+                          "InpTrailingStop": "5", "InpTrailingStep": "5", "InpMaxPositions": "1", "InpMA_First_ma_period": "65",
+                          "InpMA_Second_ma_period": "14", "InpMA_ma_method": "1", "InpMA_applied_price": "1", "InpMAs_Delta_Buy": "2",
+                          "InpMAs_Delta_Sell": "2", "InpATR_ma_period_Buy": "26", "InpATR_ma_period_Sell": "26", "InpATR_Level_Buy": "0.0016",
+                          "InpATR_Level_Sell": "0.0016", "InpStdDev_ma_period_Buy": "54", "InpStdDev_ma_period_Sell": "54",
+                          "InpStdDev_Level_Buy": "0.0051", "InpStdDev_Level_Sell": "0.0051", "m_magic": "518341490"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
