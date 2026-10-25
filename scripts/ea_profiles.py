@@ -161,9 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # Dual_Trix_EA = tootrix.mq5 "Dual Trix" (mql5.com 165), unchanged; needs MQL5/Include/martingail.mqh + ontesterfunctions.mqh (spec
-    # 2026-10-25-dual-trix-eurusd-prereg.md): TriX(9) turn on M5, 500 / 1500 points, 0.01 lot per 1,000, one doubling after a loss
-    "Dual_Trix_EA": {"DML": "1000", "Ud": "1", "Stop": "500", "Tp": "1500", "Slipage": "50", "Fast": "9", "Slow": "9"},
     # MA_MACD_Averaging_EA = MA_MACD_Position_averaging_v2.mq5 (mql5.com 22854), unchanged; source defaults (spec
     # 2026-10-25-ma-macd-averaging-eurusd-prereg.md): LWMA(15) + MACD signal, 50 / 50 pips, trail 5, add x2 lot every 30 pips against
     "MA_MACD_Averaging_EA": {"InpLots": "1.0", "InpStopLoss": "50", "InpTakeProfit": "50", "InpTrailingStop": "5", "InpTrailingStep": "5",

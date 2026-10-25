@@ -38,3 +38,21 @@ Date: 2026-10-25. User: "https://www.mql5.com/en/code/165". Server: Darwinex-Dem
 - **Trades:** a few hundred a year, holding hours to days.
 - **PF:** 0.85-1.05 in R.
 - **Most likely verdict:** closed.
+
+## Outcome (2026-10-25; log `reports/oct24/trix.log`): closed
+| run (EURUSD M5, real ticks, 10k, 0.10 lot) | net USD | PF | max DD | trades | win | net R (t) | R by year | exits |
+|---|---|---|---|---|---|---|---|---|
+| S0 2022-01..2026-10, hq 100% | **-550.48** | 0.96 | 17.5% | 417 | 25.7% | **-11.7** (-0.33) | 22 -5.8, 23 -8.7, 24 +0.2, 25 +2.1, 26 +0.6 | stop 310 at -1.04 R, target 106 at +2.93 R |
+
+- **Gate A fails:** PF 0.96; 2022-24 is -14.3 R (2025-26 +2.7 R). Closed.
+- **The break-even sum:** a 25.7% win rate at 1:3 (50 / 150 pips) is just below the about 26% needed. Costs (-715.24
+  USD) turn it negative.
+  - Longs: -17.1 R.
+  - Shorts: +5.4 R.
+- **The doubling never fired:** the largest lot was the base 0.10. The include compares the open prices of the last two
+  history orders to detect a loss, and on these deals it never did. So the result is the signal at a fixed lot.
+- **Orders:** FOK filling worked on Darwinex (no failures).
+- **Expectation check:** PF 0.96 in R, inside the expected 0.85-1.05. About 88 trades a year, below "a few hundred".
+  Closed, as expected.
+- **Removed** per the leftovers rule: `mql5/Dual_Trix_EA.mq5`, its profile, the MT5 copies and the two includes (the
+  source is in git at db7169b).
