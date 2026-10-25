@@ -48,8 +48,8 @@ Date: 2026-10-25. User: "https://www.mql5.com/en/code/16418". Server: Darwinex-D
 - **What happened:**
   - The EA opened a new position on each signal **without checking open ones**: 21 sells and 4 buys in
     January-February 2022.
-  - Many had no working stop. The stop-out closes show 0.1-lot losses of -233 to -357 USD, i.e. 230-360 pips against the
-    100-pip stop setting.
+  - Many had no working stop. The stop-out closes show 0.1-lot losses of -233 to -357 USD. At about 0.65 USD a pip for
+    0.1 lot of EURAUD, that is about 360-550 pips against the 100-pip stop setting.
   - EURAUD's January 2022 rally against the stacked sells took the 10k account to the margin call.
 - **Parser note:** the run log shows "0 trades" because the one-position parser (`crabel_eval.trades`) cannot pair
   stacked positions. The tester's figures and the deals table above are the record.
