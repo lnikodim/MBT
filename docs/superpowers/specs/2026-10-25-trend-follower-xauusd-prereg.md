@@ -50,3 +50,30 @@ Date: 2026-10-25. User: "https://www.mql5.com/en/code/77595". Server: Darwinex-D
   or negative.
 - **Most likely verdict:** closed, on 2022-24 or the out-of-sample check. If it passes, the buy-and-hold comparison shows
   whether the EA adds anything beyond holding gold.
+
+## Outcome (2026-10-25; log `reports/oct24/tf.log`): closed (out-of-sample check fails)
+| run (XAUUSD D1, real ticks, 10k, 0.01 lot) | net USD | PF | max DD | trades | win | mean USD (t) | net by year | EA points vs buy-and-hold |
+|---|---|---|---|---|---|---|---|---|
+| R0 2025-01..2026-09 (the author's window) | **+1,938.70** | 2.43 | 11.30% | 34 | 47.1% | +57.02 (+1.70) | 25 +1,226, 26 +712 | +2,095 vs +1,754 |
+| S0 2022-01..2026-10, hq 100% | **+2,238.86** | 1.77 | 11.00% | 228 | 19.3% | +9.82 (+1.75) | 22 +233, 23 +133, 24 -35, 25 +1,238, 26 +670 | +2,576 vs +2,329 |
+| S1 2019-01..2022-01, hq 99% | **-258.60** | 0.81 | 6.81% | 71 | 35.2% | -3.64 (-0.67) | 19 -334, 20 -200, 21 +276 | -48 vs +547 |
+
+- **R0 reproduced the author:** +1,938.70 against +1,954.57, PF 2.43 against 2.28, 34 trades against 42.
+- **Gate A passes formally, on a thin sample:**
+  - 228 trades, PF 1.77; 2022-24 +330.94, 2025-26 +1,907.92.
+  - 126 of the 228 trades were sub-hour flips on **one day, 2024-06-07** (15:00-18:59 server time), when gold kept
+    crossing the SAR. They cost only -49.98 USD.
+  - Without that day, S0 has 102 trades, under the 150 floor.
+  - The 100 trades held over a day made +2,400.67 USD after -320 of costs.
+- **The out-of-sample check fails:** -258.60 USD, PF 0.81, t -0.67. Gold rose about +547 USD over the trades' span, and the
+  EA's net points were -48. 2019 and 2020 lost despite gold's 2019-20 rise. Closed.
+- **Read:** a stop-and-reverse that rode gold's 2023-26 trend (111% of buy-and-hold in S0). It was no better than holding
+  gold, and it failed in 2019-21.
+- **Expectation check:**
+  - R0: expected more trades than 42 and a lower PF. It had fewer trades (34) and a higher PF (2.43).
+  - S0 trades: 228, inside the expected 120-250 only thanks to the one-day whipsaw burst. PF 1.77 is above the expected
+    1.0-1.4.
+  - 2022 was +233, not the expected near zero.
+  - The verdict, closed on the out-of-sample check, matched the expectation.
+- **Removed** per the leftovers rule: `mql5/Trend_Follower_EA.mq5`, its profile and the MT5 copies (the source is in git
+  at 1ce58c4).

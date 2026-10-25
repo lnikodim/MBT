@@ -164,10 +164,6 @@ PROFILES = {
     # Jolly_Roger_EA = champion.mq5 "Jolly Roger EA Version" (mql5.com 919), unchanged; source defaults (spec 2026-10-25-jolly-roger-eurusd-prereg.md):
     # RSI(14) < 30 / > 70 -> 3 stop orders at the price + stops level, 50 / 150 points, trailing, lots = free margin / 2000 (0.1..15) / 3
     "Jolly_Roger_EA": {"TP": "150", "SL": "50", "RSIPeriod": "14", "RSILevel": "30"},
-    # Trend_Follower_EA = Trend_Follower.mq5 v1.2 (mql5.com 77595), unchanged (older versions commented out in the file); source defaults
-    # (spec 2026-10-25-trend-follower-xauusd-prereg.md): Parabolic SAR stop-and-reverse on the chart timeframe, 02-22 h, 0.01 lot, no SL / TP
-    "Trend_Follower_EA": {"InpLotSize": "0.01", "InpMagicNumber": "20260831", "InpDeviation": "20", "InpMaxSpread": "200", "InpStartHour": "2",
-                          "InpEndHour": "22", "InpSarStep": "0.02", "InpSarMax": "0.2", "InpStopLossPoints": "0", "InpTakeProfitPoints": "0"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
