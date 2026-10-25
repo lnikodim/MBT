@@ -120,3 +120,32 @@ Ten more sources were downloaded from the shortlist (no DLL or web calls in any)
 
 - **Multiple testing:** 12 cells in total with batch 1.
 - **Expectation:** the same as batch 1, mostly rejections. The 3% default risk of 23632 will make any loss large.
+
+## Batch 2 outcome (2026-10-25; log `reports/oct25/screen2.log`): all five closed, no candidate
+Screen = 2024-01..2026-10, real ticks, 10,000 USD, 1:100, EURUSD H1, source defaults, no stop-outs.
+
+| cell | net USD (sizing) | PF | max DD | trades | verdict |
+|---|---|---|---|---|---|
+| ma2 MATrend2 23632 | **-9,237.56** (3% risk, up to 0.07 lot) | 0.84 | **93.6%** | 12,325 | rejected: 2024 -6,420, 2025 -1,891, 2026 -591 |
+| rsim RSIMomentum 59303 | **-625.21** (0.10 lot) | 0.71 | 18.8% | 24 | rejected: under 40 trades |
+| dom Dominance 71195 | **+12.60** (0.01 lot), -5.2 R | 1.02 | 1.1% | 204 | passed the screen at break-even; **S0 -50.49, PF 0.96, -19.1 R, 22-24 -138: Gate A fails** |
+| vrr VRRsiRobot 70465 | **-156.32** (0.01 lot) | 0.82 | 2.0% | 357 | rejected: every year loses |
+| emr EMARSIRisk 62732 | n/a | n/a | n/a | 0 | **never trades: an inverted cross** |
+
+- **MA Trend 2:** 12,325 overlapping positions (up to 10,000+ at once) at a 93.6% drawdown. The R parse (+86.7) is not
+  meaningful; the tester's USD and PF are the figures.
+- **EMA RSI Risk (62732), cause shown with a diagnostic copy over 2024-01..03:**
+  - 63 EMA crosses were seen and 0 also passed the RSI filter.
+  - The EA copies two EMA values into a non-series array (`CopyBuffer(h, 0, 1, 2, buf)`), where index 0 is the older bar,
+    and reads `[0]` as the current bar. The "bull cross" is a bearish cross, and the buy filter RSI >= 55 contradicts it.
+  - So the published EA does not trade, whatever the symbol or timeframe. It is not aligned with its stated core.
+- **Expectation check:** expected mostly rejections. Got four rejections and a break-even Dominance. The 3% default risk of
+  MA Trend 2 made its loss large, as the spec warned.
+- **Removed** per the leftovers rule: the five `mql5/*.mq5` sources and `EMARSIRisk_Diag` (in git at ec44043 and the
+  diagnostic only in this log), their profiles and the MT5 copies.
+
+## Overall (batches 1 and 2): 11 EAs run or inspected, 0 candidates
+- **Rejected at the 2024-26 screen:** 49713, 41732 (two pairs), 76153, 23632, 59303, 70465, 62732 (never trades),
+  16866 (refuses hedging accounts).
+- **Passed the screen, then failed:** 73711 and 63971 (2019-21), 71195 (Gate A).
+- **None fits the live portfolio.**

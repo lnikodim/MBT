@@ -161,12 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # 2026-10-25 mql5.com 'best' list screen, batch 2 (spec 2026-10-25-mql5-best-screen-prereg.md): five EAs unchanged, numeric/bool source defaults only
-    "MATrend2_EA": {"InpStopLoss": "50", "InpTakeProfit": "140", "InpTrailingStop": "15", "InpTrailingStep": "5", "InpVolumeLorOrRisk": "3.0", "Inp_MA_ma_period": "12", "Inp_MA_ma_shift": "3", "InpOnlyOne": "false", "InpReverse": "false", "InpCloseOpposite": "false", "InpPrintLog": "false", "m_magic": "407936490"},
-    "RSIMomentum_EA": {"MomentumPeriod": "14", "UpperThreshold": "80", "LowerThreshold": "20", "EnableSessionFilter": "false", "VolatilityPeriod": "100", "VolatilityFactorSL": "2", "VolatilityFactorTP": "3", "FixedLotSize": "0.1", "RiskPercentage": "2", "MinimumLotSize": "0.01", "MaximumLotSize": "100", "MaxOpenPositions": "1", "FixedStopLoss": "0", "MinimumStopLoss": "0", "MaximumStopLoss": "5000", "FixedTakeProfit": "0", "MinimumTakeProfit": "0", "MaximumTakeProfit": "5000", "EnableScaleOut": "false", "ScaleOutPercent": "50", "VolatilityFactorSO": "1", "IdentificationNumber": "0", "SlippageTolerance": "5", "MaxSpreadAllowed": "50"},
-    "Dominance_EA": {"maPeriod": "14", "eaMagic": "2026", "atrPeriod": "14", "atrMultiplier": "2.5"},
-    "VRRsiRobot_EA": {"iLots": "0.01", "iRSI_Period_H1": "12", "iRSI_Period_D1": "18", "iRSI_Level_UP": "80.0", "iRSI_Level_DW": "20.0", "iMagicNumber": "227", "iSlippage": "30"},
-    "EMARSIRisk_EA": {"FastEMA": "12", "SlowEMA": "26", "RSIPeriod": "14", "RSI_Buy_Thresh": "55", "RSI_Sell_Thresh": "45", "RiskPercent": "1.0", "SL_Pips": "30", "TP_Pips": "60", "Trailing_Pips": "20", "Breakeven_Pips": "15", "MaxSpread_Points": "30", "TradeLong": "true", "TradeShort": "true", "StartHour": "1", "EndHour": "23", "OneTradePerBar": "true", "MagicNumber": "20250817"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
