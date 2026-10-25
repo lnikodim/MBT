@@ -161,13 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # 2026-10-25 bmtrading.de free EAs (no source; spec 2026-10-25-bmtrading-ea-screen-prereg.md): compiled defaults only, so empty profiles
-    "BM_RangeBreakout_EA": {},
-    "BM_GoLong_EA": {},
-    "BM_TurnaroundTuesday_EA": {},
-    "BM_NinjaTurtle_EA": {},
-    "BM_Fisherman_EA": {},
-    "BM_ATRCandle_EA": {},
     # 2026-10-25 free mql5.com Market EAs (no source, account-bound .ex5 copied from MQL5/Experts/Market; spec 2026-10-25-market-ea-screen-prereg.md): compiled defaults, empty profiles
     "MK_GoldZone_EA": {},
     "MK_SuperScalp_EA": {},

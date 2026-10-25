@@ -54,3 +54,41 @@ Tester use. The author states: "I do not recommend specific inputs. The defaults
 - **Go Long and Turnaround Tuesday on indices** will show profit in 2024-26 because indices rose; the question is 2022
   (a down year) and 2019-21, and whether they beat holding the index.
 - **Most likely outcome:** zero or one candidate, probably an index EA, and its edge mostly the index drift.
+
+## Outcome (2026-10-25; log `reports/oct25/bm.log`): all six EAs closed, no candidate
+Compiled defaults, real ticks, 10,000 USD, 1:100. Screen = 2024-01..2026-10. Yearly figures are from the report's deals table
+(an early parser mispaired overlapping positions; the runner was fixed before the cells after Ninja Turtle's S0, and the
+affected figures were recomputed).
+
+| EA, cell | screen (net USD, PF, DD, trades) | 2022-26 | verdict |
+|---|---|---|---|
+| Range Breakout, EURUSD M15 | -808.09, 0.92, 12.1%, 1,057 (0.10 lot); 2024 -414, 2025 -449, 2026 +55 | not run | rejected |
+| Range Breakout, GDAXI M15 | -1,367.26, 0.98, 39.9%, 1,148 (up to 0.14 lot); 2024 **+2,642**, 2025 -2,326, 2026 -1,684 | not run | rejected |
+| Go Long, WS30 D1 | +2,799.02, 1.12, 14.8%, 711 (up to 0.26 lot); 91% of buy-and-hold | +1,603.49, PF 1.04, DD 24.4%, 1,227; 22 **-1,261**, 22-24 -239; 65% of buy-and-hold | **Gate A fails** |
+| Go Long, SP500 D1 | +4,329.01, 1.18, 14.5%, 711 (up to 0.20 lot); 79% of buy-and-hold | +2,566.61, PF 1.06, DD 26.1%, 1,226 (history 74%); 22 **-1,875**, 22-24 -77; 64% | **Gate A fails** |
+| Go Long, GDAXI D1 | -310.90, 0.86, 9.8%, 56 trades | not run | rejected; 642 buy orders refused "market closed" (an entry hour outside DAX trading) |
+| Turnaround Tuesday, SP500 D1 | +1,650.00, 1.89, 8.6%, 45 (up to 0.20 lot); 46% of buy-and-hold | +2,395.75, PF 1.48, DD 13.5%, **96 trades**; 22 +103, 23 +533, 24 +138, 25 +385, 26 +1,400 | **Gate A fails on trade count** only |
+| Turnaround Tuesday, WS30 D1 | +1,967.72, 2.21, 7.6%, 47 (up to 0.26 lot); 73% of buy-and-hold | +2,025.80, PF 1.43, DD 13.6%, **101 trades**; 22 +8, 23 +32, 24 +70, 25 +891, 26 +1,170 | **Gate A fails on trade count** |
+| Turnaround Tuesday, GDAXI D1 | +1,229.78, 12.35, 3.6%, **10 trades** | not run | rejected on count (cause not checked) |
+| Ninja Turtle, EURUSD M15 | +1,292.12, 1.05, 15.1%, 976 (0.10 lot); 24 +2,051, 25 -1,119, 26 +360 | +1,174.00, PF 1.03, DD 19.8%, 1,663; 22 -1,398, 23 +1,214, 24 +2,117, 25 -1,119, 26 +360; **22-24 +1,933, 25-26 -759** | **Gate A fails** (the runner first printed PASS from a mispaired parse); an information-only 2019-21 run lost -1,906.13, PF 0.93, DD 31.3% |
+| Fisherman, EURUSD H1 | +141.66, 1.14, 3.1%, 96 (0.10 lot); 24 +133, 25 +204, 26 -196 | +223.18, PF 1.08, DD 3.1%, 227; 22-24 +215, 25-26 +8 | Gate A passes (tiny); **2019-21: -33.00, PF 0.97, t -0.11, fails** |
+| Fisherman, SP500 H1 | -248.07, 0.91, 5.1%, 232 | not run | rejected |
+| ATR Candle, XAUUSD H1 | +3,565.43, 1.15, 27.8%, 330 (0.10 lot); 24 +1,066, 25 +264, 26 +2,236 | +8,219.07, PF 1.17, DD 39.7%, 640; 22 -193, 23 +4,846, 24 +1,066, 25 +264, 26 +2,236 | Gate A passes; **2019-21: +3,041.05, PF 1.09, DD 24.7%, t +0.72, fails** (19 +1,059, 20 +3,654, 21 -1,672) |
+| ATR Candle, EURUSD H1 | -4,567.53, 0.85, 68.1%, 356 (up to 0.19 lot) | not run | rejected |
+| ATR Candle, WS30 H1 | -7,117.64, 0.87, 87.7%, 651 (up to 0.54 lot) | not run | rejected |
+
+- **Nothing passes every gate.** The three nearest cases:
+  - **Turnaround Tuesday (SP500, WS30):** positive in every year of 2022-26 on SP500, at a 13.5% drawdown, but only 96 and 101
+    trades (150 required). A once-a-week rule cannot reach that count in 4.75 years, so the floor is a real limit of the
+    gate here. It took 46-73% of buy-and-hold in 2024-26 (49% and 62% in 2022-26).
+  - **ATR Candle (XAUUSD):** profitable in six of eight years (about +11,260 USD over 2019-26), but a 25-40% drawdown, 59% of
+    the 2022-26 profit in 2023 and t +0.72 in 2019-21. Scaled to an 8% drawdown it is about +3% a year.
+  - **Fisherman (EURUSD):** a 3% drawdown, but +223 USD in 4.75 years and break-even in 2019-21.
+- **Go Long:** long-only index drift that took 64-91% of buy-and-hold and lost in 2022.
+- **Range Breakout, Ninja Turtle:** no stable edge.
+- **GDAXI cells (Go Long, Turnaround Tuesday):** too few trades. For Go Long the journal shows refused "market closed"
+  orders; the entry hour cannot be changed without the input names.
+- **Expectation check:** expected zero or one candidate, probably an index EA with mostly index drift. Got zero, and the
+  index EAs did capture only part of the drift.
+- **Removed** per the leftovers rule: the six `BM_*_EA.ex5` copies, their profiles and `.set` files. The original zips
+  (including inputs PDFs) are still on bmtrading.de.
