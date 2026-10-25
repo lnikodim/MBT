@@ -161,6 +161,12 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # AMA_Trader_EA = AMA_Trader.mq5 (mql5.com 21971), unchanged; source defaults (spec 2026-10-25-ama-trader-eurusd-prereg.md):
+    # RSI 30 / 70 within 3 bars + price across AMA(9, 2, 30), no stops, double entry when that side is in loss, close all at +50 USD
+    "AMA_Trader_EA": {"InpLots": "0.1", "Inp_RSI_ma_period": "14", "Inp_RSI_applied_price": "1", "Inp_AMA_ama_period": "9",
+                      "Inp_AMA_fast_ma_period": "2", "Inp_AMA_slow_ma_period": "30", "Inp_AMA_ama_shift": "0", "Inp_AMA_applied_price": "1",
+                      "Inp_RSI_level_up": "70.0", "Inp_RSI_level_down": "30.0", "InpStepLength": "3", "InpProfit": "50.0",
+                      "InpWithdrawal": "1000.0", "m_magic": "248845656"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
