@@ -161,6 +161,10 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # Well_Martin_EA = wellmartin.mq5 "Well Martin" (mql5.com 13315), unchanged; source defaults (spec 2026-10-25-well-martin-eurusd-prereg.md):
+    # Bollinger(84, 1.8) fade with ADX(40) < 45, alternating sides, 1400 / 1200 points, lot x2 after a loss up to 5 (then 0.1)
+    "Well_Martin_EA": {"BBPeriod": "84", "BBShift": "0", "BBDev": "1.8", "ADXPeriod": "40", "ADXLevel": "45", "TP": "1200", "SL": "1400",
+                       "Slip": "50", "Stelth": "0", "KLot": "2", "MaxLot": "5", "Lot": "0.1", "LableClr": "32768"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
