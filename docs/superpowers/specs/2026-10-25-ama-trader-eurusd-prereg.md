@@ -57,7 +57,7 @@ updated 2026-09-15), `AMA_Trader.mq5` (MD5 d6d36b36…, 450 lines).
   stop-less positions open at once**.
   - The +50 USD close-all and the +1,000 balance close-all bank the small wins.
   - The losers are held until the basket turns.
-  - The tester made about 23 withdrawals of 1,000.
+  - The tester made about 20-25 withdrawals of 1,000 (a rough count of "withdrawal" entries in the report).
   - The positions still open at the end lost -953.56 USD.
 - **Read:** a stop-less averaging book with a good 2022-26 record and an unbounded tail. The return per unit of drawdown
   is about a third of the gate.
