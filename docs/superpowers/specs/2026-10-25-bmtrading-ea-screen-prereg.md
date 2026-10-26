@@ -92,3 +92,17 @@ affected figures were recomputed).
   index EAs did capture only part of the drift.
 - **Removed** per the leftovers rule: the six `BM_*_EA.ex5` copies, their profiles and `.set` files. The original zips
   (including inputs PDFs) are still on bmtrading.de.
+
+## Amendment 1 (2026-10-26, written before the runs): trade floor of 80 for weekly rules; Turnaround Tuesday continues
+User: "yes, lower the floor to 80 for weekly rules".
+- **The rule:** for an EA that opens at most one position a week, Gate A needs >= 80 trades over 2022-26 instead of 150. All other gates are unchanged.
+- **Which cells it affects:** only `tt_S` (SP500 D1) and `tt_W` (WS30 D1), the two Turnaround Tuesday cells that failed Gate A on trade count alone:
+  96 and 101 trades, each positive in 2022-24 and in 2025-26 (SP500 +774 / +1,785 USD, WS30 +110 / +2,061 USD, PF 1.48 / 1.43).
+  Under the 80-trade floor both pass Gate A on the existing runs. `gl_*` (Go Long) and the other cells failed on results, not on count.
+- **Next step:** the 2019-21 out-of-sample run on `tt_S` and `tt_W` with the compiled defaults (`BM_TurnaroundTuesday_EA` restored from the
+  downloaded file, md5 a36a0dc8): net > 0, PF >= 1.05, t >= 1.65. If history quality is below 90% it is inconclusive. The SP500 2019-21
+  history was 0% real ticks in the earlier ORB test, so I expect SP500 to be inconclusive on data and WS30 to be the clean test.
+- **If both stages pass:** the sizing step (k = 8 / max DD %, scaled return >= +10% a year in both regimes), then a joint run with the live set.
+- **Expectation (before the run):** the same author's Go Long rule lost in 2022 on both indices and trailed buy-and-hold, and the Turnaround Tuesday
+  rule took only 46-62% of the index's move in 2022-26. About 40 weekly trades in three years make t >= 1.65 hard to reach, so the most likely
+  outcome is failure of the out-of-sample check, not the sizing step.
