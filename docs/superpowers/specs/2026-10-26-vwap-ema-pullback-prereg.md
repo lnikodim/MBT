@@ -83,3 +83,27 @@ Costs are a smaller share of a larger bar, so this tests whether the same rules 
 - **Expectation (before the runs):** the M5 gross PF of 0.74 to 0.91 will move toward 1.0 as bars get larger, but a rule with no edge on M5 usually
   has none on M15 either, and H1 will have few trades (the 40-trade floor may bind). Most likely: closed on all eight. If any cell
   survives, gold on H1 is the most plausible.
+
+## Amendment 1 outcome (2026-10-26; log `reports/oct25/vpb2.log`): closed, 7 of 8 cells rejected at the screen, the eighth fails Gate A
+Real ticks, 10,000 USD, 1% risk, compiled defaults except the signal timeframe and the one-hour VWAP warm-up. Screen = 2024-01..2026-10. R from the order stops.
+
+| cell | net USD (max lot) | PF | max DD | trades | win | net R (mean, t) | gross PF | by year (24 / 25 / 26) |
+|---|---|---|---|---|---|---|---|---|
+| vpb15_X XAUUSD M15 | **-8,401.30** (0.85) | 0.79 | 84.9% | 1,470 | 36.7% | -186.4 (-0.127, t -3.92) | 0.84 | -5,773 / -1,308 / -1,320 |
+| vpb15_E EURUSD M15 | **-9,560.26** (2.76) | 0.69 | 95.9% | 1,411 | 35.6% | -322.5 (-0.229, t -6.56) | 0.81 | -7,082 / -1,681 / -797 |
+| vpb15_G GBPUSD M15 | **-9,697.30** (2.20) | 0.66 | 97.0% | 1,298 | 33.5% | -366.7 (-0.283, t -8.10) | 0.76 | -7,254 / -2,018 / -425 |
+| vpb15_J USDJPY M15 | **-9,537.33** (2.69) | 0.74 | 95.5% | 1,527 | 35.7% | -313.0 (-0.205, t -6.33) | 0.82 | -6,380 / -2,424 / -734 |
+| **vpb60_X XAUUSD H1** | **+785.36** (0.36) | 1.03 | 14.4% | 410 | 42.2% | +11.7 (+0.029, t +0.46) | 1.07 | -116 / +590 / +311 |
+| vpb60_E EURUSD H1 | **-5,411.89** (1.77) | 0.75 | 55.9% | 424 | 35.4% | -75.5 (-0.178, t -3.02) | 0.81 | -1,846 / -2,237 / -1,329 |
+| vpb60_G GBPUSD H1 | **-2,986.89** (1.31) | 0.88 | 32.6% | 431 | 39.9% | -32.0 (-0.074, t -1.20) | 0.94 | -1,286 / -450 / -1,251 |
+| vpb60_J USDJPY H1 | **-3,735.59** (1.50) | 0.82 | 43.7% | 407 | 37.6% | -44.3 (-0.109, t -1.76) | 0.86 | -1,963 / -1,443 / -329 |
+
+- **The one pass, XAUUSD H1, fails Gate A on 2022-26:** -2,804.34 USD, PF 0.91, DD 39.6%, 724 trades, -29.4 R (mean -0.041, t -0.88).
+  2022 -1,425, 2023 -1,810, 2024 -143, 2025 +399, 2026 +175; 2022-24 -3,378, 2025-26 +573. The 2024-26 pass was the recent years. S1 not run.
+- **Gross PF of all 12 cells (M5, M15, H1):** 0.74 to 1.07, only the XAUUSD H1 screen window above 1.00. The rule has no gross edge in 11 of 12 cells.
+- **Timeframe effect:** the loss per trade shrinks on larger bars (mean R by timeframe, forex: M5 -0.25 to -0.34, M15 -0.21 to -0.28, H1 -0.07 to -0.18), because the cost share
+  falls with the larger stop (costs 5-12% of turnover on M5, 2-4% on H1). The shape never turns positive on forex.
+- **Expectation check:** expected most cells closed, with gold H1 the most plausible survivor. That matched: gold H1 was the only screen pass,
+  and it failed 2022-23. H1 trade counts (about 410-430) cleared the 40-trade floor, unlike the guess that it might bind.
+- **Verdict:** the VWAP + EMA 9/21 pullback rule as defined does not work on forex or gold on M5, M15 or H1. Closed. The EA stays in
+  the repo as a tool, like its siblings.
