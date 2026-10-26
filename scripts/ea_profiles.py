@@ -161,6 +161,13 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # ORB_RiskManaged_EA = ORB_RiskManaged.mq5 (mql5.com 77967), unchanged; source defaults (spec 2026-10-26-orb-riskmanaged-prereg.md): 16:30 server range
+    # of 15 min, stop orders +/- 20 points, one trade a day, 0.5% risk, 2R target, ATR range filter, daily -3% limit and a permanent 8% total-drawdown stop
+    "ORB_RiskManaged_EA": {"InpRangeStartHour": "16", "InpRangeStartMinute": "30", "InpRangeMinutes": "15", "InpEntryEndHour": "18",
+                           "InpEntryEndMinute": "30", "InpCloseHour": "22", "InpCloseMinute": "45", "InpTradeFriday": "true", "InpDirection": "0",
+                           "InpRiskPercent": "0.5", "InpRewardRisk": "2.0", "InpSLRangeFraction": "1.0", "InpBufferPoints": "20",
+                           "InpATRPeriod": "14", "InpMinRangeATR": "0.05", "InpMaxRangeATR": "0.60", "InpDailyLossPct": "3.0",
+                           "InpMaxTotalDDPct": "8.0", "InpInitialBalance": "0", "InpMagic": "240930"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
