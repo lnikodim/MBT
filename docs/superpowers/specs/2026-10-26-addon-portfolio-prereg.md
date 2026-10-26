@@ -41,3 +41,30 @@ Not eligible (2019-21 net negative or PF < 1): Market Miner, Williams %R, MACros
 - **ATR Candle on gold:** the likeliest to correlate with the four gold EAs and the least likely to improve return per drawdown.
 - **Caveats:** the sample of each candidate is small (about 40 to 1,200 trades), the baseline is in-sample, and several index runs have
   partly modelled history. A pass means "worth a deployment test on the target broker", not "adds money".
+
+## Outcome (2026-10-26; `reports/portfolio/addon_joint.py`, closed trades 2022-01..2026-10, 0.5% constant risk per live EA)
+**Baseline A** (six live EAs + NI225, 2,443 trades): +70.4%/yr, max DD 15.93%, worst day -4.06%, worst month -10.45%, Sharpe 2.10, return/DD 21.0 (in-sample).
+
+| candidate | daily / monthly rho with A | at 1% allocation | at 2% allocation | add-on rule |
+|---|---|---|---|---|
+| **Turnaround Tuesday, WS30 D1** (101 trades) | +0.02 / +0.01 | +0.33 %/yr, max DD +0.00, return/DD 21.1 | **+0.66 %/yr, max DD +0.00, worst day and month unchanged, return/DD 21.2, Sharpe 2.12** | **pass, both** |
+| **Turnaround Tuesday, SP500 D1** (96 trades) | +0.04 / +0.11 | +0.41 %/yr, max DD +0.00, return/DD 21.1 | **+0.81 %/yr, max DD +0.00, return/DD 21.2** | **pass, both** |
+| Universal Breakout, GDAXI H1 (582 trades) | +0.04 / +0.12 | +0.25 %/yr, DD +0.21, return/DD 20.8 | +0.51 %/yr, DD +0.42, return/DD 20.6 | fails (return/DD falls) |
+| ORB Risk Managed, SP500 M5 (1,188 trades) | +0.01 / -0.02 | +0.49 %/yr, DD +0.27, return/DD 20.8 | +0.98 %/yr, DD +0.68, return/DD 20.4 | fails (return/DD falls) |
+| ATR Candle, XAUUSD H1 (640 trades) | **+0.18 / +0.34** | +0.33 %/yr, DD +0.13, return/DD 20.9 | +0.66 %/yr, DD +0.26, return/DD 20.8 | fails (gold overlap) |
+| SessionReopenEA, XAUUSD H1 (901 trades; **not eligible**, Gate A) | +0.08 / -0.04 | +0.73 %/yr, DD -0.06, return/DD 21.3 | +1.46 %/yr, DD -0.12, worst month -10.27, return/DD 21.6 | passes, but not eligible |
+
+- **Turnaround Tuesday holds in both halves** (at 2%): WS30 adds +0.05 points in 2022-24 and +3.06 in 2025-26 (max DD 15.93 -> 15.93 and 14.87 -> 15.00);
+  SP500 adds +1.16 and +2.71 (DD 15.93 -> 15.93 and 14.87 -> 14.70). Return/DD is unchanged or higher in each.
+- **The two Turnaround Tuesday cells are the same signal** on two US indices (they should not both be added). WS30 has full real-tick history, SP500 does not (74% in
+  2022-26, 0% before), so WS30 is the better choice. SP500's 2022-24 contribution is larger.
+- **The gain is small** (+0.3 to +0.8 points on +70%/yr). The value is diversification: the baseline holds four gold EAs, USDJPY, GBPJPY and NI225, and none is a US index.
+  That benefit does not show in-sample, because gold trended throughout the window.
+- **SessionReopenEA** is the best contributor numerically (+0.73 / +1.46 %/yr, DD slightly lower, worst month better, low correlation). It was excluded **by the
+  eligibility rule written before the run** (2022-24 -16 USD), so it needs an explicit decision, not a silent change of that rule.
+- **Before any deployment:**
+  - these `.ex5` files come from bmtrading.de: there is no source, and the author's page asks for a licence request for live use;
+  - the live account is IC Markets, so the candidate needs its own run there on the IC symbol and the IC server clock (the terminal is switched by the user);
+  - the 2-4% allocation means very small lots on a prop account (the candidate sized to a 2% standalone drawdown is 0.16x its default lot on WS30).
+- **Caveats:** the live set was tuned on this window (in-sample), the candidates have small samples (96-101 trades), and a pass means "worth a deployment test",
+  not "will add money".
