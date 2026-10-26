@@ -5,7 +5,7 @@ import re
 
 import pytest
 
-from make_live_sets import BASE
+from make_live_sets import BASE, BINARY
 
 GROUPS = {1: "Trade size", 2: "Account protection", 3: "Orders", 4: "Identity and logs",
           5: "Strategy", 6: "Filters", 7: "Exits"}
@@ -32,6 +32,8 @@ def dialog(path, seen=None):
 
 @pytest.mark.parametrize("ea", sorted(BASE))
 def test_live_ea_inputs_follow_the_guide(ea):
+    if ea in BINARY:
+        pytest.skip("third-party .ex5, no source to check")
     rows = dialog(os.path.join(MQL5, ea + ".mq5"))
     assert rows[0][0] == "group", f"{ea}: inputs before the first group"
     last = 0

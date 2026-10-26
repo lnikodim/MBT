@@ -68,3 +68,22 @@ Not eligible (2019-21 net negative or PF < 1): Market Miner, Williams %R, MACros
   - the 2-4% allocation means very small lots on a prop account (the candidate sized to a 2% standalone drawdown is 0.16x its default lot on WS30).
 - **Caveats:** the live set was tuned on this window (in-sample), the candidates have small samples (96-101 trades), and a pass means "worth a deployment test",
   not "will add money".
+
+## Decision (2026-10-26): Turnaround Tuesday on WS30 added to both live profiles
+User: "ok, compile the EA and add it to both live profiles" (after the both-indices question: the two Turnaround Tuesday versions are one signal, daily rho +0.82, so
+one was chosen). No source exists, so nothing was compiled: `BM_TurnaroundTuesday_EA.ex5` (md5 a36a0dc8…, from bmtrading.de) was copied to the local Advisors folder.
+- **Where:** `scripts/make_live_sets.py` (`BASE`, `BINARY`, `TT_INPUTS`) and `scripts/make_live_profiles.py` (`CHART`, `SYMBOL`); outputs
+  `mql5/sets/{ftmo_2step_50k,darwinex_zero}/BM_TurnaroundTuesday_EA.set` and chart `chart07.chr` (FTMO) / `chart08.chr` (Darwinex Zero). Existing files are unchanged.
+  The input-guide test skips this EA (no source to check). Only the new chart files were copied into the local MT5 profile folders; the local Darwinex Zero profile had been
+  rewritten by MT5, so the folders were not overwritten.
+- **Inputs:** the validated run's (30 inputs, names as the EA declares them), with one change: `RiskPercent` 0.8 instead of the default 5.0. 0.8 = 0.16 x 5.0, the size at which the
+  candidate's own closed-trade drawdown is 2% of the account (the add-on test's 2% allocation: +0.66 %/yr on the live set, no change in max DD, worst day or worst month).
+  Everything else is the default: Monday 01:05 open, Tuesday 22:55 close, 5%-of-price stop, no take profit, 40-period D1 moving-average filter, magic 123454321.
+- **Chart:** WS30 D1 on Darwinex Zero; on FTMO `US30.cash`, **a name written from memory that has not been confirmed on an FTMO terminal**.
+
+**Not done, and needed before the first live trade**
+1. **Licence.** bmtrading.de offers these EAs free for the Strategy Tester and asks for a licence request to run live. How the file behaves on a live account without one is unknown (no source).
+2. **Broker check.** The test is on Darwinex WS30 and its server clock. Confirm the FTMO symbol name, that `01:05` server time is the same moment there, and that the lot/risk behave
+   (0.8% risk with a 5%-of-price stop is a small lot; check the minimum lot). The user's live account is IC Markets: the earlier rule asked for a run on the target broker.
+3. **No account guards.** The EA has no daily-loss limit, throttle or demo-only switch (EACore is not in it). Its exposure is one long position at a time, held Monday to Tuesday, with a 5%-of-price stop at 0.8% risk.
+4. **In-sample evidence.** About 100 trades, t about 1.5 in 2019-21, the live set tuned on the same window. A pass of the add-on test is "worth a deployment test", not proof.

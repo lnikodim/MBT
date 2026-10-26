@@ -12,9 +12,20 @@ BASE = {  # EA: (validated run, chart)
     "Donchian_Trend_EA": ("dtrend_pick_20261021_073858", "USDJPY H4"),
     "Invictus_GBPJPY_Monday_EA": ("inv131_s0_mon_20261021_131936", "GBPJPY M1 (any timeframe)"),
     "NI225_Gap_Continuation_EA": ("ni225g_m0r_20261023_174047", "NI225 M5"),   # spec 2026-10-23-ni225-gap-continuation
+    "BM_TurnaroundTuesday_EA": ("tt_W_s0_20261025_214431", "WS30 D1 (FTMO: US30.cash, name not confirmed)"),   # spec 2026-10-26-addon-portfolio
 }
 DZ_ONLY = {"NI225_Gap_Continuation_EA"}   # the FTMO broker has no NI225 (user, 2026-10-23)
-SPEC = {"NI225_Gap_Continuation_EA": "2026-10-23-ni225-gap-continuation-prereg.md"}
+SPEC = {"NI225_Gap_Continuation_EA": "2026-10-23-ni225-gap-continuation-prereg.md",
+        "BM_TurnaroundTuesday_EA": "2026-10-26-addon-portfolio-prereg.md"}
+# bmtrading.de .ex5 with no source: the add-on test sized it to a 2% standalone drawdown = 0.16 x its default 5% risk. It has no EACore, so no daily stop,
+# throttle or demo-only guard; a licence request is needed for live use (bmtrading.de). Inputs below are the validated run's (names as the EA declares them).
+BINARY = {"BM_TurnaroundTuesday_EA"}
+TT_INPUTS = {"IsWaitNewHigh": "false", "Volume": "2", "Lots": "0.01", "LotsPerMoney": "1000", "RiskPercent": "0.8", "RiskMoney": "50.0",
+             "TpCalcMode": "0", "TpValue": "0.0", "SlCalcMode": "1", "SlValue": "5.0", "TimeOpenHour": "1", "TimeOpenMin": "5",
+             "TimeCloseHour": "22", "TimeCloseMin": "55", "DayOpen": "1", "DayClose": "2", "BeCalcMode": "0", "BeTriggerValue": "0.0",
+             "BeBufferValue": "0.05", "TslCalcMode": "0", "TslTriggerValue": "0.0", "TslValue": "100.0", "TslStepValue": "10.0",
+             "IsMaFilter": "true", "MaTimeframe": "16408", "MaPeriods": "40", "MaMethod": "0", "MaAppPrice": "1", "Magic": "123454321",
+             "IsChartComment": "true"}
 GOLD = {"MACD_Cross_EA", "Donchian_Breakout_EA", "RSI_Reversal_EA", "MA_Channel_EA"}
 ACCOUNTS = {  # folder: (title, EA daily stop %, throttle DD %)
     "ftmo_2step_50k": ("FTMO 2-Step $50k: 0.5% headline + 3% drawdown throttle, EA daily stop -3%", 3.0, 3.0),
@@ -27,6 +38,8 @@ def ini_inputs(run):
     return {k: v.split("||")[0] for k, v in (l.strip().split("=", 1) for l in t.splitlines() if "=" in l) if k.startswith("Inp")}
 
 def live_inputs(ea, daily, thr):
+    if ea in BINARY:
+        return dict(TT_INPUTS)
     inp = ini_inputs(BASE[ea][0])
     if ea in GOLD:
         inp.update(InpRiskMode="1", InpRiskValue="0.5", InpMonthlyLossPct="12.0",
