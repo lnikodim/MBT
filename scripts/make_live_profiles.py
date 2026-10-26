@@ -9,9 +9,8 @@ PROFILES = {"ftmo_2step_50k": "MBT_FTMO_2Step", "darwinex_zero": "MBT_DarwinexZe
 CHART = {  # EA: (symbol, period_type 0 = minutes / 1 = hours, period_size, digits)
     "MACD_Cross_EA": ("XAUUSD", 1, 1, 2), "Donchian_Breakout_EA": ("XAUUSD", 1, 4, 2), "RSI_Reversal_EA": ("XAUUSD", 1, 6, 2),
     "MA_Channel_EA": ("XAUUSD", 1, 1, 2), "Donchian_Trend_EA": ("USDJPY", 1, 4, 3), "Invictus_GBPJPY_Monday_EA": ("GBPJPY", 0, 1, 3),
-    "NI225_Gap_Continuation_EA": ("NI225", 0, 5, 2), "BM_TurnaroundTuesday_EA": ("WS30", 2, 1, 2),
+    "NI225_Gap_Continuation_EA": ("NI225", 0, 5, 2),
 }
-SYMBOL = {("ftmo_2step_50k", "BM_TurnaroundTuesday_EA"): "US30.cash"}   # FTMO's US30 name: from memory, not confirmed on their terminal
 LOCAL = os.path.expanduser("~/Library/Application Support/net.metaquotes.wine.metatrader5/drive_c/Program Files/"
                            "MetaTrader 5/MQL5/Profiles/Charts")
 
@@ -126,7 +125,6 @@ def main(install):
             n += 1
             inp = L.live_inputs(ea, daily, thr)
             symbol, ptype, psize, digits = CHART[ea]
-            symbol = SYMBOL.get((folder, ea), symbol)
             text = HEAD.format(id=133000000000000 + 100 * n, symbol=symbol, ptype=ptype, psize=psize, digits=digits, ea=ea,
                                inputs="\n".join(f"{k}={v}" for k, v in inp.items()))
             path = f"{out}/chart{n:02d}.chr"

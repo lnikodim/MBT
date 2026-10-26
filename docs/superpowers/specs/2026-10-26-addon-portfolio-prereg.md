@@ -87,3 +87,10 @@ one was chosen). No source exists, so nothing was compiled: `BM_TurnaroundTuesda
    (0.8% risk with a 5%-of-price stop is a small lot; check the minimum lot). The user's live account is IC Markets: the earlier rule asked for a run on the target broker.
 3. **No account guards.** The EA has no daily-loss limit, throttle or demo-only switch (EACore is not in it). Its exposure is one long position at a time, held Monday to Tuesday, with a 5%-of-price stop at 0.8% risk.
 4. **In-sample evidence.** About 100 trades, t about 1.5 in 2019-21, the live set tuned on the same window. A pass of the add-on test is "worth a deployment test", not proof.
+
+## Withdrawn (2026-10-26): Turnaround Tuesday is not added
+User: "if that's the case and we need approval from the bmtrading.de, skip it, remove all leftovers and continue scanning the mql5 pages". The EA needs a licence request to the
+author for live use, so it is dropped. Removed per the leftovers rule: the live-set and chart generator changes (`scripts/make_live_sets.py`, `scripts/make_live_profiles.py`,
+`tests/test_ea_inputs.py` reverted to the state before 27d827a), the two `.set` files and the two chart files (repo and the local MT5 profile folders), and the
+`BM_TurnaroundTuesday_EA.ex5` copy. The live sets and profiles are back to their earlier seven (Darwinex Zero) and six (FTMO) EAs. The result stays on record: on the live set it
+added +0.66 %/yr at a 2% allocation with no change in max drawdown (WS30), and the two versions are one signal (daily rho +0.82).
