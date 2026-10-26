@@ -161,12 +161,6 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
-    # 2026-10-26 classic mql5.com Code Base EAs (spec 2026-10-26-classic-eas-prereg.md): five EAs unchanged, numeric/bool source defaults only
-    "SMA_ADX_EA": {"StopLoss": "30", "TakeProfit": "100", "ADX_Period": "8", "MA_Period": "8", "EA_Magic": "12345", "Adx_Min": "22.0", "Lot": "0.1"},
-    "Puria_EA": {"StopLoss": "14", "TakeProfit": "15", "MA1_Period": "75", "MA2_Period": "85", "MA3_Period": "5", "EA_Magic": "12345", "Lot": "0.1"},
-    "KijunSen_EA": {"InpStopLoss": "50", "InpBreakEven": "9", "InpTrailingStop": "10", "InpMAfilter": "6", "UseOptimizedValues": "true", "Lots": "1"},
-    "RSI_Classic_EA": {"OpenBUY": "true", "OpenSELL": "true", "CloseBySignal": "true", "InpStopLoss": "0.0", "InpTakeProfit": "0.0", "InpTrailingStop": "0", "RSIperiod": "14", "RsiBuyLevel": "30.0", "RsiSellLevel": "70.0", "AutoLot": "true", "Risk": "10", "ManualLots": "0.1", "m_magic": "123", "InpSlippage": "1"},
-    "ADX_Classic_EA": {"InpTakeProfit": "15", "Lots": "1", "InpTrailingStop": "20", "InpStopLoss": "100"},
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
