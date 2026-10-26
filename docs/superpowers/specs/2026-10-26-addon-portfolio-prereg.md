@@ -94,3 +94,10 @@ author for live use, so it is dropped. Removed per the leftovers rule: the live-
 `tests/test_ea_inputs.py` reverted to the state before 27d827a), the two `.set` files and the two chart files (repo and the local MT5 profile folders), and the
 `BM_TurnaroundTuesday_EA.ex5` copy. The live sets and profiles are back to their earlier seven (Darwinex Zero) and six (FTMO) EAs. The result stays on record: on the live set it
 added +0.66 %/yr at a 2% allocation with no change in max drawdown (WS30), and the two versions are one signal (daily rho +0.82).
+
+## SessionReopenEA Gate C (2026-10-26, evening): fails, closed
+The user asked to prioritise it ("prioritize SessionReopenEA for further testing"), although it had failed Gate A (the joined 2022-24 half lost 16 USD) and was only reported for information.
+Its 2019-01..2021-12 run (XAUUSD H1, Darwinex-Demo, real ticks, 99.0% history, 10k, fixed 0.01 lot, source defaults) gave **net -125.82 USD, PF 0.80 (0.84 on the legs), 604 trades, t -1.68**, by year 2019 -23, 2020 +2, 2021 -106 USD, drawdown 1.95%.
+The add-on bar (net > 0 and PF >= 1.0) is not met, so the +1.46 %/yr add-on number above does not stand: the edge is not there before 2022. Verdict **closed**.
+Two failed attempts came first: the pages 1-10 cleanup had dropped the EA's entry from `scripts/ea_profiles.py`, so the tester wrapper crashed in about a second without a report. The entry was restored for the run and removed again with the source,
+the MT5 copies (`.mq5`, `.ex5`, compile log) and `Profiles/Tester/CB77060_EA.set`, per the leftovers rule. The runs `cb77060_scr`, `cb77060_s0a` and `cb77060_s1` stay in `reports/`.

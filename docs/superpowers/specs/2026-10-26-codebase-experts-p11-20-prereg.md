@@ -50,3 +50,33 @@ User: "when you detect EAs that heavily use logging, clean up the logs from the 
 - **Universal 1.64 (20424), EURUSD H1, 0.20 lot:** screen +1,024.71 USD (PF 1.34, DD 4.6%, 296 trades, t +2.27); Gate A joined +1,289.57 USD (PF 1.19, DD 6.2%; 2022-24 +635, 2025-26 +655);
   **2019-21 -1,425.43 USD, PF 0.67, t -3.32: add-on evidence fails, closed.**
 - **Hans123_Trader (20149):** Gate A passed (+1,517 USD, DD 31.5%, 2022-24 only +48), 2019-21 -1,145.73 USD: closed. **20195, 20397:** failed Gate A. 
+
+## Final outcome (2026-10-26, evening): 0 candidates; the last 23 cells were skipped at the user's request
+User: "ok, skip all the rest EAs in the queue", then "remove also all leftovers".
+
+**Counts.** 147 cells (the 146 above plus Code Base 166, added at the user's request): 124 reached a result, 23 were not run, so any winner among them is unknown:
+22977 23027 23029 23039 23040 23061 23073 23108 23152 23155 23201 23220 23223 23234 23239 23255 23288 23297 23325 23334 23344 23348 23358.
+- **Gate A (2024-01..2026-10):** 16 cells passed (20149, 20195, 20397, 20424, 20461, 20705, 21196, 21639, 21962, 22021, 22098, 22304, 22884, 22889, 23495, 26317);
+  the rest were rejected: 15 with no trades, 10 with 1-39 trades, 59 with at least 40 trades and a loss or PF below 1.0, 3 with stop-outs (21937, 22595, 166), plus the hand-recorded cells below.
+- **Gate B (2022-23 joined with Gate A):** 3 passed (20149, 20424, 21196, the last under the 80-trade weekly floor); 13 failed. The failures were mostly collapses in 2022-23 or 2022-24, for example 21639 (joined -7,517 USD, DD 87%),
+  22884 (-4,120 USD, DD 82%), 22021 (-4,408 USD, DD 84%), 22889 (+10,439 USD but 2022-24 -956 and DD 46%, almost all of it in 2025-26), 26317 (PF 1.00, DD 51%), 23495 (+214 USD in 99 trades).
+- **Gate C (2019-21):** all 3 failed: Hans123 20149 -1,145.73 USD (PF 0.95), Universal 1.64 20424 -1,425.43 USD (PF 0.67), Alexav D1 GBPUSD 21196 -1,348.58 USD (PF 0.56; 2019 -109, 2020 +289, 2021 -1,528).
+- **Add-on test:** not due for any cell. **Candidates: none.** Net figures are at each EA's own sizing on 10k.
+- **Recorded by hand (Gate A reject lines in `cb3.log`):** 20779 (tester returned an empty report; two-week probe -3,000 USD, PF 0.61, DD 41%), 21563 (account at 358.84 of 10,000 USD by 2025-03-13, then refused orders on every tick),
+  21616 (two-week probe took 3,349 s: the 2024-26 run would take ~66 h), 22693 (probe 932 trades, PF 0.54, -822.83 USD; early reject, see Amendment 3).
+- **Near miss, not counted:** 21759 (EURUSD H1, no stop loss, 97% wins) had PF 6.42 and +520 USD but 36 trades against the floor of 40.
+
+## Amendments made during the run (all after the first results, none changes a strategy)
+2. **Weekly floor:** Gate B uses 80 trades when Gate A shows at most 52 trades a year (21196, 23495); the runner printed "floor 150" before this and its old 21196 line says FAIL (it passes under the floor).
+3. **Early reject:** a two-week probe with at least 150 trades and PF below 0.75 is a Gate A reject without the full run (3 earlier cells like this were all rejects; applied to 22693 by hand).
+   A probe over 900 s also rejects the cell as too slow to test (21616).
+4. **Flood watchdog:** the agent log is watched during every run; past 3 GB on disk the tester is stopped, the EA's Print calls are renamed `NoLog` once, and the run repeats. It fired for 22889
+   (per-tick "OpenBuy, ERROR: FreeMarginCheck" lines after its margin ran short, 11 GB in 90 s); the stripped rerun gave the Gate A and B lines above. Its probe identity was **not** checked (the cell is closed on Gate B anyway).
+5. **Logging strip at the probe** (Amendment 1): applied to 21563, 22659 and 22788, each with an identical probe (`reports/oct25/stripped.log`).
+6. **Cleanup after every run:** the tester's master and agent logs are cleared after each backtest (user rule). The master log folder had reached 176 GB.
+7. **Guard glitch:** after a stopped run, the "MT5 is running" guard refused 69 cells in about a minute; they were re-run in a second pass, none was lost.
+- **Labels:** `cb3.log` mixes the old "SCREEN" / "Gate A (joined)" lines with the A/B/C labels; the meaning is in `docs/gates.md`.
+
+## Leftovers removed (user rule and "remove also all leftovers")
+The 146 `mql5/CB<code>_EA.mq5` files and the Code Base 166 copy, the 4 `.orig` copies of stripped sources, the Code Base block of `scripts/ea_profiles.py`, in MT5 the `CB*` files in `Experts/Advisors` (sources, `.ex5`, compile logs), 125 `Profiles/Tester/CB*.set` files,
+the 12 dependency files installed only for these EAs (10 indicators, `TradingBoxingDialog.mqh`, `TradingBoxing/SpinEditDouble.mqh`, with their `.ex5`), and the downloaded third-party sources in the scratch folder. The reports and logs stay.
