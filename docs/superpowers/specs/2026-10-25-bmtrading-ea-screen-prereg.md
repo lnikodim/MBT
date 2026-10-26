@@ -106,3 +106,19 @@ User: "yes, lower the floor to 80 for weekly rules".
 - **Expectation (before the run):** the same author's Go Long rule lost in 2022 on both indices and trailed buy-and-hold, and the Turnaround Tuesday
   rule took only 46-62% of the index's move in 2022-26. About 40 weekly trades in three years make t >= 1.65 hard to reach, so the most likely
   outcome is failure of the out-of-sample check, not the sizing step.
+
+## Amendment 1 outcome (2026-10-26; log `reports/oct25/tts1.log`): Turnaround Tuesday closed at the out-of-sample and sizing steps
+Compiled defaults, real ticks, 10,000 USD, D1, one position at a time.
+
+| cell | Gate A at the 80-trade floor | 2019-21 | sizing (k = 8 / DD of the 2022-26 run) |
+|---|---|---|---|
+| tt_W WS30 | **passes**: 101 trades, PF 1.43, 22-24 +110, 25-26 +2,061 USD | +3,237.47 USD, PF 1.86, DD 14.0%, 48 trades, win 56.2%, +6.1 R (mean +0.128), **t +1.48 -> fails** (needs 1.65); hq 99%; 19 -206, 20 **+2,767**, 21 +676; 58% of buy-and-hold | k 0.59: **+0.2% a year in 2022-24, +6.9% in 2025-26** (needs 10% in both) |
+| tt_S SP500 | **passes**: 96 trades, PF 1.48, 22-24 +774, 25-26 +1,785 USD | +3,043.45 USD, PF 1.93, DD 17.6%, 41 trades, win 61.0%, +5.9 R (mean +0.143), t +1.55; **hq 0% real ticks -> inconclusive**; 19 -210, 20 +2,297, 21 +956; 42% of buy-and-hold | k 0.59: **+1.5% a year in 2022-24, +6.0% in 2025-26** |
+
+- **Read:** the rule is positive in every window it was run on (WS30: 2019-21, 2022-26, 2024-26; SP500 the same, with modelled ticks before 2022). It is a long-only
+  weekly rule that captured 42-73% of its index's move, with most of its profit in the 2020 rebound and in 2025-26.
+- **It misses on two counts:** 41-48 trades in 2019-21 give t of only 1.5, below 1.65 (WS30 fails on this, SP500 is inconclusive on data), and at an 8% drawdown it
+  scales to about +0.2% to +1.5% a year in 2022-24 and +6% to +7% in 2025-26, below the 10% required in both regimes.
+- **Verdict: closed.** No joint run with the live set (the gates were not passed).
+- **Expectation check:** expected a failure of the out-of-sample check from the small sample, and it was a narrow one (t 1.47-1.48 against 1.65). The sizing step would have failed regardless.
+- **Removed** per the leftovers rule: the `BM_TurnaroundTuesday_EA.ex5` copy, its profile and `.set`. The original is in the bmtrading.de download.
