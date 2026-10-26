@@ -68,3 +68,18 @@ Real ticks, 2024-01..2026-10, 10,000 USD, 1% risk, compiled defaults, no stop-ou
   0.82, worse than expected on every cell, gold included.
 - **The EA stays in the repo** (`mql5/VWAP_EMA_Pullback_EA.mq5`, as its two VWAP siblings did), not removed under the failed-EA rule,
   because it is the user's own rule built here. Any new version needs a new pre-registration.
+
+## Amendment 1 (2026-10-26, written before the runs): the same rules on M15 and H1
+User: "try it on M15 and H1". The M5 screen closed all four cells with a gross PF below 1 (a rule with no edge before costs on M5).
+Costs are a smaller share of a larger bar, so this tests whether the same rules work slower.
+
+- **What changes:** only the signal timeframe, and the VWAP warm-up so that it stays **one hour** as agreed (12 bars on M5 = 4 bars on
+  M15 = 1 bar on H1). Every other input is the compiled default: EMA 9/21, pullback <= 8 bars, ATR(14) stop with a 0.2 buffer, 1.0 minimum
+  and 3.0 maximum, RR 1.5, 1% risk, guards on. The pullback length is left in bars (8 bars = 2 hours on M15, 8 hours on H1).
+- **Setting both:** the EA's signal timeframe is its input `InpTimeframe`, so each cell sets `InpTimeframe` and the chart period together.
+- **Cells (8):** vpb15_X / E / G / J = XAUUSD, EURUSD, GBPUSD, USDJPY on M15; vpb60_X / E / G / J = the same on H1.
+- **Same gates:** screen 2024-01-01..2026-10-01 (trades >= 40, PF >= 1.00, net > 0, no stop-out), then Gate A on 2022-26, then 2019-21 (net > 0, PF >= 1.05, t >= 1.65).
+- **Multiple testing:** 12 cells in total (4 on M5, 8 here); a pass on one cell of 8 is weak evidence unless it passes all stages.
+- **Expectation (before the runs):** the M5 gross PF of 0.74 to 0.91 will move toward 1.0 as bars get larger, but a rule with no edge on M5 usually
+  has none on M15 either, and H1 will have few trades (the 40-trade floor may bind). Most likely: closed on all eight. If any cell
+  survives, gold on H1 is the most plausible.
