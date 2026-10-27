@@ -18,5 +18,6 @@ Every EA is tested on Darwinex-Demo with real ticks, source defaults, a fixed sy
 - A stateful EA (open grid or martingale positions, compounding lots, a permanent drawdown stop) keeps one continuous 2022-26 run for Gate B.
 - An EA that floods the tester log (a two-week probe writes more than 100 MB) has its Print calls renamed to NoLog, only if the probe trades are identical (`scripts/strip_logging.py`).
 - A pre-registration spec is committed before any run; a failed EA's source, profile and MT5 files are removed afterwards (the spec and logs stay).
+- An EA that passes Gates A, B and C but whose drawdown is above the 8% sizing level is not rejected at once. First test one loss-limiting variant, named in the spec before the run: an input the EA already has (an equity drawdown limit, fewer grid levels, stops on) or a stop added to the logic. Run the same gates on it. Report the default and the variant side by side, mark the variant as found after the default result, and reject only if the variant fails. Use one variant per EA, not a sweep, so the gates aren't tuned on the same data.
 
 Older specs use the old names ("Gate A" = the joined 2022-26 test, "the screen" = 2024-26); the table above maps them.
