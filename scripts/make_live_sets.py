@@ -47,7 +47,7 @@ def live_inputs(ea, daily, thr, folder=None):
         inp.update(InpDailyLossPct=f"{daily:.1f}")
         return inp
     else:
-        inp.update(InpLotsPer1k="0.010", InpDemoOnly="false")   # 0.5x the author's 0.2 lot per 10k
+        inp.update(InpDemoOnly="false")   # Invictus keeps the validated 0.006 lot per $1,000 from its run (user, 2026-10-27; 0.010 was the 0.5% headline, 1.00 lot on about 100k)
     inp.update(InpDailyLossPct=f"{daily:.1f}", InpThrottleDDPct=f"{thr:.1f}", InpThrottleFactor="0.5")   # daily stop: all six EAs
     return inp
 

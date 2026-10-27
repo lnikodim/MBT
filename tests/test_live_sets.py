@@ -50,3 +50,8 @@ def test_chart_profiles_use_each_brokers_symbol():
             if f"name={EA}\n" in t.replace("\r", ""):
                 found.append(re.search(r"^symbol=(.*)$", t, re.M).group(1).strip())
         assert found == [symbol], (folder, found)
+
+
+@pytest.mark.parametrize("folder", sorted(L.ACCOUNTS))
+def test_invictus_keeps_the_validated_lot_size(folder):
+    assert sets(folder)["Invictus_GBPJPY_Monday_EA"]["InpLotsPer1k"] == "0.006"       # user, 2026-10-27: not the 0.010 headline (1.00 lot on ~100k)
