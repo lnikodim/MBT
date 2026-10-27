@@ -9,8 +9,9 @@ PROFILES = {"ftmo_2step_50k": "MBT_FTMO_2Step", "darwinex_zero": "MBT_DarwinexZe
 CHART = {  # EA: (symbol, period_type 0 = minutes / 1 = hours, period_size, digits)
     "MACD_Cross_EA": ("XAUUSD", 1, 1, 2), "Donchian_Breakout_EA": ("XAUUSD", 1, 4, 2), "RSI_Reversal_EA": ("XAUUSD", 1, 6, 2),
     "MA_Channel_EA": ("XAUUSD", 1, 1, 2), "Donchian_Trend_EA": ("USDJPY", 1, 4, 3), "Invictus_GBPJPY_Monday_EA": ("GBPJPY", 0, 1, 3),
-    "NI225_Gap_Continuation_EA": ("NI225", 0, 5, 2),
+    "NI225_Gap_Continuation_EA": ("NI225", 0, 5, 2), "NDX_Band_Breakout_EA": ("NDX", 0, 1, 1),
 }
+SYMBOL = {"ftmo_2step_50k": {"NDX_Band_Breakout_EA": ("US100.cash", 2)}}   # FTMO's Nasdaq-100 name (to confirm on the FTMO terminal); Darwinex uses NDX
 LOCAL = os.path.expanduser("~/Library/Application Support/net.metaquotes.wine.metatrader5/drive_c/Program Files/"
                            "MetaTrader 5/MQL5/Profiles/Charts")
 
@@ -123,8 +124,9 @@ def main(install):
             if ea in L.DZ_ONLY and folder != "darwinex_zero":
                 continue
             n += 1
-            inp = L.live_inputs(ea, daily, thr)
+            inp = L.live_inputs(ea, daily, thr, folder)
             symbol, ptype, psize, digits = CHART[ea]
+            symbol, digits = SYMBOL.get(folder, {}).get(ea, (symbol, digits))
             text = HEAD.format(id=133000000000000 + 100 * n, symbol=symbol, ptype=ptype, psize=psize, digits=digits, ea=ea,
                                inputs="\n".join(f"{k}={v}" for k, v in inp.items()))
             path = f"{out}/chart{n:02d}.chr"
@@ -134,7 +136,7 @@ def main(install):
             back = open(path, encoding="utf-16").read().split("<inputs>\n")[1].split("\n</inputs>")[0]
             got = dict(l.split("=", 1) for l in back.splitlines())
             assert got == set_values(f"mql5/sets/{folder}/{ea}.set"), (folder, ea)
-        print(f"wrote {out}/ ({n} charts: {', '.join(f'{CHART[e][0]} {e}' for e in L.BASE if not (e in L.DZ_ONLY and folder != 'darwinex_zero'))})")
+        print(f"wrote {out}/ ({n} charts: {', '.join(f'{SYMBOL.get(folder, {}).get(e, (CHART[e][0],))[0]} {e}' for e in L.BASE if not (e in L.DZ_ONLY and folder != 'darwinex_zero'))})")
         if install:
             dst = f"{LOCAL}/{PROFILES[folder]}"
             shutil.rmtree(dst, ignore_errors=True); shutil.copytree(out, dst)

@@ -161,6 +161,14 @@ PROFILES = {
         "InpShowStatusOnChart": "true", "InpPrintDailyDiagnostics": "true",
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
+    # NDX_Band_Breakout_EA v1.00 compiled defaults (ORB3 of article 17745, variant x8: long only, bands x1.25, no entries in the first
+    # 60 minutes; Darwinex / FTMO clock New York + 7 h; add-on sizing 0.5x -> 0.25% risk; spec 2026-10-27-ndx-band-breakout-production-prereg.md)
+    "NDX_Band_Breakout_EA": dict(_CORE_DEFAULTS, **{
+        "InpMagic": "271027", "InpComment": "NDXBB", "InpTimeframe": "1", "InpSpreadWaitMin": "0", "InpMaxSpreadPoints": "100",
+        "InpRiskValue": "0.25", "InpDailyLossPct": "3.0", "InpThrottleDDPct": "3.0",
+        "InpOpenHour": "16", "InpOpenMinute": "30", "InpEntryDelayMin": "60", "InpBandMult": "1.25", "InpSigmaDays": "14",
+        "InpAllowShort": "false", "InpTrendSMA": "400", "InpStopPct": "1.0", "InpUseVwapExit": "true", "InpCloseHour": "22", "InpCloseMinute": "55",
+    }),
     # DonchianTrend2_EA v2.00 (MBT copy of DonchianTrend_EA: spread-blocked signals retried in their bar; defaults = the
     # stage 1 USDJPY H4 pick of spec 2026-10-21: long-only, channel 10, 1.5 x ATR stop, RR 1.5, ADX >= 20)
     "DonchianTrend2_EA": {
