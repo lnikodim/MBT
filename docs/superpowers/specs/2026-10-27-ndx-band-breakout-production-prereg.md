@@ -40,7 +40,7 @@ Everything else (magic 271027, bands, trend filter, stop, VWAP exit, long only) 
 The two new chart files were also copied into the local MT5 profile folders (new files only; the existing local charts, rewritten by MT5, were not touched).
 
 ## Not verified (cannot be from here)
-- **FTMO's Nasdaq-100 symbol name and digits**: `US100.cash` is the usual FTMO name, not confirmed on the FTMO terminal; the spread and slippage caps assume 2 digits. Check the symbol in Market Watch before attaching the chart.
+- ~~FTMO's Nasdaq-100 symbol name and digits~~ **Confirmed 2026-10-27** from the user's FTMO demo Market Watch (screenshot): `US100.cash`, quoted 29151.63 / 29153.38, so 2 digits and a spread of 1.75 index points (175 points, inside the 1,000-point cap).
 - **Live-only paths** (late-bar guard, single-instance lock, restart, catch-up of the trade log) are EACore's and untested with this EA in a tester.
 - **VWAP uses tick volume**, which differs between a live feed and the tester's real ticks; the weights change a little, not the structure.
 - **The first live day needs M1 history** (14 days of bars at the same minutes and the session-open bar); the EA stays out if a bar is missing.
