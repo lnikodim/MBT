@@ -9,6 +9,11 @@ import os
 
 BLESSING_STRINGS = {"AlertSound", "DDorLevel", "GridSetArray", "HedgeSymbol", "Holidays", "LabelAcc", "LabelAdv", "LabelBBS", "LabelCCI", "LabelDisplay", "LabelEDD", "LabelEE", "LabelEH", "LabelES", "LabelEST", "LabelEST0", "LabelGS", "LabelGrid", "LabelGridOpt", "LabelHS", "LabelHS0", "LabelIchi", "LabelLS", "LabelMA", "LabelMACD", "LabelOS", "LabelOS0", "LabelOpt", "LabelSG", "LabelSto", "LabelTS", "LabelTST", "LabelUE", "Notes", "SetCountArray", "TP_SetArray", "TradeComment", "Version_3_9_6_23", "displayFont", "eopb", "eopb1", "s1", "s2", "s3"}
 STRING_INPUTS = {"InpComment"} | BLESSING_STRINGS
+# Time-of-day strings ("HH:MM", Argus strategies). Written bare like other strings: the "||" form made the EA read the whole value,
+# parse it as 0 and trade never (2026-10-27: ICT Killzone Macro, zero trades on the earlier screen; see the time-string rerun outcome).
+ARGUS_TIME_STRINGS = {"KillzoneStart", "KillzoneEnd", "AsianStart", "LondonStart", "LondonEnd", "NY_Start", "NY_End",
+                      "SessionStart", "SessionEnd", "OR_Start"}
+STRING_INPUTS = STRING_INPUTS | ARGUS_TIME_STRINGS
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
 # stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.

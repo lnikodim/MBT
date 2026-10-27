@@ -221,3 +221,9 @@ def test_rsi8020_profile_pins_the_article():
     assert (p["InpExpiryBars"], p["InpTargetR"], p["InpSLBufferATR"]) == ("50", "3.0", "0.1")
     assert p["InpAllowShort"] == "true" and p["InpRetryMin"] == "60"
     assert p["InpExtremeMode"] == "0" and p["InpWideStopATR"] == "0.0"                # lows/highs, setup-low stop (reconciled reading)
+
+
+def test_argus_time_strings_are_written_bare():
+    lines = P.tester_input_lines({"KillzoneStart": "10:00", "MagicNumber": "100017"}, {})
+    assert "KillzoneStart=10:00" in lines            # the "||" form made the Argus EA parse 0 (2026-10-27)
+    assert "MagicNumber=100017||100017||1||100017||N" in lines
