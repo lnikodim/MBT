@@ -13,6 +13,7 @@ CHART = {  # EA: (symbol, period_type 0 = minutes / 1 = hours, period_size, digi
     "Dark_Moon": ("EURUSD", 1, 1, 5), "Dark_Rea": ("GBPUSD", 1, 1, 5),
 }
 SYMBOL = {"atlas_2step_50k": {"NDX_Band_Breakout_EA": ("NAS100", 2)}}   # placeholder for the Atlas Nasdaq-100 name and digits (to confirm on the Atlas terminal); Darwinex uses NDX
+FILE = {"Dark_Moon": "Dark_Moon_EA", "Dark_Rea": "Dark_Rea_EA"}   # the Advisors copies of the compiled Dark EAs carry the _EA suffix (checked 2026-11-01)
 LOCAL = os.path.expanduser("~/Library/Application Support/net.metaquotes.wine.metatrader5/drive_c/Program Files/"
                            "MetaTrader 5/MQL5/Profiles/Charts")
 
@@ -130,7 +131,7 @@ def main(install):
             inp = L.live_inputs(ea, daily, thr, folder)
             symbol, ptype, psize, digits = CHART[ea]
             symbol, digits = SYMBOL.get(folder, {}).get(ea, (symbol, digits))
-            text = HEAD.format(id=133000000000000 + 100 * n, symbol=symbol, ptype=ptype, psize=psize, digits=digits, ea=ea,
+            text = HEAD.format(id=133000000000000 + 100 * n, symbol=symbol, ptype=ptype, psize=psize, digits=digits, ea=FILE.get(ea, ea),
                                inputs="\n".join(f"{k}={v}" for k, v in inp.items()))
             path = f"{out}/chart{n:02d}.chr"
             with open(path, "w", encoding="utf-16", newline="\r\n") as f:   # MT5 native: UTF-16 LE with BOM, CRLF
