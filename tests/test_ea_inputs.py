@@ -5,8 +5,9 @@ import re
 
 import pytest
 
-from make_live_sets import BASE
+from make_live_sets import BASE, DARK_DEFAULTS
 
+OWN_EAS = sorted(set(BASE) - set(DARK_DEFAULTS))     # Dark Moon and Rea are compiled vendor EAs: no source here, the guide does not apply
 GROUPS = {1: "Trade size", 2: "Account protection", 3: "Orders", 4: "Identity and logs",
           5: "Strategy", 6: "Filters", 7: "Exits"}
 MQL5 = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mql5")
@@ -30,7 +31,7 @@ def dialog(path, seen=None):
     return rows
 
 
-@pytest.mark.parametrize("ea", sorted(BASE))
+@pytest.mark.parametrize("ea", OWN_EAS)
 def test_live_ea_inputs_follow_the_guide(ea):
     rows = dialog(os.path.join(MQL5, ea + ".mq5"))
     assert rows[0][0] == "group", f"{ea}: inputs before the first group"

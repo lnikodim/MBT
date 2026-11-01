@@ -1,17 +1,18 @@
 """MT5 chart profiles for the live sets: every chart with its symbol, timeframe, EA and live inputs (the same values as
 make_live_sets.py). Copy a profile folder into <Data Folder>/MQL5/Profiles/Charts/ and open it via File > Profiles.
-  python3 scripts/make_live_profiles.py            -> mql5/profiles/MBT_FTMO_2Step/, mql5/profiles/MBT_DarwinexZero/
+  python3 scripts/make_live_profiles.py            -> mql5/profiles/MBT_Atlas_2Step/, mql5/profiles/MBT_DarwinexZero/
   python3 scripts/make_live_profiles.py --install  -> also copies both into the local (Mac) MT5 profiles folder"""
 import os, sys, shutil
 sys.path.insert(0, os.path.dirname(__file__)); import make_live_sets as L
 
-PROFILES = {"ftmo_2step_50k": "MBT_FTMO_2Step", "darwinex_zero": "MBT_DarwinexZero"}
+PROFILES = {"atlas_2step_50k": "MBT_Atlas_2Step", "darwinex_zero": "MBT_DarwinexZero"}
 CHART = {  # EA: (symbol, period_type 0 = minutes / 1 = hours, period_size, digits)
     "MACD_Cross_EA": ("XAUUSD", 1, 1, 2), "Donchian_Breakout_EA": ("XAUUSD", 1, 4, 2), "RSI_Reversal_EA": ("XAUUSD", 1, 6, 2),
     "MA_Channel_EA": ("XAUUSD", 1, 1, 2), "Donchian_Trend_EA": ("USDJPY", 1, 4, 3), "Invictus_GBPJPY_Monday_EA": ("GBPJPY", 0, 1, 3),
     "NI225_Gap_Continuation_EA": ("NI225", 0, 5, 2), "NDX_Band_Breakout_EA": ("NDX", 0, 1, 1),
+    "Dark_Moon": ("EURUSD", 1, 1, 5), "Dark_Rea": ("GBPUSD", 1, 1, 5),
 }
-SYMBOL = {"ftmo_2step_50k": {"NDX_Band_Breakout_EA": ("US100.cash", 2)}}   # FTMO's Nasdaq-100 name (to confirm on the FTMO terminal); Darwinex uses NDX
+SYMBOL = {"atlas_2step_50k": {"NDX_Band_Breakout_EA": ("NAS100", 2)}}   # placeholder for the Atlas Nasdaq-100 name and digits (to confirm on the Atlas terminal); Darwinex uses NDX
 LOCAL = os.path.expanduser("~/Library/Application Support/net.metaquotes.wine.metatrader5/drive_c/Program Files/"
                            "MetaTrader 5/MQL5/Profiles/Charts")
 
@@ -123,6 +124,8 @@ def main(install):
         for ea in L.BASE:
             if ea in L.DZ_ONLY and folder != "darwinex_zero":
                 continue
+            if ea in L.ATLAS_ONLY and folder != "atlas_2step_50k":
+                continue
             n += 1
             inp = L.live_inputs(ea, daily, thr, folder)
             symbol, ptype, psize, digits = CHART[ea]
@@ -136,7 +139,8 @@ def main(install):
             back = open(path, encoding="utf-16").read().split("<inputs>\n")[1].split("\n</inputs>")[0]
             got = dict(l.split("=", 1) for l in back.splitlines())
             assert got == set_values(f"mql5/sets/{folder}/{ea}.set"), (folder, ea)
-        print(f"wrote {out}/ ({n} charts: {', '.join(f'{SYMBOL.get(folder, {}).get(e, (CHART[e][0],))[0]} {e}' for e in L.BASE if not (e in L.DZ_ONLY and folder != 'darwinex_zero'))})")
+        included = [e for e in L.BASE if not (e in L.DZ_ONLY and folder != "darwinex_zero") and not (e in L.ATLAS_ONLY and folder != "atlas_2step_50k")]
+        print(f"wrote {out}/ ({n} charts: {', '.join(f'{SYMBOL.get(folder, {}).get(e, (CHART[e][0],))[0]} {e}' for e in included)})")
         if install:
             dst = f"{LOCAL}/{PROFILES[folder]}"
             shutil.rmtree(dst, ignore_errors=True); shutil.copytree(out, dst)

@@ -25,3 +25,10 @@ def test_throttle_halves_trades_once_the_drawdown_reaches_the_threshold():
     assert run(None)["p_pass"] == 1.0
     assert run([3.0, 0.5])["p_pass"] == 0.0 and run([3.0, 0.5])["p_no_result"] == 1.0
     assert run([5.0, 0.5])["p_pass"] == 1.0
+
+
+def test_utc_day_follows_the_darwinex_clock_through_daylight_saving():
+    from datetime import datetime
+    d = lambda *a: PM.utc_day(datetime(*a)).isoformat()
+    assert d(2026, 1, 15, 1, 59) == "2026-01-14" and d(2026, 1, 15, 2, 0) == "2026-01-15"    # US winter: server = UTC+2
+    assert d(2026, 7, 15, 2, 59) == "2026-07-14" and d(2026, 7, 15, 3, 0) == "2026-07-15"    # US summer: server = UTC+3

@@ -13,7 +13,7 @@ Pure numpy + stdlib: runs on the Mac's native python3, no Wine/MT5 needed.
 
   python3 scripts/prop_mc.py reports/val_final_2024-2026_20261002_195527.htm --bt-risk 1.0
   python3 scripts/prop_mc.py reports/val_final_2022_*.htm reports/val_final_2023_*.htm   # merged OOS years
-  python3 scripts/prop_mc.py trades.csv --risk 0.25,0.5 --targets 10,5 --daily-loss 5 --max-loss 10
+  python3 scripts/prop_mc.py trades.csv --risk 0.25,0.5 --targets 7,4 --daily-loss 4 --max-loss 8
 
 CSV input: a close_time (or time) column plus one of: r | return_pct | profit + balance
 (balance after the close).
@@ -24,9 +24,18 @@ Days are bucketed by close time in the report's (server) timezone.
 """
 import argparse, csv, html, json, re, sys
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 
 import numpy as np
+
+NEW_YORK = ZoneInfo("America/New_York")
+
+
+def utc_day(t):
+    """UTC calendar day of a Darwinex server time (New York + 7 h: UTC+2 in US winter, UTC+3 in US summer).
+    Atlas resets its daily loss at 00:00 UTC (screenshot 2026-11-01), which is 02:00 or 03:00 server time."""
+    return (t - timedelta(hours=7)).replace(tzinfo=NEW_YORK).astimezone(timezone.utc).date()
 
 
 # ------------------------------------------------------------------------------------ loading
@@ -235,16 +244,18 @@ def main():
     ap.add_argument("source", nargs="+", help="MT5 tester .htm report(s) or trades CSV(s); several are merged")
     ap.add_argument("--bt-risk", type=float, default=1.0, help="risk %% per trade used in the backtest (default 1.0)")
     ap.add_argument("--risk", type=_floats, default=[0.25, 0.5, 0.75, 1.0], help="risk %% levels to simulate")
-    ap.add_argument("--targets", type=_floats, default=[10, 5], help="profit target %% per phase (FTMO 2-Step: 10,5)")
-    ap.add_argument("--daily-loss", type=float, default=5.0, help="max daily loss %% of initial balance")
-    ap.add_argument("--max-loss", type=float, default=10.0, help="max overall loss %% of initial balance")
+    ap.add_argument("--targets", type=_floats, default=[7, 4], help="profit target %% per phase (Atlas Funded 2-Step: 7,4)")
+    ap.add_argument("--daily-loss", type=float, default=4.0, help="max daily loss %% of initial balance")
+    ap.add_argument("--max-loss", type=float, default=8.0, help="max overall loss %% of initial balance")
     ap.add_argument("--trailing", action="store_true", help="max-loss floor trails the highest closed balance")
-    ap.add_argument("--min-days", type=int, default=4, help="minimum trading days per phase")
+    ap.add_argument("--min-days", type=int, default=3, help="minimum trading days per phase")
     ap.add_argument("--horizon", type=int, default=365, help="calendar days to give each phase before 'no result'")
     ap.add_argument("--dd-cap", type=float, default=7.0, help="p95 MC drawdown %% to stay under when suggesting a risk")
     ap.add_argument("--throttle", type=_floats, default=None,
                     help="DD,FACTOR: size trades at FACTOR while the balance is DD %% of initial below the phase high "
                          "(challenge simulation only; the reshuffle drawdowns stay unthrottled)")
+    ap.add_argument("--server-to-utc", action="store_true",
+                    help="bucket days at 00:00 UTC from Darwinex server times (Atlas's daily reset); default: the report's own date")
     ap.add_argument("--sims", type=int, default=10000)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--json", help="also write all results to this JSON file")
@@ -253,7 +264,7 @@ def main():
     times, R = load_trades(a.source, a.bt_risk)
     rng = np.random.default_rng(a.seed)
     span_days = (times[-1].date() - times[0].date()).days + 1
-    days = group(times, R, lambda t: t.date())
+    days = group(times, R, utc_day if a.server_to_utc else (lambda t: t.date()))
     months = group(times, R, lambda t: (t.year, t.month))
     day_R = list(days.values())
     day_sums = np.array([d.sum() for d in day_R])
