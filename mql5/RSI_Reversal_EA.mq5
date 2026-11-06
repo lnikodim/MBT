@@ -43,7 +43,7 @@
 #define EA_MAGIC     261004
 #define EA_COMMENT   "RSI_REV"
 #define EA_TIMEFRAME PERIOD_H6     // InpTimeframe = RSI timeframe (v1.10 InpRsiTimeframe)
-#define EA_RISK_VALUE 0.5             // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#define EA_RISK_VALUE 0.5             // compiled default from spec 2026-10-22-dd-reduction, phase 3b; each account's live value is in mql5/sets/<account>/
 #define EA_DAILY_LOSS_PCT 3.0
 #define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"

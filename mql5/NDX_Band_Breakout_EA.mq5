@@ -23,7 +23,7 @@
 //|     (variant x8: PF 1.2 in 2019-21, 2022-23 and 2024-26);       |
 //|   - execution, guards and trade log from EACore.mqh.            |
 //|  Server clock: the defaults are for New York + 7 hours (open    |
-//|  16:30, flat 22:55), the clock of Darwinex and FTMO.            |
+//|  16:30, flat 22:55), the clock of Darwinex (Atlas TBC).         |
 //+------------------------------------------------------------------+
 #property copyright "2026"
 #property version   "1.00"

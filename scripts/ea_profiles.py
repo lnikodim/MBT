@@ -16,7 +16,7 @@ ARGUS_TIME_STRINGS = {"KillzoneStart", "KillzoneEnd", "AsianStart", "LondonStart
 STRING_INPUTS = STRING_INPUTS | ARGUS_TIME_STRINGS
 
 # Research values, passed explicitly in every tester run. The six live EAs compile different defaults (0.5% risk, daily
-# stop 3%, throttle 3% = FTMO 2-Step, spec 2026-10-22-dd-reduction phase 3b); these profiles keep 1% / 4% / off.
+# stop 3%, throttle 3%, spec 2026-10-22-dd-reduction phase 3b; each account's live values are in mql5/sets/<account>/); these profiles keep 1% / 4% / off.
 _CORE_DEFAULTS = {
     "InpTimeframe": "16385", "InpSlippagePoints": "30", "InpMaxSpreadPoints": "150",
     "InpRiskMode": "1", "InpRiskValue": "1.0",
@@ -87,6 +87,18 @@ PROFILES = {
         "InpEntryMode": "0", "InpExitMode": "0", "InpConfirmRsi": "0.0",   # v1.01/1.02 (Bagovino modes); defaults = v1.00 rules
     }),
     "BarDump": {},   # tester helper: M1 bars to Common\Files\bars_<symbol>_M1.csv, no inputs
+    # Dark Dione / Moon / Rea (Marco Solito, third-party .ex5, no source): empty entries = compiled defaults (spec 2026-10-30-dark-family-screen).
+    # Moon and Rea passed the screens; Atlas add-on profile inclusion was explicitly requested 2026-10-31, while joint equity validation remains pending.
+    # Dione failed on EURUSD and GBPUSD and was removed.
+    "Dark_Moon": {}, "Dark_Rea": {},
+    # Gold Revivor 4.1 (third-party, source 2026-11-03): #resource GoldRevivor.bmp lines removed to build (cosmetic dashboard image only);
+    # UseExternalGMTSync stays false (its only WebRequest path); source defaults.
+    "Gold_Revivor_v41_EA": {},
+    # The Gold Reaper 4.6 (third-party, dump-rebuilt source, English translation 2026-11-04): compiled with source defaults; the test overrides AutoGMT=false (no worldtimeserver call).
+    "Gold_Reaper_EN_EA": {"AutoGMT": "true"},   # source default; backtests override it with --set AutoGMT=false
+    # Gold Trade Pro (Profalgo, decompiled MQL4 run through MQL4Compat.mqh; spec 2026-11-06-goldtradepro-screen-prereg): source
+    # defaults, Risk=0 = fixed 0.01 lot on all seven gold strategies. Research only (unlicensed copy).
+    "GoldTradePro": {},
     # Enhanced Range Breakout EA v1.89 (third-party .ex5, no source; installed without the dot in "v1.89"): compiled
     # defaults from the report of a no-inputs run on 2026-10-17. Not EACore, so no CSV log (trades come from the
     # report's Deals table). Built for AVX2: the tester needs ROSETTA_ADVERTISE_AVX=1 on this Mac (spec 2026-10-17-erb)
@@ -167,7 +179,7 @@ PROFILES = {
         "InpDailyLossPct": "0.0",   # DailyStop.mqh (MBT 1.51): off in research runs
     },
     # NDX_Band_Breakout_EA v1.00 compiled defaults (ORB3 of article 17745, variant x8: long only, bands x1.25, no entries in the first
-    # 60 minutes; Darwinex / FTMO clock New York + 7 h; add-on sizing 0.5x -> 0.25% risk; spec 2026-10-27-ndx-band-breakout-production-prereg.md)
+    # 60 minutes; Darwinex clock New York + 7 h (Atlas's clock to confirm); add-on sizing 0.5x -> 0.25% risk; spec 2026-10-27-ndx-band-breakout-production-prereg.md)
     "NDX_Band_Breakout_EA": dict(_CORE_DEFAULTS, **{
         "InpMagic": "271027", "InpComment": "NDXBB", "InpTimeframe": "1", "InpSpreadWaitMin": "0", "InpMaxSpreadPoints": "100",
         "InpRiskValue": "0.25", "InpDailyLossPct": "3.0", "InpThrottleDDPct": "3.0",

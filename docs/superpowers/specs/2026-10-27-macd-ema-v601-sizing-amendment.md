@@ -9,8 +9,14 @@
 - USD-base pairs (USDJPY): point value = contract size × tick size ÷ price, so that it is in USD.
 - Crosses: the author's original tick-value formula, unchanged.
 
-Nothing else in the EA is changed. The author's file is unchanged; the test build is a patched copy (`MACD-EMA-Strategy-v6.01-fixed.mq5`) with only the sizing lines replaced. The sizing change is logic-neutral for the signal and the exits; it changes only the number of lots.
+Nothing else in the EA is changed. The author's file is unchanged; the test build is a patched copy (`MACD-EMA-Strategy-v6.01-fixed.mq5`) with the sizing lines replaced, plus the chart-only `Comment()` call removed for speed (see Result). The sizing change is logic-neutral for the signal and the exits; it changes only the number of lots.
 
-**Re-run.** The screen runs again from the start on all four instruments with the patched build. Expected check: the first XAUUSD trade should be about 0.08 lots, not 8.
+**Re-run.** The screen runs again from the start on all four instruments with the patched build. Expected check: the first XAUUSD trade should be about 0.08 lots, not 8. (This expectation was wrong; see Result.)
 
 **Decision rule:** unchanged from the screen spec.
+
+## Result (2026-10-27)
+
+- **Lot check:** the first XAUUSD entry is a sell of 0.45 lots at 2066.26, with a stop at 2070.72 (a 4.46 distance). The formula gives 200 / (4.46 × 100) = 0.45 lots, so the sizing is correct. The 0.08 expectation above was an estimate and was wrong.
+- **Chart-only change:** the per-tick `Comment()` call was removed from the test copy while the EURUSD cell was running. The change cannot touch trades, and no cell ran on the changed build afterwards, so no verdict depends on it. The test build was removed with the other leftovers.
+- **Outcome:** XAUUSD and EURUSD both rejected at Gate A, so GBPUSD and USDJPY were not run. See `2026-10-27-macd-ema-v601-screen-outcome.md`.

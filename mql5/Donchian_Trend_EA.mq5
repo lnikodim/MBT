@@ -23,9 +23,9 @@ input double          InpRiskPercent      = 0.5;      // Risk per trade, % of eq
 input bool            InpSkipIfMinLotTooRisky = true; // Skip if the minimum lot risks more
 
 input group "2. Account protection"
-#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // compiled default from spec 2026-10-22-dd-reduction, phase 3b; each account's live value is in mql5/sets/<account>/
 #include "AccountThrottle.mqh"
-#define EA_DAILY_LOSS_PCT 3.0         // live default = FTMO 2-Step: -3%, as the gold EAs (DailyStop.mqh)
+#define EA_DAILY_LOSS_PCT 3.0         // compiled default: -3%, as the gold EAs (DailyStop.mqh); each account's live value is in mql5/sets/<account>/
 #include "DailyStop.mqh"
 
 input group "3. Orders"

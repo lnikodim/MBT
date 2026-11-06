@@ -26,7 +26,7 @@
 #define EA_COMMENT "DONCH"
 #define EA_TIMEFRAME PERIOD_H4   // v1.01 defaults = the published, Gate-A-passing cell (spec 2026-10-13 amendment 1)
 #define EA_SPREAD_WAIT_MIN 0   // the target is R x stop from the signal price: a retried entry would break that ratio
-#define EA_RISK_VALUE 0.5             // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#define EA_RISK_VALUE 0.5             // compiled default from spec 2026-10-22-dd-reduction, phase 3b; each account's live value is in mql5/sets/<account>/
 #define EA_DAILY_LOSS_PCT 3.0
 #define ACCOUNT_THROTTLE_DD_PCT 3.0
 #include "EACore.mqh"

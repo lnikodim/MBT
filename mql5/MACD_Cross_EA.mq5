@@ -89,7 +89,7 @@ input double              InpRiskValue       = 0.5;         // Risk per trade (a
 input group "2. Account protection"
 input double              InpDailyLossPct    = 3.0;         // Daily loss limit, % of day start (0 = off)
 input double              InpMonthlyLossPct  = 12.0;        // Monthly loss limit, % of month start (0 = off)
-#define ACCOUNT_THROTTLE_DD_PCT 3.0   // live defaults = FTMO 2-Step settings (spec 2026-10-22-dd-reduction, phase 3b)
+#define ACCOUNT_THROTTLE_DD_PCT 3.0   // compiled default from spec 2026-10-22-dd-reduction, phase 3b; each account's live value is in mql5/sets/<account>/
 #include "AccountThrottle.mqh"
 
 input group "3. Orders"
